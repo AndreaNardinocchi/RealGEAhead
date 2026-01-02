@@ -17,3 +17,8 @@ Together, they deliver a smooth and reliable booking experience with clean rooms
 - Room browsing and booking
 - Admin‑level room, user, and booking management
 - Secure backend endpoints for sensitive operations
+
+# Dependencies/Library installations commands
+
+npm install @mui/material @emotion/react @emotion/styled
+npm install @mui/icons-material
