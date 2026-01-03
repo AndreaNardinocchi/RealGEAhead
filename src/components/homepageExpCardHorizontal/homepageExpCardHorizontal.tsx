@@ -22,7 +22,7 @@ const HomepageExpCardHorizontal: React.FC<ExperienceCardProps> = ({
         // https://mui.com/material-ui/customization/breakpoints/
         flexDirection: {
           xs: "column", // On extra‑small screens (mobile), stack items vertically
-          md: "row", // On medium screens and larger (tablet/desktop), place items side‑by‑side horizontally
+          sm: "row", // On tablet and larger, place items side‑by‑side horizontally
         },
         width: "100%",
         height: { xs: "auto", sm: cardHeight },
@@ -36,7 +36,7 @@ const HomepageExpCardHorizontal: React.FC<ExperienceCardProps> = ({
         image={image}
         alt={title}
         sx={{
-          width: { xs: "100%", sm: "50%", lg: "100%" },
+          width: { xs: "100%", sm: "70%", md: "70%" }, // Tablet & desktop = 50%
           height: { xs: 220, sm: "100%" },
           /**
            * objectFit ensures the image fills the area while keeping its aspect ratio;
@@ -48,16 +48,29 @@ const HomepageExpCardHorizontal: React.FC<ExperienceCardProps> = ({
         }}
       />
 
-      {/* Right contnet */}
+      {/* Right content */}
       <Box
         sx={{
-          width: { xs: "100%", sm: "50%" },
+          width: { xs: "100%", sm: "50%", md: "50%" }, // Tablet & desktop = 50% (keeps row layout)
           display: "flex",
           flexDirection: "column",
-          paddingTop: { xs: "0%", sm: "13%", lg: "13%" },
+          justifyContent: { xs: "flex-start", md: "center" }, // Vertically center content on desktop
+          height: "100%", // Ensures content fills full card height so centering works
+          padding: { xs: 0, sm: 3 },
         }}
       >
-        <CardContent sx={{ padding: "24px", flexGrow: 1 }}>
+        <CardContent
+          sx={{
+            padding: "24px",
+            flexGrow: 1,
+            paddingTop: {
+              // ensuring tablet view also show the
+              md: "25%",
+              sm: "30%",
+              xs: "5%",
+            },
+          }}
+        >
           <Typography variant="h5" gutterBottom>
             {title}
           </Typography>
