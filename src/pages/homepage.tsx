@@ -10,6 +10,7 @@ import {
   CardContent,
 } from "@mui/material";
 import HeroImage from "../components/heroImage/heroImage";
+import HomepageExpCarousel from "../components/homepageExpCarousel/homepageExpCarousel";
 
 /**
  * HomePage
@@ -23,6 +24,38 @@ import HeroImage from "../components/heroImage/heroImage";
  * - Experience cards
  * - Content-only card
  */
+
+// These 'experiences' data will populate the 'HomepageExpCarousel'
+const experiences = [
+  {
+    id: 1,
+    title: "Lorem Ipsum Dolor Sit Amet",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae justo vel lorem gravida aliquet.",
+    image: "https://placehold.co/600x400",
+  },
+  {
+    id: 2,
+    title: "Consectetur Adipiscing Elit",
+    description:
+      "Suspendisse potenti. Integer non lorem non urna tincidunt fermentum. Curabitur ac sapien vel augue cursus.",
+    image: "https://placehold.co/600x400",
+  },
+  {
+    id: 3,
+    title: "Sed Do Eiusmod Tempor",
+    description:
+      "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    image: "https://placehold.co/600x400",
+  },
+  {
+    id: 4,
+    title: "Ut Labore Et Dolore Magna",
+    description:
+      "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    image: "https://placehold.co/600x400",
+  },
+];
 
 const HomePage: React.FC = () => {
   return (
@@ -79,9 +112,8 @@ const HomePage: React.FC = () => {
 
         {/**
          * EXPERIENCE Cards Section
-         * This will be a slideshow, but we will work on it later
+         * This will be a slideshow, but we are working on it
          * */}
-
         <Grid container spacing={4} justifyContent="center">
           <Grid item xs={12} md={6}>
             <Typography
@@ -100,57 +132,15 @@ const HomePage: React.FC = () => {
             >
               Some heading{" "}
             </Typography>
-            <Card
-              sx={{
-                display: "flex",
-                flexDirection: {
-                  // https://mui.com/material-ui/customization/breakpoints/
-                  xs: "column", // On extra‑small screens (mobile), stack items vertically
-                  md: "row", // On medium screens and larger (tablet/desktop), place items side‑by‑side horizontally
-                },
+            <HomepageExpCarousel experiences={experiences} />
 
-                height: 400,
-                width: "100%",
-                margin: "0 auto",
-              }}
-            >
-              <CardContent
-                sx={{
-                  flex: 1,
-                  padding: 3,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
-                <Typography variant="h6" gutterBottom>
-                  Lorem Ipsum Dolor
-                </Typography>
-
-                <Typography variant="body2" color="text.secondary">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  facilisis urna non commodo aliquet. Integer feugiat sapien vel
-                  ligula fermentum, vitae tincidunt lorem viverra.
-                </Typography>
-              </CardContent>
-
-              <CardMedia
-                component="img"
-                image="https://placehold.co/600x400.png"
-                alt="Placeholder"
-                sx={{
-                  width: { xs: "100%", md: "50%" },
-                  height: 400,
-                  /**
-                   * objectFit ensures the image fills the area while keeping its aspect ratio;
-                   * parts of the image may be cropped to avoid distortion
-                   *
-                   * https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit
-                   */
-                  objectFit: "cover",
-                }}
-              />
-            </Card>
+            {/* <HomepageExpCardHorizontal
+              title={"Experience"}
+              description={
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed facilisis urna non commodo aliquet. Integer feugiat sapien vel ligula fermentum, vitae tincidunt lorem viverra."
+              }
+              image={"https://placehold.co/600x400.png"}
+            /> */}
           </Grid>
         </Grid>
 
@@ -235,9 +225,26 @@ const HomePage: React.FC = () => {
                     variant="body2"
                     color="text.secondary"
                     sx={{
+                      /**
+                       * Enables multi‑line text truncation using the WebKit flexbox model, creating a vertical box container
+                       * that allows line clamping.
+                       * https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-line-clamp
+                       */
                       display: "-webkit-box",
+                      /**
+                       * Ensures any text beyond the clamped lines is hidden instead of overflowing.
+                       * https://developer.mozilla.org/en-US/docs/Web/CSS/overflow
+                       */
                       overflow: "hidden",
+                      /**
+                       * Specifies the maximum number of lines to display before truncating.
+                       * https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-line-clamp
+                       */
                       WebkitLineClamp: 4,
+                      /**
+                       * Sets the box orientation to vertical, required for line clamping to work.
+                       * https://developer.mozilla.org/en-US/docs/Web/CSS/box-orient
+                       */
                       WebkitBoxOrient: "vertical",
                     }}
                   >
@@ -268,9 +275,18 @@ const HomePage: React.FC = () => {
                 width: "100%",
                 margin: "0 auto",
                 px: { xs: 0, md: 2 },
-                py: { xs: 2, md: 2 },
+                py: { xs: 3, md: 4 },
+                textAlign: "center",
+                alignItems: "center",
               }}
             >
+              {/* Placeholder Logo */}
+              <Box
+                component="img"
+                src="/assets/GuestEaseLogo.png" // placeholder logo
+                alt="GuestEase"
+                sx={{ width: 80, height: "auto" }}
+              />
               <CardContent
                 sx={{
                   flex: 1,

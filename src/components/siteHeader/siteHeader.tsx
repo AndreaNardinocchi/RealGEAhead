@@ -11,10 +11,9 @@
  * otherwise, the standard navigation links should render.
  */
 
-import React, { useState, type MouseEvent, useEffect } from "react";
+import React, { useState, type MouseEvent } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
@@ -26,6 +25,12 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LoginIcon from "@mui/icons-material/Login";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
+
+/**
+ * Checks whether the current URL path is the homepage, and returns true only when the user is on "/".
+ * We use it to erase the offSet between the HeroImage and siteHeader components
+ */
+const isHomePage = location.pathname === "/";
 
 const SiteHeader: React.FC = () => {
   // Stores the logged‑in user's name (default placeholder for now) */
@@ -96,7 +101,7 @@ const SiteHeader: React.FC = () => {
         sx={{ bgcolor: "#472d30;" }}
       >
         <Toolbar sx={{ color: "white" }}>
-          <Link onClick={() => navigate("/")} to={""} rel="noopener"></Link>
+          {/* <Link onClick={() => navigate("/")} to={""} rel="noopener"></Link>
 
           <Typography
             variant="h4"
@@ -113,7 +118,27 @@ const SiteHeader: React.FC = () => {
             }}
           >
             GuestEase
-          </Typography>
+          </Typography> */}
+
+          <Link
+            to="/"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              textDecoration: "none",
+              flexGrow: 1,
+            }}
+          >
+            <img
+              src="/assets/GuestEaseLogo.svg"
+              alt="GuestEase logo"
+              style={{
+                height: "80px",
+                width: "auto",
+                marginLeft: "2%",
+              }}
+            />
+          </Link>
 
           {isMobile ? (
             <>
@@ -194,7 +219,8 @@ const SiteHeader: React.FC = () => {
         </Toolbar>
       </AppBar>
 
-      <Offset />
+      {/* Only add Offset if not one of the below pages */}
+      {!isHomePage && <Offset />}
     </>
   );
 };
