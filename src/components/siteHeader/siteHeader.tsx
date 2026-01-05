@@ -101,25 +101,6 @@ const SiteHeader: React.FC = () => {
         sx={{ bgcolor: "#472d30;" }}
       >
         <Toolbar sx={{ color: "white" }}>
-          {/* <Link onClick={() => navigate("/")} to={""} rel="noopener"></Link>
-
-          <Typography
-            variant="h4"
-            sx={{
-              flexGrow: 1,
-              color: "white",
-              marginRight: "2%",
-              fontSize: {
-                xs: "1.2rem",
-                sm: "1.5rem",
-                md: "1.7rem",
-                lg: "2.0rem",
-              },
-            }}
-          >
-            GuestEase
-          </Typography> */}
-
           <Link
             to="/"
             style={{
@@ -185,7 +166,7 @@ const SiteHeader: React.FC = () => {
               <Button
                 sx={{ textTransform: "none" }}
                 color="inherit"
-                onClick={() => handleNavigate("/")}
+                onClick={() => handleNavigate("/about-us")}
               >
                 About us
               </Button>
