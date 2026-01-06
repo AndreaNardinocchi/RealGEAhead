@@ -32,8 +32,7 @@ const AboutUsPage: React.FC = () => {
   }, []);
 
   return (
-    // Intro section
-    <Container maxWidth="lg" sx={{ mt: 8, mb: 10 }}>
+    <Container maxWidth="lg" sx={{ mb: 10 }}>
       <Box textAlign="center" mb={8}>
         <Typography variant="h3" component="h1" gutterBottom>
           Lorem Ipsum Dolor
@@ -216,10 +215,10 @@ const AboutUsPage: React.FC = () => {
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+            gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
             gap: {
               xs: 0,
-              sm: 0,
+              sm: 4,
               md: 4,
             },
             mt: 4,

@@ -26,13 +26,12 @@ import LoginIcon from "@mui/icons-material/Login";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
-/**
- * Checks whether the current URL path is the homepage, and returns true only when the user is on "/".
- * We use it to erase the offSet between the HeroImage and siteHeader components
- */
-const isHomePage = location.pathname === "/";
-
 const SiteHeader: React.FC = () => {
+  /**
+   * Checks whether the current URL path is the homepage, and returns true only when the user is on "/".
+   * We use it to erase the offSet between the HeroImage and siteHeader components
+   */
+  const isHomePage = location.pathname === "/";
   // Stores the logged‑in user's name (default placeholder for now) */
   const [userName, setUserName] = useState("User");
 
@@ -180,7 +179,7 @@ const SiteHeader: React.FC = () => {
               <Button
                 sx={{ textTransform: "none" }}
                 color="inherit"
-                onClick={() => handleNavigate("/")}
+                onClick={() => handleNavigate("/facilities")}
               >
                 Facilities
               </Button>
