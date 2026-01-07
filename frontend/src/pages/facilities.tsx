@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Container, Typography, Box } from "@mui/material";
 
 const FacilitiesPage: React.FC = () => {
+  // Browser title
   useEffect(() => {
     document.title = "Facilities | GuestEase";
   }, []);
