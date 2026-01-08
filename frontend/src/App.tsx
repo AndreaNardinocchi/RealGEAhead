@@ -4,6 +4,7 @@ import SiteHeader from "./components/siteHeader/siteHeader";
 import Footer from "./components/footer/footer";
 import AboutUsPage from "./pages/aboutUsPage";
 import FacilitiesPage from "./pages/facilities";
+import RoomsPage from "./pages/roomsPage";
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/about-us" element={<AboutUsPage />} />
+        <Route path="/rooms" element={<RoomsPage />} />
         <Route path="/facilities" element={<FacilitiesPage />} />
       </Routes>
       <Footer />

@@ -20,6 +20,14 @@ Together, they deliver a smooth and reliable booking experience with clean rooms
 
 # Dependencies/Library installations commands
 
+npm install react react-dom
+npm install react-router-dom
+npm install -D @types/react @types/react-dom
+npm install -D @vitejs/plugin-react
 npm install @mui/material @emotion/react @emotion/styled
 npm install @mui/icons-material
 npm install express cors dotenv (For the back-end)
+npm install @supabase/supabase
+npm install @tanstack/react-query
+npm install @supabase/supabase-js
+npm install @tanstack/react-query

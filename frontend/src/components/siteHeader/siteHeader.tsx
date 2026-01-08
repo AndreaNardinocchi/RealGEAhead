@@ -172,7 +172,7 @@ const SiteHeader: React.FC = () => {
               <Button
                 sx={{ textTransform: "none" }}
                 color="inherit"
-                onClick={() => handleNavigate("/")}
+                onClick={() => handleNavigate("/rooms")}
               >
                 Rooms
               </Button>
