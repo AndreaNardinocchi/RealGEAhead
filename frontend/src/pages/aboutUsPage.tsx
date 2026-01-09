@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { Container, Typography, Box, Card, CardContent } from "@mui/material";
 
+import { getPublicUrl } from "../utils/supabaseAssetsStorage";
+
 /**
  * About Us Page 
  * All layout is handled using <Box display="grid"> instead of <Grid> in order
@@ -12,16 +14,16 @@ import { Container, Typography, Box, Card, CardContent } from "@mui/material";
 
 const guesteasePhilosophyCards = [
   {
-    title: "Lorem Ipsum",
-    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    title: "Comfort Without Compromise",
+    text: "Premium beds, quiet spaces, and modern amenities that support true rest.",
   },
   {
-    title: "Dolor Sit Amet",
-    text: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    title: "Character With Purpose",
+    text: "Irish-inspired design that feels authentic, never themed or forced.",
   },
   {
-    title: "Consectetur Adipiscing",
-    text: "Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+    title: "Service That Feels Human",
+    text: "Attentive, warm, and never intrusive — just the right balance.",
   },
 ];
 
@@ -35,7 +37,7 @@ const AboutUsPage: React.FC = () => {
     <Container maxWidth="lg" sx={{ mb: 10 }}>
       <Box textAlign="center" mb={8}>
         <Typography variant="h3" component="h1" gutterBottom>
-          Lorem Ipsum Dolor
+          About GuestEase
         </Typography>
 
         <Typography
@@ -48,8 +50,8 @@ const AboutUsPage: React.FC = () => {
            */
           sx={{ maxWidth: 800, mx: "auto" }}
         >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-          ullamcorper, sapien non gravida luctus, lorem arcu fermentum justo.
+          A thoughtful stay, rooted in Irish hospitality — designed for comfort,
+          calm, and connection.
         </Typography>
       </Box>
 
@@ -75,25 +77,26 @@ const AboutUsPage: React.FC = () => {
         {/* Left text column */}
         <Box>
           <Typography variant="h5" component="h3" gutterBottom>
-            Lorem Ipsum Heading
+            A Place That Feels Right
           </Typography>
 
           <Typography color="text.secondary" sx={{ mb: 2 }}>
-            Lorem ipsum dolor sit amet,{" "}
-            <strong>consectetur adipiscing elit</strong>. Integer vitae justo
-            nec urna facilisis tincidunt. Suspendisse potenti.
+            At <strong>GuestEase</strong>, we believe a great stay is more than
+            a bed for the night — it’s a feeling. A sense of welcome. A place
+            where comfort, character, and care come together effortlessly.
           </Typography>
 
           <Typography color="text.secondary">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
-            feugiat, arcu id gravida aliquet, justo urna placerat libero.
+            Nestled in the heart of Ireland, GuestEase was created for
+            travellers who value calm over clutter, warmth over extravagance,
+            and experiences that feel genuinely personal.
           </Typography>
         </Box>
 
         {/* Right image */}
         <Box
           component="img"
-          src="https://placehold.co/600x400"
+          src={getPublicUrl("bed-breakfast-a-bit-boutique.jpg")}
           alt="Placeholder"
           sx={{
             width: "100%",
@@ -114,16 +117,18 @@ const AboutUsPage: React.FC = () => {
       {/* GuestEase Philosophy cards*/}
       <Box mb={10}>
         <Typography variant="h4" component="h2" gutterBottom textAlign="center">
-          Lorem Ipsum Philosophy
+          Our Philosophy
         </Typography>
 
         <Typography
           color="text.secondary"
           textAlign="center"
-          sx={{ maxWidth: 900, mx: "auto", mb: 6 }}
+          sx={{ maxWidth: 900, mx: "auto", mb: 3 }}
         >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          <strong> Vivamus commodo </strong> urna vel sapien fermentum.
+          We design every stay around one simple idea: <strong>ease</strong>.
+          From seamless booking to thoughtfully curated rooms, we remove
+          friction so you can focus on what matters — your journey, your people,
+          and your time.
         </Typography>
 
         {/* 3-card grid */}
@@ -143,7 +148,12 @@ const AboutUsPage: React.FC = () => {
                * https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key
                */
               key={item.title}
-              sx={{ width: "100%", boxShadow: 3, borderRadius: 2 }}
+              sx={{
+                width: "100%",
+                boxShadow: 3,
+                borderRadius: 2,
+                textAlign: "center",
+              }}
             >
               <CardContent>
                 <Typography variant="h6" component="h3" gutterBottom>
@@ -169,7 +179,7 @@ const AboutUsPage: React.FC = () => {
         {/* Image */}
         <Box
           component="img"
-          src="https://placehold.co/600x400"
+          src={getPublicUrl("SeanchaiNook3.jpg")}
           alt="Placeholder"
           sx={{
             width: "100%",
@@ -183,17 +193,19 @@ const AboutUsPage: React.FC = () => {
         {/* Text */}
         <Box>
           <Typography variant="h5" component="h3" gutterBottom>
-            Lorem Ipsum Rooms
+            Rooms With a Story
           </Typography>
 
           <Typography color="text.secondary" sx={{ mb: 2 }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            No two GuestEase rooms are the same — and that’s intentional.{" "}
           </Typography>
 
           <Typography color="text.secondary">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-            tristique, urna nec tincidunt tincidunt, sapien lorem posuere
-            libero.
+            Each space is designed with a distinct purpose in mind, whether it’s
+            focused work, restorative rest, family connection, or indulgent
+            escape. Natural textures, calming tones, and locally inspired
+            details create spaces that feel grounded and restorative — not
+            generic.
           </Typography>
         </Box>
       </Box>
@@ -208,7 +220,7 @@ const AboutUsPage: React.FC = () => {
           gutterBottom
           sx={{ fontWeight: 500 }}
         >
-          Lorem Ipsum for Modern Travellers
+          Designed for Modern Travellers
         </Typography>
 
         {/* 2-column bullet list using Box grid */}
@@ -230,13 +242,12 @@ const AboutUsPage: React.FC = () => {
           <Box component="ul" sx={{ pl: 2, m: 0 }}>
             <li>
               <Typography color="text.secondary">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Remote workers seeking inspiring, functional spaces
               </Typography>
             </li>
             <li>
               <Typography color="text.secondary">
-                Sed do eiusmod tempor incididunt ut labore et dolore magna
-                aliqua.
+                Couples looking for warmth, privacy, and atmosphere
               </Typography>
             </li>
           </Box>
@@ -245,12 +256,12 @@ const AboutUsPage: React.FC = () => {
           <Box component="ul" sx={{ pl: 2, m: 0 }}>
             <li>
               <Typography color="text.secondary">
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco.
+                Families who value flexibility, space, and ease
               </Typography>
             </li>
             <li>
               <Typography color="text.secondary">
-                Duis aute irure dolor in reprehenderit in voluptate velit esse.
+                Explorers wanting a calm base between adventures
               </Typography>
             </li>
           </Box>
@@ -260,12 +271,13 @@ const AboutUsPage: React.FC = () => {
       {/* Closing ection */}
       <Box textAlign="center">
         <Typography variant="h5" component="h3" gutterBottom>
-          Lorem Ipsum Welcome
+          Welcome to GuestEase
         </Typography>
 
         <Typography color="text.secondary" sx={{ maxWidth: 800, mx: "auto" }}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vel
-          lorem nec sapien bibendum tincidunt.
+          Whether you’re staying for a night or settling in for longer, we’re
+          delighted to host you. At GuestEase, you’re not just checking in —
+          you’re arriving.
         </Typography>
       </Box>
     </Container>

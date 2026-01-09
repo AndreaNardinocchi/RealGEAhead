@@ -349,7 +349,7 @@ const HomePage: React.FC = () => {
                 component="img"
                 src={getPublicUrl("GuestEaseLogo.png")}
                 alt="GuestEase"
-                sx={{ width: 80, mb: 2 }}
+                sx={{ width: 80 }}
               />
 
               {/* Text content */}

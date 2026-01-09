@@ -11,7 +11,7 @@ const FacilitiesPage: React.FC = () => {
     <Container maxWidth="lg" sx={{ mt: 1, mb: 10 }}>
       <Box textAlign="center" mb={8}>
         <Typography variant="h3" component="h1" gutterBottom>
-          Lorem ipsum dolor sit amet
+          Our Facilities
         </Typography>
         <Typography
           variant="h6"
@@ -33,7 +33,7 @@ const FacilitiesPage: React.FC = () => {
             gutterBottom
             sx={{ fontWeight: 500 }}
           >
-            Lorem Ipsum
+            Comfort & Convenience
           </Typography>
 
           {/* 2-column bullet list using Box grid */}
@@ -64,13 +64,22 @@ const FacilitiesPage: React.FC = () => {
             <Box component="ul" sx={{ pl: 2, m: 0 }}>
               <li>
                 <Typography color="text.secondary">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Comfortable beds with fresh linens{" "}
                 </Typography>
               </li>
               <li>
                 <Typography color="text.secondary">
-                  Sed do eiusmod tempor incididunt ut labore et dolore magna
-                  aliqua.
+                  Private bathrooms with complimentary toiletries
+                </Typography>
+              </li>
+              <li>
+                <Typography color="text.secondary">
+                  Heating and hot water throughout the year{" "}
+                </Typography>
+              </li>
+              <li>
+                <Typography color="text.secondary">
+                  High-speed Wi-Fi and desk setups
                 </Typography>
               </li>
             </Box>
@@ -79,13 +88,22 @@ const FacilitiesPage: React.FC = () => {
             <Box component="ul" sx={{ pl: 2, m: 0 }}>
               <li>
                 <Typography color="text.secondary">
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco.
+                  Complimentary breakfast daily{" "}
                 </Typography>
               </li>
               <li>
                 <Typography color="text.secondary">
-                  Duis aute irure dolor in reprehenderit in voluptate velit
-                  esse.
+                  Tea and coffee available for guests{" "}
+                </Typography>
+              </li>
+              <li>
+                <Typography color="text.secondary">
+                  Luggage storage before check-in or after check-out{" "}
+                </Typography>
+              </li>
+              <li>
+                <Typography color="text.secondary">
+                  Free on-site parking and easy access to local attractions{" "}
                 </Typography>
               </li>
             </Box>
@@ -96,11 +114,13 @@ const FacilitiesPage: React.FC = () => {
       {/* Closing */}
       <Box textAlign="center">
         <Typography variant="h5" gutterBottom>
-          Lorem ipsum dolor sit amet
+          Experience GuestEase
         </Typography>
         <Typography color="text.secondary" sx={{ maxWidth: 800, mx: "auto" }}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-          tristique, urna nec tincidunt tincidunt, sapien lorem posuere libero.
+          Our facilities are designed to make your stay effortless and
+          enjoyable. From cozy rooms to thoughtful amenities, we take care of
+          the details so you can focus on relaxing and enjoying your time with
+          us.
         </Typography>
       </Box>
     </Container>
