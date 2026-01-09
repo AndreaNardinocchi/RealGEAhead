@@ -1,5 +1,7 @@
 import React from "react";
 import { Box, Card, CardMedia, CardContent, Typography } from "@mui/material";
+// Importing the supabase 'assets' storage function
+import { getPublicUrl } from "../../utils/supabaseAssetsStorage";
 
 /**
  * Creating contnet for the below 3 cards.
@@ -15,21 +17,21 @@ const homepageThreeCards = [
     title: "Work Done. Kettle On.",
     description:
       "GuestEase accomodates remote workers in rooms that feel just right. Solid Wi-Fi, a comfy chair, and a friendly face.",
-    image: "https://placehold.co/600x400",
+    image: getPublicUrl("remote-worker.jpg"),
   },
   {
     id: 2,
     title: "Settle In and Switch Off",
     description:
       "GuestEase offers rooms designed for easy weekends. Settle in, take it handy, and enjoy the break.",
-    image: "https://placehold.co/600x400",
+    image: getPublicUrl("couple.jpg"),
   },
   {
     id: 3,
     title: "Rest, Reset, Breathe",
     description:
       "Spaces designed for calm and quiet moments. Ideal for meditation, mindfulness, or doing nothing at all.",
-    image: "https://placehold.co/600x400",
+    image: getPublicUrl("meditation-retreat.jpg"),
   },
 ];
 

@@ -1,7 +1,8 @@
 import React from "react";
 import { Box, Typography, Link, Container, Divider } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
-
+// Importing the supabase 'assets' storage function
+import { getPublicUrl } from "../../utils/supabaseAssetsStorage";
 /**
  * This footer is the same we used in past projects, which has been adjusted
  * to serve the purpose of our final project.
@@ -203,7 +204,7 @@ const Footer: React.FC = () => {
             }}
           >
             <img
-              src="/assets/GuestEaseLogo.png"
+              src={getPublicUrl("GuestEaseLogo.png")}
               alt="GuestEase logo"
               style={{ maxHeight: "200px", width: "auto" }}
             />
@@ -217,7 +218,7 @@ const Footer: React.FC = () => {
       <Box sx={{ textAlign: "center", pb: 2, backgroundColor: "#363636" }}>
         <Link component={RouterLink} to="/" sx={{ color: "inherit" }}>
           <img
-            src="/assets/GuestEaseLogo.svg"
+            src={getPublicUrl("GuestEaseLogo.svg")}
             alt="GuestEase logo"
             style={{
               height: "25px",

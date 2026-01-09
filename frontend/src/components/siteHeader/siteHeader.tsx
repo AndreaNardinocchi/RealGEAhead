@@ -23,6 +23,8 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { Link, useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import LoginIcon from "@mui/icons-material/Login";
+// Importing the supabase 'assets' storage function
+import { getPublicUrl } from "../../utils/supabaseAssetsStorage";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
@@ -110,7 +112,7 @@ const SiteHeader: React.FC = () => {
             }}
           >
             <img
-              src="/assets/GuestEaseLogo.svg"
+              src={getPublicUrl("GuestEaseLogo.png")}
               alt="GuestEase logo"
               style={{
                 height: "80px",

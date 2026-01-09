@@ -11,6 +11,8 @@ import {
 import HeroImage from "../components/heroImage/heroImage";
 import HomepageExpCarousel from "../components/homepageExpCarousel/homepageExpCarousel";
 import HomepageThreeCardComp from "../components/homepageThreeCardComp/homepageThreeCardComp";
+// Importing the supabase 'assets' storage function
+import { getPublicUrl } from "../utils/supabaseAssetsStorage";
 
 /**
  * experiences
@@ -28,28 +30,28 @@ const experiences = [
     title: "Explore Cliff Trails",
     description:
       "Beautiful paths perfect for hiking, guiding you across cliffside trails and quiet stretches of coastline. Each turn reveals sweeping views of the Atlantic.",
-    image: "https://placehold.co/600x400",
+    image: getPublicUrl("hiking-experience.jpg"),
   },
   {
     id: 2,
     title: "Seaweed Soak, Sure Why Not",
     description:
       "Slip into a warm Atlantic seaweed bath and let the stress melt away. Pure Irish wellness, with a bit of salty magic.",
-    image: "https://placehold.co/600x400",
+    image: getPublicUrl("seaweed-bath.jpg"),
   },
   {
     id: 3,
     title: "A Drop of the Good Stuff",
     description:
       "Taste local Irish whiskey and soak up the stories behind every sip. A relaxed, friendly way to connect with the coast and its culture.",
-    image: "https://placehold.co/600x400",
+    image: getPublicUrl("whiskey-tasting.jpg"),
   },
   {
     id: 4,
     title: "Paddle Your Own Way",
     description:
       "Explore calm bays, hidden inlets, or open water at your own pace. Perfect for a gentle adventure and a fresh Atlantic breeze.",
-    image: "https://placehold.co/600x400",
+    image: getPublicUrl("kayaking-experience.jpg"),
   },
 ];
 
@@ -67,19 +69,11 @@ const experiences = [
  * - Content-only card
  */
 const HomePage: React.FC = () => {
-  /**
-   * This is the browser title
-   * https://stackoverflow.com/questions/46160461/how-do-you-set-the-document-title-in-react?
-   */
-  // useEffect(() => {
-  //   document.title = `Welcome to GuestEase | Have a nice stay!`;
-  // });
-
   return (
     <>
       {/* Hero Section */}
 
-      <HeroImage imageUrl="https://placehold.co/600x400" />
+      <HeroImage imageUrl={getPublicUrl("brigidshaven1.png")} />
 
       {/* Welcome Heading + Intro Paragraph */}
       <Box
@@ -228,8 +222,10 @@ const HomePage: React.FC = () => {
             {/* Card image */}
             <CardMedia
               component="img"
-              image="https://placehold.co/600x400"
-              alt="Placeholder Image"
+              image={getPublicUrl(
+                "rich-and-abundant-irish-complimentary-breakfast-enjoy.jpg"
+              )}
+              alt="Complimentary Breakfast"
               sx={{ height: 200, objectFit: "cover" }}
             />
 
@@ -271,8 +267,10 @@ const HomePage: React.FC = () => {
             {/* Card image */}
             <CardMedia
               component="img"
-              image="https://placehold.co/600x400"
-              alt="Placeholder Image"
+              image={getPublicUrl(
+                "snacks-refreshments-enjoy-complimentary-snacks-coffee.jpg"
+              )}
+              alt="Snacks & Refreshments"
               sx={{ height: 200, objectFit: "cover" }}
             />
 
@@ -349,7 +347,7 @@ const HomePage: React.FC = () => {
               {/* Logo image */}
               <Box
                 component="img"
-                src="/assets/GuestEaseLogo.png"
+                src={getPublicUrl("GuestEaseLogo.png")}
                 alt="GuestEase"
                 sx={{ width: 80, mb: 2 }}
               />

@@ -183,7 +183,7 @@ const RoomsPage: React.FC = () => {
 
               <CardActions
                 /**
-                 * 'fle-end' will make the View Details CTA align to the right
+                 * 'flex-end' will make the View Details CTA align to the right
                  *
                  * https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/justify-content
                  * */
