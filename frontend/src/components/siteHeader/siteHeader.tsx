@@ -25,10 +25,54 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LoginIcon from "@mui/icons-material/Login";
 // Importing the supabase 'assets' storage function
 import { getPublicUrl } from "../../utils/supabaseAssetsStorage";
+import { useLocation } from "react-router-dom";
+import { Box } from "@mui/material";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const SiteHeader: React.FC = () => {
+  const location = useLocation();
+  /**
+   * We created the variable 'navButtonStyle' to style a nav link
+   * when 'active' to enhance the user experience.
+   */
+  const navButtonStyle = (active: boolean) => ({
+    textTransform: "none",
+    // Ternary operator: is it active? Then, use 'bold, otherwise 'inherit'
+    fontWeight: active ? "bold" : "inherit",
+    // Needed for the animated underline (::after) to position correctly
+    position: "relative",
+    // Smooth animation for color, weight, and underline changes
+    transition: "all 0.3s ease",
+    color: active ? "#EFF5E0" : "inherit",
+    borderBottom: active ? "3px solid #EFF5E0" : "none",
+    /**
+     * Animated underline, which expands on hover
+     * Fully visible when active.
+     * https://css-tricks.com/css-link-hover-effects/
+     * */
+    "&:after": {
+      // Required for ::after pseudo‑element as MUI supports this via the sx selector API
+      content: '""',
+      /**
+       * Needed so the underline can be positioned relative to the parent (MUI pseudo‑element
+       * https://mui.com/material-ui/customization/how-to-customize/#pseudo-classes)
+       *  */
+      position: "absolute",
+      width: active ? "100%" : "0%",
+      height: "2px",
+      bottom: 0,
+      left: 0,
+      backgroundColor: "#EFF5E0",
+      transition: "width 0.3s ease",
+    },
+
+    // Expands the underline fully on hover with a smooth animation
+    "&:hover:after": {
+      width: "100%",
+    },
+  });
+
   /**
    * Checks whether the current URL path is the homepage, and returns true only when the user is on "/".
    * We use it to erase the offSet between the HeroImage and siteHeader components
@@ -101,7 +145,7 @@ const SiteHeader: React.FC = () => {
         color="transparent"
         sx={{ bgcolor: "#472d30;" }}
       >
-        <Toolbar sx={{ color: "white" }}>
+        <Toolbar sx={{ color: "#EFF5E0" }}>
           <Link
             to="/"
             style={{
@@ -158,28 +202,29 @@ const SiteHeader: React.FC = () => {
           ) : (
             <>
               <Button
-                sx={{ textTransform: "none" }}
+                sx={navButtonStyle(location.pathname === "/")}
                 color="inherit"
                 onClick={() => handleNavigate("/")}
               >
                 Home
               </Button>
               <Button
-                sx={{ textTransform: "none" }}
+                sx={navButtonStyle(location.pathname === "/about-us")}
                 color="inherit"
                 onClick={() => handleNavigate("/about-us")}
               >
                 About us
               </Button>
+
               <Button
-                sx={{ textTransform: "none" }}
-                color="inherit"
+                sx={navButtonStyle(location.pathname === "/rooms")}
                 onClick={() => handleNavigate("/rooms")}
               >
                 Rooms
               </Button>
+
               <Button
-                sx={{ textTransform: "none" }}
+                sx={navButtonStyle(location.pathname === "/facilities")}
                 color="inherit"
                 onClick={() => handleNavigate("/facilities")}
               >

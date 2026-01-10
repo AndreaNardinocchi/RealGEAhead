@@ -65,7 +65,13 @@ const HomepageThreeCardComp: React.FC = () => {
     >
       {/* Mapping the cards content */}
       {homepageThreeCards.map((card) => (
-        <Card key={card.id}>
+        <Card
+          key={card.id}
+          sx={{
+            borderRadius: 2,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+          }}
+        >
           <CardMedia
             component="img"
             image={card.image}

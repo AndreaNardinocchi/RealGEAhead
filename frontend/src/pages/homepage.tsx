@@ -171,7 +171,7 @@ const HomePage: React.FC = () => {
         </Box>
 
         {/* BREAKFAST & SNACKS Cards Section */}
-        <Box sx={{ flex: "1 1 100%", maxWidth: "100%" }}>
+        <Box sx={{ flex: "1 1 100%", maxWidth: "100%", pb: 2 }}>
           <Typography
             variant="h4"
             component="h2"
@@ -217,6 +217,8 @@ const HomePage: React.FC = () => {
               width: "100%",
               maxWidth: 560,
               margin: "0 auto",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+              borderRadius: 2,
             }}
           >
             {/* Card image */}
@@ -262,6 +264,8 @@ const HomePage: React.FC = () => {
               width: "100%",
               maxWidth: 560,
               margin: "0 auto",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+              borderRadius: 2,
             }}
           >
             {/* Card image */}
@@ -329,6 +333,7 @@ const HomePage: React.FC = () => {
               component="h2"
               gutterBottom
               textAlign="center"
+              sx={{ pb: 2 }}
             >
               Discover GuestEase
             </Typography>
@@ -342,6 +347,7 @@ const HomePage: React.FC = () => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
               }}
             >
               {/* Logo image */}

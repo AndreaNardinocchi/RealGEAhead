@@ -109,7 +109,7 @@ const AboutUsPage: React.FC = () => {
              */
             objectFit: "cover",
             borderRadius: 2,
-            boxShadow: 4,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
           }}
         />
       </Box>
@@ -186,7 +186,7 @@ const AboutUsPage: React.FC = () => {
             height: "100%",
             objectFit: "cover",
             borderRadius: 2,
-            boxShadow: 4,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
           }}
         />
 
