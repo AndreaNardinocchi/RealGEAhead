@@ -182,16 +182,39 @@ const SiteHeader: React.FC = () => {
                 anchorEl={mobileAnchorEl}
                 open={mobileMenuOpen}
                 onClose={handleMenuClose}
-                sx={{ color: "white" }}
+                /** The dropdown container is styled through the slotProps property.
+                 * https://mui.com/material-ui/api/menu/#props
+                 * https://mui.com/material-ui/api/menu/#slots
+                 * */
+                slotProps={{
+                  paper: {
+                    sx: {
+                      bgcolor: "#472d30",
+                      color: "#EFF5E0",
+                      borderRadius: "8px",
+                    },
+                  },
+                }}
               >
-                {mobileMenuOptions.map((opt) => (
-                  <MenuItem
-                    key={opt.label}
-                    onClick={() => handleNavigate(opt.path)}
-                  >
-                    {opt.label}
-                  </MenuItem>
-                ))}
+                {mobileMenuOptions.map((opt) => {
+                  const active = location.pathname === opt.path;
+
+                  return (
+                    <MenuItem
+                      key={opt.label}
+                      onClick={() => handleNavigate(opt.path)}
+                      sx={{
+                        fontWeight: active ? "bold" : "normal",
+                        color: "#EFF5E0",
+                        borderBottom: active ? "2px solid #EFF5E0" : "none",
+                        backgroundColor: "#472d30",
+                        transition: "all 0.3s ease",
+                      }}
+                    >
+                      {opt.label}
+                    </MenuItem>
+                  );
+                })}
 
                 <MenuItem>Welcome {userName}! </MenuItem>
                 <MenuItem onClick={() => navigate("/login")}>

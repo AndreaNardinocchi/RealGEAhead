@@ -107,7 +107,10 @@ const HomePage: React.FC = () => {
       <Container maxWidth="lg" sx={{ mt: 9 }}>
         {/* Intro Text Section */}
 
-        <Box textAlign="center" mb={5}>
+        <Box textAlign="center" mb={3}>
+          <Typography variant="h3" component="h2" gutterBottom>
+            Enjoy your stay
+          </Typography>
           <Typography variant="body1" color="text.secondary" paragraph>
             Whether you're traveling for business or pleasure, GuestEase ensures
             a pleasant stay with clean, well-equipped rooms, fast Wi-Fi, and

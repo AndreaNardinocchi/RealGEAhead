@@ -1,6 +1,6 @@
 # GuestEase
 
-GuestEase is a modern hotel booking platform built with **React**, **TypeScript**, and **Vite** on the frontend, powered by **Supabase** for authentication, storage, and database operations.
+GuestEase is a modern small hospitality business booking platform built with **React**, **TypeScript**, and **Vite** on the frontend, powered by **Supabase** for authentication, storage, and database operations.
 A lightweight **Node.js backend** handles secure admin actions and selected user operations that shouldn’t run in the browser.
 Together, they deliver a smooth and reliable booking experience with clean rooms, fast Wi‑Fi, and amenities designed for comfort.
 

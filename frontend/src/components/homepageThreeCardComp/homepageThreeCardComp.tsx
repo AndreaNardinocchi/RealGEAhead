@@ -56,7 +56,7 @@ const HomepageThreeCardComp: React.FC = () => {
           xs: "1fr",
           sm: "repeat(3, 1fr)",
         },
-        gap: 2,
+        gap: { xs: 2, sm: 3 },
         mt: 4,
         width: "100%",
         maxWidth: "1200px",
