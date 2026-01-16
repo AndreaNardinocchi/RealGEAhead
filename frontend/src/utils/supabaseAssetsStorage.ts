@@ -1,4 +1,4 @@
-import { supabase } from "../../supabaseClient";
+import { supabase } from "../supabase/supabaseClient";
 
 /**
  * Returns a public URL for a file stored in the 'assets/ bucket in supabase.

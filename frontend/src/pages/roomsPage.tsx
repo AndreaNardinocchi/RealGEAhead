@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-
 import {
   Container,
   Typography,
@@ -10,6 +9,7 @@ import {
   CardMedia,
   CardContent,
   CardActions,
+  CircularProgress,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import type { Room } from "../types/interfaces";
@@ -137,7 +137,7 @@ const RoomsPage: React.FC = () => {
                  * The 4 images will be shown in a carousel component on other pages in the nextst steps. Also,
                  * the images have now been manually uploaded to Suapabase, but the plan is that of having the 'admin'
                  * role being able to CRUD rooms.
-                 *  */
+                 * */
                 image={getPublicUrl(`/rooms/${room.id}/${room.images[0]}`)}
                 alt={room.name}
               />

@@ -13,6 +13,7 @@ import HomepageExpCarousel from "../components/homepageExpCarousel/homepageExpCa
 import HomepageThreeCardComp from "../components/homepageThreeCardComp/homepageThreeCardComp";
 // Importing the supabase 'assets' storage function
 import { getPublicUrl } from "../utils/supabaseAssetsStorage";
+import SearchRoomsForm from "../components/searchRoomsForm/searchRoomsForm";
 
 /**
  * experiences
@@ -96,15 +97,9 @@ const HomePage: React.FC = () => {
 
       {/* Booking Form Placeholder here*/}
 
-      <Typography
-        variant="body1"
-        paragraph
-        sx={{ textAlign: "center", fontWeight: "bold", pt: 5 }}
-      >
-        Booking Form goes here
-      </Typography>
+      <SearchRoomsForm />
 
-      <Container maxWidth="lg" sx={{ mt: 9 }}>
+      <Container maxWidth="lg" sx={{ mt: 4 }}>
         {/* Intro Text Section */}
 
         <Box textAlign="center" mb={3}>

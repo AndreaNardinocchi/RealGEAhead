@@ -5,7 +5,7 @@
  *
  * https://supabase.com/docs/reference/javascript/select
  */
-import { supabase } from "../../supabaseClient";
+import { supabase } from "../supabase/supabaseClient";
 
 export const getRooms = async () => {
   const { data, error } = await supabase.from("rooms").select("*");
