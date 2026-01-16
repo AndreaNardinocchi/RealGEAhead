@@ -27,7 +27,7 @@ export interface Room {
  * Shape of the data collected by the Search Rooms form.
  * Represents the user's booking criteria before searching for available rooms.
  */
-export interface BookingFormData {
+export interface SearchFormData {
   checkIn: string;
   checkOut: string;
   guests: number;

@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { BookingFormData } from "../../types/interfaces";
+import { SearchFormData } from "../../types/interfaces";
+import { useSearchRooms } from "../../contexts/searchRoomsContext";
 
 /**
  * The SearchRoomsForm component handles user input for check‑in, check‑out, and guest count.
  */
 
 const SearchRoomsForm: React.FC = () => {
+  // Access the context function, as this extracts the searchRooms
+  // function from the context
+  const { searchRooms } = useSearchRooms();
+
   /**
    * Today's date in YYYY-MM-DD format.
    * Used to prevent selecting past dates, and we use it inside the date inputs.
@@ -20,7 +25,7 @@ const SearchRoomsForm: React.FC = () => {
   const navigate = useNavigate();
 
   // Form state for check-in, check-out, and guest count
-  const [formData, setFormData] = useState<BookingFormData>({
+  const [formData, setFormData] = useState<SearchFormData>({
     checkIn: "",
     checkOut: "",
     guests: 1,
@@ -56,6 +61,10 @@ const SearchRoomsForm: React.FC = () => {
    * ----------------------------- */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Call the context function, as this will make
+    // the form actually use the context
+    searchRooms(formData);
 
     navigate(
       `/search-results?checkIn=${formData.checkIn}&checkOut=${formData.checkOut}&guests=${formData.guests}`

@@ -11,6 +11,7 @@ import SiteHeader from "./components/siteHeader/siteHeader";
  * https://tanstack.com/query/latest/docs/framework/react/reference/QueryClient
  * */
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { SearchProvider } from "./contexts/searchRoomsContext";
 
 /**
  * Create a new QueryClient instance for the whole app,
@@ -33,10 +34,16 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <SiteHeader />
-        <App />
-      </BrowserRouter>
+      {/**
+       * SearchProvider from 'SearchRoomContext' provider
+       * that exposes room search-related functions.
+       */}
+      <SearchProvider>
+        <BrowserRouter>
+          <SiteHeader />
+          <App />
+        </BrowserRouter>
+      </SearchProvider>
     </QueryClientProvider>
   </React.StrictMode>
 );
