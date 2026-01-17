@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext } from "react";
 import { searchAvailableRooms } from "../supabase/availableRooms";
 import { SearchRoomContextType } from "../types/interfaces";
 
@@ -55,13 +55,4 @@ export const SearchProvider: React.FC<{ children: React.ReactNode }> = ({
       {children}
     </SearchRoomContext.Provider>
   );
-};
-
-// Custom hook to access the SearchRoomContext
-export const useSearchRooms = () => {
-  const ctx = useContext(SearchRoomContext);
-  if (!ctx) {
-    throw new Error("useSearchRooms must be used inside a SearchProvider");
-  }
-  return ctx;
 };

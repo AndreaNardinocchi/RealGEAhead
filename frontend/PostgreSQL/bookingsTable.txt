@@ -1,0 +1,62 @@
+-- Drops the bookings table if it already exists.
+DROP TABLE IF EXISTS public.bookings;
+
+-- ==========================================
+-- 1. Create bookings table
+-- ==========================================
+CREATE TABLE IF NOT EXISTS public.bookings (
+  -- https://www.postgresql.org/docs/current/functions-uuid.html
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  room_id uuid NOT NULL,
+  user_id uuid NOT NULL,
+  check_in date NOT NULL,
+  check_out date NOT NULL,
+  guests integer NOT NULL,
+  -- Automatically generated daterange used for overlap detection
+  -- '[)' = inclusive lower bound, exclusive upper bound
+  -- https://www.postgresql.org/docs/current/rangetypes.html
+  period daterange GENERATED ALWAYS AS (daterange(check_in, check_out, '[)')) STORED,
+  total_price numeric,
+  created_at timestamptz DEFAULT now()
+);
+
+-- ==========================================
+-- 2. Foreign key to Supabase auth.users
+-- ==========================================
+-- Links each booking to a valid authenticated user.
+-- ON DELETE CASCADE ensures user deletion removes their bookings.
+-- https://supabase.com/docs/guides/auth/managing-user-data#managing-user-data
+-- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK
+-- https://stackoverflow.com/questions/9471348/alter-table-to-give-foreign-key-constraint#9489665
+ALTER TABLE public.bookings
+ADD CONSTRAINT bookings_user_id_fkey
+FOREIGN KEY (user_id)
+REFERENCES auth.users (id)
+ON DELETE CASCADE;
+
+-- ==========================================
+-- 3. Foreign key to rooms table (recommended)
+-- ==========================================
+-- Ensures room_id corresponds to an existing room.
+-- ON DELETE CASCADE removes bookings if a room is deleted.
+-- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK
+-- https://stackoverflow.com/questions/9471348/alter-table-to-give-foreign-key-constraint#9489665
+ALTER TABLE public.bookings
+ADD CONSTRAINT bookings_room_id_fkey
+FOREIGN KEY (room_id)
+REFERENCES public.rooms (id)
+ON DELETE CASCADE;
+
+-- ==========================================
+-- 4. Base permissions
+-- ==========================================
+-- Grants basic CRUD permissions to the 'public' role.
+-- Supabase recommends using RLS for fine‑grained access control.
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.bookings TO public;
+
+-- ==========================================
+-- 5. Enable Row Level Security
+-- ==========================================
+-- Required for Supabase policies to take effect.
+-- https://supabase.com/docs/guides/auth/row-level-security
+ALTER TABLE public.bookings ENABLE ROW LEVEL SECURITY;

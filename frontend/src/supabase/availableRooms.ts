@@ -4,6 +4,10 @@ import { supabase } from "./supabaseClient";
  * 'searchAvailableRooms' calls the Supabase Postgres function 'get_available_rooms'
  * (created in https://supabase.com/dashboard/project/xxxxxxxxxxxxxxx/sql/xxxxxxxxx?schema=public )
  * via RPC and returns a normalized result object.
+ * It is basically a plain async service function which calls Supabase RPC and returns
+ * { success, rooms, message }.
+ * It does not manage loading, caching, or refetching and it is meant to be used inside
+ * a context or inside React Query.
  */
 export const searchAvailableRooms = async (
   checkIn: string,

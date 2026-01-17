@@ -50,7 +50,9 @@ const RoomsPage: React.FC = () => {
   if (isLoading) {
     return (
       <Container sx={{ mt: 10, textAlign: "center" }}>
-        <Typography>Loading rooms…</Typography>
+        <Box display="flex" justifyContent="center" mt={10}>
+          <CircularProgress />
+        </Box>
       </Container>
     );
   }

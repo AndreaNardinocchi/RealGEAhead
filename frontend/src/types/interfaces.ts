@@ -52,3 +52,22 @@ export type SearchRoomContextType = {
     message?: string; // Optional message for errors or additional info
   }>;
 };
+
+/**
+ * Props for rendering the 'roomHorizontalCard' in the SearchResultsPage.
+ *
+ * */
+export type RoomHorizontalCardProps = {
+  id: string;
+  name: string;
+  description?: string;
+  // This is just a placeholder image which will be removed as soon as data is fetched from supabase
+  // firstImage?: string | null;
+  price?: number;
+  images?: string[];
+  amenities?: string[];
+  checkIn: string;
+  checkOut: string;
+  guests: number;
+  capacity: number;
+};

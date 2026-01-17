@@ -1,0 +1,70 @@
+-- ============================================================
+-- get_available_rooms(check_in, check_out, guests)
+-- ============================================================
+-- This SQL function returns all rooms that:
+-- Have enough capacity for the requested number of guests.
+-- and are NOT booked during the requested date range.
+-- It uses PostgreSQL range types and the "&&" overlap operator
+-- to detect booking conflicts. 
+-- PostgreSQL Range Operators (&& overlap) https://www.postgresql.org/docs/current/functions-range.html
+-- Overlap query explanation (SimpleTalk) https://www.red-gate.com/simple-talk/databases/postgresql/overlapping-ranges-in-subsets-in-postgresql/
+-- OVERLAPS operator tutorial (SlingAcademy) https://www.slingacademy.com/article/using-overlaps-operator-with-dates-in-postgresql/
+
+
+CREATE OR REPLACE FUNCTION public.get_available_rooms(
+  check_in date,
+  check_out date,
+  guests int
+)
+RETURNS TABLE (
+  id uuid,
+  name text,
+  description text,
+  capacity int,
+  price numeric,
+  amenities jsonb,
+  images jsonb,
+  created_at timestamptz
+)
+
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+-- This function is executed with SECURITY DEFINER,
+-- meaning it runs with the privileges of the function owner rather than the caller.
+-- This pattern is recommended for RPC functions that need controlled access
+-- to tables protected by Row Level Security (RLS).
+-- https://supabase.com/docs/guides/database/functions
+
+SELECT
+  r.id,
+  r.name,
+  r.description,
+  r.capacity,
+  r.price,
+  r.amenities,
+  r.images,
+  r.created_at
+FROM public.rooms AS r
+WHERE
+  -- Ensure room can accommodate the requested number of guests
+  r.capacity >= guests
+  -- Exclude rooms that overlap with an existing booking
+  -- The "&&" operator checks whether two ranges overlap.
+  -- PostgreSQL docs: Table 9.58 (range operators) https://www.postgresql.org/docs/current/functions-range.html 
+  AND NOT EXISTS (
+    SELECT 1
+    FROM public.bookings AS b
+    WHERE b.room_id::uuid = r.id
+
+      -- Compare the booking's stored daterange (b.period)
+      -- with the requested range created by daterange($1, $2, '[)')
+      --
+      -- '[)' means:
+      --   inclusive lower bound (check_in)
+      --   exclusive upper bound (check_out) so that when a check out exists a check in can exists too for the same date
+      AND b.period && daterange($1, $2, '[)')
+  );
+
+$$;
