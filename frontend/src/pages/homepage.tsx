@@ -14,47 +14,8 @@ import HomepageThreeCardComp from "../components/homepageThreeCardComp/homepageT
 // Importing the supabase 'assets' storage function
 import { getPublicUrl } from "../utils/supabaseAssetsStorage";
 import SearchRoomsForm from "../components/searchRoomsForm/searchRoomsForm";
-
-/**
- * experiences
- *
- * This array provides the content for the Experience Carousel.
- * Each item includes:
- * - id: unique identifier
- * - title: heading text
- * - description: supporting paragraph
- * - image: placeholder image URL
- */
-const experiences = [
-  {
-    id: 1,
-    title: "Explore Cliff Trails",
-    description:
-      "Beautiful paths perfect for hiking, guiding you across cliffside trails and quiet stretches of stunning Atlantic coastline. ",
-    image: getPublicUrl("hiking-experience.jpg"),
-  },
-  {
-    id: 2,
-    title: "Seaweed Soak, Sure Why Not",
-    description:
-      "Slip into a warm Atlantic seaweed bath and let the stress melt away. Pure Irish wellness, with a bit of salty magic.",
-    image: getPublicUrl("seaweed-bath.jpg"),
-  },
-  {
-    id: 3,
-    title: "A Drop of the Good Stuff",
-    description:
-      "Taste local Irish whiskey and soak up the stories behind every sip. A relaxed, friendly way to connect with the coast and its culture.",
-    image: getPublicUrl("whiskey-tasting.jpg"),
-  },
-  {
-    id: 4,
-    title: "Paddle Your Own Way",
-    description:
-      "Explore calm bays, hidden inlets, or open water at your own pace. Perfect for a gentle adventure and a fresh Atlantic breeze.",
-    image: getPublicUrl("kayaking-experience.jpg"),
-  },
-];
+import { experiences } from "../types/interfaces";
+import StickyHeaderComp from "../components/stickyHeaderComp/stickyHeaderComp";
 
 /**
  * HomePage
@@ -96,8 +57,9 @@ const HomePage: React.FC = () => {
       </Box>
 
       {/* Booking Form Placeholder here*/}
-
-      <SearchRoomsForm />
+      <StickyHeaderComp>
+        <SearchRoomsForm />
+      </StickyHeaderComp>
 
       <Container maxWidth="lg" sx={{ mt: 4 }}>
         {/* Intro Text Section */}
@@ -223,7 +185,7 @@ const HomePage: React.FC = () => {
             <CardMedia
               component="img"
               image={getPublicUrl(
-                "rich-and-abundant-irish-complimentary-breakfast-enjoy.jpg"
+                "rich-and-abundant-irish-complimentary-breakfast-enjoy.jpg",
               )}
               alt="Complimentary Breakfast"
               sx={{ height: 200, objectFit: "cover" }}
@@ -270,7 +232,7 @@ const HomePage: React.FC = () => {
             <CardMedia
               component="img"
               image={getPublicUrl(
-                "snacks-refreshments-enjoy-complimentary-snacks-coffee.jpg"
+                "snacks-refreshments-enjoy-complimentary-snacks-coffee.jpg",
               )}
               alt="Snacks & Refreshments"
               sx={{ height: 200, objectFit: "cover" }}
@@ -368,7 +330,8 @@ const HomePage: React.FC = () => {
                 }}
               >
                 <Typography variant="h6" component={"h3"} gutterBottom>
-                  Comfortable, Modern Rooms for Business & Leisure Travelers{" "}
+                  Comfortable, Modern Rooms for Business & Leisure
+                  Travelers{" "}
                 </Typography>
 
                 <Typography variant="body2" color="text.secondary">
