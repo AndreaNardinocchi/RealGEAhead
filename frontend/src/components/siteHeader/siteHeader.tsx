@@ -78,6 +78,7 @@ const SiteHeader: React.FC = () => {
    * We use it to erase the offSet between the HeroImage and siteHeader components
    */
   const isHomePage = location.pathname === "/";
+  const isLoginPage = location.pathname === "/login";
   // Stores the logged‑in user's name (default placeholder for now) */
   const [userName, setUserName] = useState("User");
 
@@ -105,7 +106,7 @@ const SiteHeader: React.FC = () => {
    * https://mui.com/material-ui/react-menu/
    */
   const [mobileAnchorEl, setMobileAnchorEl] = useState<null | HTMLElement>(
-    null
+    null,
   );
 
   // Boolean flag for whether the mobile menu is open
@@ -260,7 +261,7 @@ const SiteHeader: React.FC = () => {
               <Button
                 sx={{ textTransform: "none" }}
                 color="inherit"
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/login")}
               >
                 Login <LoginIcon sx={{ ml: 1 }} />
               </Button>
@@ -270,7 +271,7 @@ const SiteHeader: React.FC = () => {
       </AppBar>
 
       {/* Only add Offset if not one of the below pages */}
-      {!isHomePage && <Offset />}
+      {!isHomePage && !isLoginPage && <Offset />}
     </>
   );
 };

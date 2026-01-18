@@ -98,7 +98,7 @@ const SearchRoomsForm: React.FC = () => {
     const result = await availableRoomsSearchObjectType(
       formData.checkIn,
       formData.checkOut,
-      formData.guests
+      formData.guests,
     );
 
     /**
@@ -121,7 +121,7 @@ const SearchRoomsForm: React.FC = () => {
     // https://docs.scala-lang.org/toolkit/http-client-uris.html
     // https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Query
     navigate(
-      `/search-results?checkIn=${formData.checkIn}&checkOut=${formData.checkOut}&guests=${formData.guests}`
+      `/search-results?checkIn=${formData.checkIn}&checkOut=${formData.checkOut}&guests=${formData.guests}`,
     );
   };
 
@@ -134,8 +134,8 @@ const SearchRoomsForm: React.FC = () => {
   const nextDayAfterCheckIn = formData.checkIn
     ? new Date(
         new Date(formData.checkIn).setDate(
-          new Date(formData.checkIn).getDate() + 1
-        )
+          new Date(formData.checkIn).getDate() + 1,
+        ),
       )
         .toISOString()
         .split("T")[0]
@@ -299,7 +299,17 @@ const SearchRoomsForm: React.FC = () => {
           color: "#fff",
           cursor: "pointer",
           width: isMobile ? "100%" : "auto",
+          transition: "transform 0.1s ease",
         }}
+        /**
+         * We are adding some styling when clicking on the 'Search Rooms'
+         * button, so the user will get a response from the UI upon
+         * submission.
+         * https://www.w3schools.com/jsref/event_onmousedown.asp
+         * https://www.w3schools.com/jsref/event_currenttarget.asp
+         */
+        onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.97)")}
+        onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
       >
         Search Rooms
       </button>

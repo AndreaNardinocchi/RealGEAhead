@@ -21,11 +21,11 @@ const Footer: React.FC = () => {
   return (
     <Box
       component="footer"
-      sx={{ backgroundColor: "grey.900", color: "white", pt: 4, mt: 12 }}
+      sx={{ backgroundColor: "grey.900", color: "white", pt: 4 }}
     >
       <Container maxWidth="lg" sx={{ padding: "2rem" }}>
         {/**
-         * MAIN FLEX WRAPPER
+         * Main flex wrapper
          * Stacked on mobile
          * 3 columns on tablet and up
          */}
