@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 // https://mui.com/material-ui/all-components/
 import {
   Container,
@@ -31,6 +31,14 @@ import StickyHeaderComp from "../components/stickyHeaderComp/stickyHeaderComp";
  * - Content-only card
  */
 const HomePage: React.FC = () => {
+  /**
+   * Set page title on mount.
+   * This is optional but keeps consistency with other pages.
+   */
+  useEffect(() => {
+    document.title = "Welcome to GuestEase | GuestEase";
+  }, []);
+
   return (
     <>
       {/* Hero Section */}

@@ -80,6 +80,7 @@ const AuthContextProvider: React.FC<React.PropsWithChildren> = (props) => {
      * The session data will be fetched from the localStorage and the session will be resumed.
      */
     async function fetchSession() {
+      setLoading(true);
       // https://supabase.com/docs/reference/javascript/auth-getsession
       // https://github.com/orgs/supabase/discussions/32783
       const { data, error } = await supabase.auth.getSession();
@@ -100,7 +101,8 @@ const AuthContextProvider: React.FC<React.PropsWithChildren> = (props) => {
       if (session && session.user) {
         await authenticate({ user: session.user, session });
       }
-      setLoading(true);
+      // Marks loading as finished
+      setLoading(false);
     }
 
     fetchSession();
@@ -139,6 +141,30 @@ const AuthContextProvider: React.FC<React.PropsWithChildren> = (props) => {
     navigate("/");
   };
 
+  // https://supabase.com/docs/reference/javascript/auth-resetpasswordforemail
+  const resetPassword = async (email: string) => {
+    if (!email) {
+      console.error("Email is required for password reset");
+      return { error: "Email is required" };
+    }
+
+    try {
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: "http://localhost:5173/update-password", // It will be replaced by the deployed URL
+      });
+
+      if (error) {
+        console.error("Reset password error:", error.message);
+        return { error: error.message };
+      }
+
+      return { success: true };
+    } catch (err: any) {
+      console.error("Reset password exception:", err.message);
+      return { error: err.message };
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -147,6 +173,7 @@ const AuthContextProvider: React.FC<React.PropsWithChildren> = (props) => {
         loading,
         authenticate,
         signout,
+        resetPassword,
       }}
     >
       {props.children}

@@ -228,6 +228,7 @@ const LoginPage: React.FC = () => {
               />
 
               {/* Submit Button */}
+
               <Button
                 variant="contained"
                 fullWidth
@@ -236,13 +237,50 @@ const LoginPage: React.FC = () => {
                   mt: 3,
                   bgcolor: "#472d30",
                   color: "#ffffff",
+                  textTransform: "uppercase",
+                  fontWeight: 600,
                   "&:hover": { bgcolor: "#e26d5c" },
                 }}
               >
                 Sign in
               </Button>
-
               <Box sx={{ textAlign: "center", mt: 2 }}>
+                <Button
+                  /**
+                   * If no email has been entered by the user,
+                   * throw an error, and stop the reset process
+                   */
+                  onClick={async () => {
+                    if (!email) {
+                      setEmailError(true);
+                      return;
+                    }
+
+                    const result = await auth?.resetPassword(email);
+                    /**
+                     * If the email is not in supabase, throw an error
+                     */
+                    if (result?.error) {
+                      setLoginError(result.error);
+                    } else {
+                      /**
+                       * Otherwise, show the below message, and send the reset
+                       * password email.
+                       */
+                      setLoginError(
+                        "Password reset email sent. Check your inbox.",
+                      );
+                    }
+                  }}
+                  sx={{ color: "#472d30", textTransform: "uppercase" }}
+                >
+                  Forgot your password?
+                </Button>
+
+                <Typography component="span" sx={{ mx: 1, color: "#999" }}>
+                  •
+                </Typography>
+
                 <Button
                   onClick={() => navigate("/signup")}
                   sx={{ color: "#472d30", textTransform: "uppercase" }}

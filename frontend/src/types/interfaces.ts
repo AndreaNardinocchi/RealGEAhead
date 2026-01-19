@@ -142,6 +142,10 @@ export interface AuthContextInterface {
   authenticate: (supabaseData: { user: any; session: any }) => Promise<void>;
   // Signs the user out and clears authentication state
   signout: () => void;
+  // Triggers a password reset process for the given user
+  resetPassword: (
+    email: string,
+  ) => Promise<{ success?: boolean; error?: string }>;
 }
 
 // Represents a country with its ISO code and display name.

@@ -321,14 +321,15 @@ const SignUpPage: React.FC = () => {
                 nameError && zipCode === "" ? "Please enter your zip code" : ""
               }
             />
-
             <Button
               variant="contained"
               fullWidth
               sx={{
                 mt: 3,
-                bgcolor: "#472d30;",
+                bgcolor: "#472d30",
                 color: "#ffffff",
+                textTransform: "uppercase",
+                fontWeight: 600,
                 "&:hover": { bgcolor: "#e26d5c" },
               }}
               onClick={handleSignUp}
