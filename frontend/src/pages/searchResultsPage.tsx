@@ -121,6 +121,12 @@ const SearchResultsPage: React.FC = () => {
           */}
           {(rooms ?? []).map((room: Room) => (
             <RoomHorizontalCard
+              /**
+               * 'key' is needed to avoid the below error:
+               * 'searchResultsPage.tsx:123 Each child in a list should have a unique "key"'
+               * https://stackoverflow.com/questions/59161825/react-material-ui-list-should-have-a-unique-key-prop
+               */
+              key={room.id}
               id={room.id}
               name={room.name}
               description={room.description}

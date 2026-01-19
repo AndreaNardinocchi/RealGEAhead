@@ -105,7 +105,12 @@ const SiteHeader: React.FC = () => {
    */
   const isHomePage = location.pathname === "/";
   const isLoginPage = location.pathname === "/login";
+  const isSignUpPage = location.pathname === "/signup";
 
+  /**
+   * When the user lands on the 'account' or '/account/profile' pages,
+   * the 'Welcome User' header link will be active
+   */
   const isUserArea =
     location.pathname.startsWith("/account") ||
     location.pathname.startsWith("/account/profile");
@@ -329,7 +334,7 @@ const SiteHeader: React.FC = () => {
       />
 
       {/* Only add Offset if not one of the below pages */}
-      {!isHomePage && !isLoginPage && <Offset />}
+      {!isHomePage && !isLoginPage && !isSignUpPage && <Offset />}
     </>
   );
 };

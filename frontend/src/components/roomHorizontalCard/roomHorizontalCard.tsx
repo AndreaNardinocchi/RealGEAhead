@@ -161,7 +161,7 @@ const RoomHorizontalCard: React.FC<RoomHorizontalCardProps> = ({
               >
                 <span style={{ fontWeight: "bold" }}>{price}</span>
                 <span style={{ fontSize: "0.7rem" }}> Euro / night</span> ·
-                Guests {guests}
+                Guests {capacity}
                 <span style={{ fontSize: "0.7rem" }}> (max)</span>
               </Typography>
             </Box>
