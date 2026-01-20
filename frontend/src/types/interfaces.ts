@@ -387,7 +387,7 @@ export const countries: Country[] = [
 ];
 
 /**
- * These props are needed
+ * These props are needed on the SearchResultsPage
  */
 export interface editSearchRoomsFormProps {
   initialCheckIn: string;
