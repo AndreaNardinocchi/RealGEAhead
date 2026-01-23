@@ -46,22 +46,6 @@ const SearchResultsPage: React.FC = () => {
   const guests = Number(params.get("guests")) || 1;
 
   /**
-   * Basic date validation:
-   * - Both dates must exist
-   * - Must be valid date strings
-   * - checkIn must be before checkOut
-   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
-   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isNaN
-   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN
-   */
-  const datesAreValid =
-    checkIn &&
-    checkOut &&
-    !isNaN(Date.parse(checkIn)) &&
-    !isNaN(Date.parse(checkOut)) &&
-    new Date(checkIn) < new Date(checkOut);
-
-  /**
    * Fetch rooms using React Query hook.
    *  https://tanstack.com/query/v4/docs/framework/react/reference/useQuery
    */
@@ -123,7 +107,7 @@ const SearchResultsPage: React.FC = () => {
         </StickyHeaderComp>
       </ResponsiveBookingWrapper>
       {/* Main Content */}
-      <Container sx={{ py: 6 }}>
+      <Container sx={{ pt: 6, pb: 10 }}>
         <Box sx={{ display: "grid", gridTemplateColumns: "1fr", rowGap: 4 }}>
           {/* * Here we are creating an array to show a number of room cards with dummy data. 
           We established a length of 8 cards, which we then 'map'. 
@@ -141,7 +125,9 @@ const SearchResultsPage: React.FC = () => {
               key={room.id}
               id={room.id}
               name={room.name}
-              description={room.description}
+              // Using .split(".")[0] effectively retrieves the part of the string before the first period
+              // https://www.w3schools.com/python/ref_string_split.asp
+              description={room.description?.split(".")[0] + "."}
               price={room.price}
               // Fetching the first image of the array
               // images={[getPublicUrl(`/rooms/${room.id}/${room.images[0]}`)]}

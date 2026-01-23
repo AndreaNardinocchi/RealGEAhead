@@ -1,6 +1,5 @@
 // https://tanstack.com/query/latest/docs/react/reference/useQuery
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "../supabase/supabaseClient";
 import { searchAvailableRooms } from "../supabase/availableRooms";
 
 /**
@@ -38,8 +37,8 @@ export function useAvailableRooms(
     },
     /**
      * enabled: boolean
-     * Set this to false to disable this query from automatically running.
-     * Can be used for Dependent Queries.
+     * 'Set this to false to disable this query from automatically running.
+     * Can be used for Dependent Queries.'
      * Only run this query when all three values (checkIn, checkOut, guests) are valid.
      * https://tanstack.com/query/v3/docs/framework/react/reference/useQuery
      */

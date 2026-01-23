@@ -1,22 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import {
-  Box,
-  Alert,
-  Container,
-  Card,
-  CardContent,
-  Typography,
-  Button,
-  TextField,
-  CircularProgress,
-} from "@mui/material";
+import { Box, Alert, Container, CircularProgress } from "@mui/material";
 import { supabase } from "../supabase/supabaseClient";
 import { useAvailableRooms } from "../hooks/useAvailableRooms";
 import { useQuery } from "@tanstack/react-query";
 import { getPublicUrl } from "../utils/supabaseAssetsStorage";
 import { createBookingApi } from "../api/user-booking-api";
 import RoomDetailsCard from "../components/roomDetailsCard/roomDetailsCard";
+import RoomDetailsCarousel from "../components/roomDetailsCarousel/roomDetailsCarousel";
 
 /**
  * This will be the page where all the room details and image gallery
@@ -170,26 +161,15 @@ const RoomDetailsPage: React.FC = () => {
 
   return (
     <>
-      <Box
-        sx={{
-          width: "100%",
-          height: { xs: 240, md: 360 },
-          mb: 3,
-        }}
-      >
+      <Box>
         {/* This hero image will be replaced by a carousel to display all 4 room images */}
-        <Box
-          component="img"
-          // src="https://placehold.co/1200x600"
-          src={getPublicUrl(`/rooms/${room.id}/${room.images[0]}`)}
-          alt="Room placeholder"
-          sx={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            borderRadius: 1,
-          }}
-        />
+        {room.images.length > 0 && (
+          <RoomDetailsCarousel
+            images={room.images.map((img: any) =>
+              getPublicUrl(`/rooms/${room.id}/${img}`),
+            )}
+          />
+        )}
       </Box>
 
       <Container maxWidth="lg">

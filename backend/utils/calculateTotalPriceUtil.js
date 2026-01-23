@@ -5,7 +5,7 @@
 export function calculateStay(check_in, check_out, roomPrice) {
   /**
    * check_in and check_out are strings and not dates, and this was causing
-   * 'check_in.getTime is not a function' error.
+   * 'check_in.getTime' is not a function' error.
    * Hence, we are trasforming them into proper dates
    */
   const checkInDate = new Date(check_in);
