@@ -9,6 +9,8 @@ import {
   InputAdornment,
   MenuItem,
   IconButton,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
 // https://mui.com/material-ui/material-icons/
 import EmailIcon from "@mui/icons-material/Email";
@@ -54,6 +56,13 @@ const SignUpPage: React.FC = () => {
   // Toggles for showing/hiding password fields
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  /**
+   * We created this state to display a message confirming that
+   * a new user account was created, and that a confirmation email
+   * was sent off
+   * */
+  const [confirmationMessage, setConfirmationMessage] = useState("");
 
   /**
    * Handles the full signup process as it validatesthe required fields
@@ -124,6 +133,17 @@ const SignUpPage: React.FC = () => {
 
       console.log("User signed up successfully:", data);
 
+      // We will set a confirmation message
+      if (data.user && !data.user.email_confirmed_at) {
+        setConfirmationMessage(
+          "Account created! Please check your email to confirm your account.",
+        );
+        // Redirect after a short delay
+        setTimeout(() => {
+          navigate("/login");
+        }, 3500);
+        return;
+      }
       // Fetch the session to confirm
       const sessionRes = await supabase.auth.getSession();
       console.log("Current session after signup:", sessionRes);
@@ -344,6 +364,27 @@ const SignUpPage: React.FC = () => {
               Already have an account? Log in
             </Button>
           </Box>
+
+          {confirmationMessage && (
+            <Box
+              sx={{
+                mb: 4,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
+              }}
+            >
+              <Alert
+                severity="success"
+                variant="filled"
+                sx={{ fontSize: "1.25rem", py: 2, px: 3, maxWidth: "500px" }}
+              >
+                {confirmationMessage}
+              </Alert>
+              <CircularProgress size={90} thickness={4} sx={{ mt: 3 }} />
+            </Box>
+          )}
         </Container>
       </Box>
     </>
