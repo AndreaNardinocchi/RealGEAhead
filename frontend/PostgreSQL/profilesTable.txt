@@ -1,0 +1,76 @@
+-- Profiles table
+--
+-- This stores additional user information not included in auth.users.
+-- Supabase docs: https://supabase.com/docs/guides/auth/managing-user-data
+--
+-- The id references auth.users(id) so each profile belongs to a user.
+-- Supabase docs (referencing auth.users):
+-- https://supabase.com/docs/guides/database/tables#referencing-authusers
+--
+-- ON DELETE CASCADE ensures profiles are removed when users are deleted.
+CREATE TABLE IF NOT EXISTS public.profiles (
+    id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    email text NOT NULL UNIQUE,
+    first_name text NOT NULL,
+    last_name text NOT NULL,
+    country text NOT NULL,
+    zip_code text NOT NULL,
+    role text DEFAULT 'guest',
+    created_at timestamptz DEFAULT now()
+);
+
+-- Trigger function to handle new users
+-- This automatically inserts a profile row whenever a new auth user is created.
+-- Supabase docs (trigger pattern):
+-- https://supabase.com/docs/guides/auth/managing-user-data#using-triggers
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+    INSERT INTO public.profiles (
+        id,
+        email,
+        first_name,
+        last_name,
+        country,
+        zip_code
+    )
+    VALUES (
+        NEW.id,
+        NEW.email,
+        NEW.raw_user_meta_data->>'first_name',
+        NEW.raw_user_meta_data->>'last_name',
+        NEW.raw_user_meta_data->>'country',
+        NEW.raw_user_meta_data->>'zip_code'
+    )
+    ON CONFLICT (id) DO NOTHING;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+
+-- TRIGGER ON auth.users
+-- Runs the function handle_new_user() after each new user signup.
+-- Supabase docs (trigger setup):
+-- https://supabase.com/docs/guides/auth/managing-user-data#using-triggers
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+
+CREATE TRIGGER on_auth_user_created
+AFTER INSERT ON auth.users
+FOR EACH ROW
+EXECUTE FUNCTION public.handle_new_user();
+
+-- ENABLE ROW LEVEL SECURITY
+-- Supabase docs (RLS overview):
+-- https://supabase.com/docs/guides/auth/row-level-security
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+-- RLS policy that enable users to read their data on the profile page
+-- Supabase docs (policies):
+-- https://supabase.com/docs/guides/auth/row-level-security#policies
+DROP POLICY IF EXISTS "Users can select their own profile" ON public.profiles;
+
+CREATE POLICY "Users can select their own profile"
+ON public.profiles
+FOR SELECT
+USING (auth.uid() = id);

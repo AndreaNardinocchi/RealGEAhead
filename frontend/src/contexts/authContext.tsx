@@ -68,6 +68,8 @@ const AuthContextProvider: React.FC<React.PropsWithChildren> = (props) => {
 
       if (origin) {
         navigate(origin);
+        // The loading should stop after authentication is finished
+        setLoading(false);
       }
     },
     [location, navigate],
@@ -87,7 +89,6 @@ const AuthContextProvider: React.FC<React.PropsWithChildren> = (props) => {
 
       if (error) {
         console.error("Failed to restore session");
-        setLoading(false);
         return;
       }
 

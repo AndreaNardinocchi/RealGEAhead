@@ -4,7 +4,7 @@ import { Container, Typography, Box, Card, CardContent } from "@mui/material";
 import { getPublicUrl } from "../utils/supabaseAssetsStorage";
 
 /**
- * About Us Page 
+ * About Us Page
  * All layout is handled using <Box display="grid"> instead of <Grid> in order
  * to avoid the nested Grid error below:
  * 'No overload matches this call.
@@ -57,13 +57,13 @@ const AboutUsPage: React.FC = () => {
 
       {/* 2-column grid */}
 
-      {/*This Box uses CSS Grid to create a responsive 1‑column / 2‑column layout. 
-        - display: "grid" Turns the Box into a CSS Grid container. 
-        https://mui.com/system/grid/#css-grid-layout 
+      {/*This Box uses CSS Grid to create a responsive 1‑column / 2‑column layout.
+        - display: "grid" Turns the Box into a CSS Grid container.
+        https://mui.com/system/grid/#css-grid-layout
         - gridTemplateColumns: { xs: "1fr", md: "repeat(2, 1fr)" }
-         • On extra‑small screens (xs): "1fr" shows a single column layout. 
-         • On small screens and above (md): "repeat(2, 1fr)", it will show two equal-width columns. 
-         This allows the cards to stack on mobile and sit side‑by‑side on desktop.  
+         • On extra‑small screens (xs): "1fr" shows a single column layout.
+         • On small screens and above (md): "repeat(2, 1fr)", it will show two equal-width columns.
+         This allows the cards to stack on mobile and sit side‑by‑side on desktop.
          https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns */}
       <Box
         mb={10}

@@ -10,6 +10,8 @@ import LoginPage from "./pages/loginPage";
 import SignUpPage from "./pages/signUpPage";
 import UpdatePasswordPage from "./pages/updatePassword";
 import RoomDetails from "./pages/roomDetailsPage";
+import UserProfilePage from "./pages/userProfilePage";
+import ProtectedRoute from "./routes/protectedRoutes";
 
 const App = () => {
   return (
@@ -25,6 +27,14 @@ const App = () => {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/update-password" element={<UpdatePasswordPage />} />
         <Route path="/room/:roomId" element={<RoomDetails />} />
+        <Route
+          path="/account/profile"
+          element={
+            <ProtectedRoute>
+              <UserProfilePage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       <Footer />
     </>

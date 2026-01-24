@@ -16,3 +16,18 @@ export const getRooms = async () => {
   }
   return data;
 };
+
+/**
+ * Fetch a single user profile from the Supabase "profiles" table.
+ * Requires the authenticated user's ID.
+ */
+export const getUserProfile = async (userId: string) => {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", userId)
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data;
+};
