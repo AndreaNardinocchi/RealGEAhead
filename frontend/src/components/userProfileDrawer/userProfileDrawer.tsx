@@ -111,7 +111,7 @@ const UserProfileDrawer: React.FC<UserProfileDrawerProps> = ({
         <MuiLink
           component={Link}
           // We will link to the user account/My Trips page
-          to="/account"
+          to="/account/mytrips"
           underline="hover"
           sx={{ mt: 1, color: "#472d30;", fontWeight: 500 }}
           onClick={onClose}

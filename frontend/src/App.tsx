@@ -12,6 +12,7 @@ import UpdatePasswordPage from "./pages/updatePassword";
 import RoomDetails from "./pages/roomDetailsPage";
 import UserProfilePage from "./pages/userProfilePage";
 import ProtectedRoute from "./routes/protectedRoutes";
+import AccountMyTripsPage from "./pages/accountMyTripsPage";
 
 const App = () => {
   return (
@@ -32,6 +33,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <UserProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/account/mytrips"
+          element={
+            <ProtectedRoute>
+              <AccountMyTripsPage />
             </ProtectedRoute>
           }
         />
