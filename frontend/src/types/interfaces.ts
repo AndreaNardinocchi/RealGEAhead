@@ -426,17 +426,30 @@ export interface RoomDetailsCardProps {
 
 /**
  * This Booking interface is used in the AccountMyTripsPage
+ * As the API function 'getUserBookings' enriches each booking by attaching
+ * the full room object, we need an interface reflecting that.
+ *
+ *
  */
 export interface Booking {
   id: string;
-  room_id: string;
   user_id: string;
-  // user_email: string;
+  created_at: string;
   check_in: string;
   check_out: string;
   guests: number;
-  created_at: string;
-  first_name: string;
-  last_name: string;
   total_price: string;
+  room_id: string;
+  /**
+   * Supabase returns the related room as a single nested object
+   * because each booking belongs to exactly one room.
+   * This structure comes directly from the relational join:
+   *   select(`*, rooms(id, name, images, price)`)
+   */
+  rooms: {
+    id: string;
+    name: string;
+    images: string[];
+    price: string;
+  };
 }

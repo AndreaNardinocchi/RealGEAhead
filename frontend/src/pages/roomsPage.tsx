@@ -57,6 +57,7 @@ const RoomsPage: React.FC = () => {
   }
 
   if (error) {
+    console.error("Supabase error:", error);
     return (
       <Container sx={{ mt: 10, textAlign: "center" }}>
         <Typography color="error">Failed to load rooms.</Typography>

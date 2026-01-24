@@ -68,9 +68,9 @@ const AuthContextProvider: React.FC<React.PropsWithChildren> = (props) => {
 
       if (origin) {
         navigate(origin);
-        // The loading should stop after authentication is finished
-        setLoading(false);
       }
+      // The loading should stop after authentication is finished
+      setLoading(false);
     },
     [location, navigate],
   );

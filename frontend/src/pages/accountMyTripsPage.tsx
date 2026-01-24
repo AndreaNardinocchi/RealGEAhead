@@ -4,6 +4,7 @@ import { getUserBookings } from "../api/guestease-api";
 import type { Booking } from "../types/interfaces";
 import { AuthContext } from "../contexts/authContext";
 import { useQuery } from "@tanstack/react-query";
+import { getPublicUrl } from "../utils/supabaseAssetsStorage";
 
 /**
  * The AccountMyTripsPage dissplays all upcoming and past reservations.
@@ -16,7 +17,7 @@ const AccountMyTripsPage: React.FC = () => {
    * destructure 'user' and 'loading' with a fallback to an empty object.
    */
   const auth = useContext(AuthContext);
-  const { user } = auth || {};
+  const { user, loading } = auth || {};
 
   /**
    * React Query is a data-fetching and caching library that simplifies working with
@@ -33,8 +34,15 @@ const AccountMyTripsPage: React.FC = () => {
    *    */
   const { data, error, isLoading } = useQuery<Booking[]>({
     queryKey: ["bookings", user?.id],
+    // Only run this query when a user is logged in.
+    // '!!user?.id' converts the value to a boolean:
     enabled: !!user?.id,
     queryFn: () => getUserBookings(user!.id),
+    /**
+     * Force refetch on navigation, as we set  staleTime: 5 * 60 * 1000
+     * in the main.tsx file
+     */
+    staleTime: 0,
   });
 
   console.log("This is the booking", data);
@@ -96,7 +104,9 @@ const AccountMyTripsPage: React.FC = () => {
               {/* Room Image */}
               <Box
                 component="img"
-                src="https://placehold.co/600x400"
+                src={getPublicUrl(
+                  `/rooms/${booking.room_id}/${booking.rooms.images[0]}`,
+                )}
                 alt="Room"
                 sx={{
                   width: "100%",
@@ -106,16 +116,18 @@ const AccountMyTripsPage: React.FC = () => {
                   mb: 2,
                 }}
               />
-              <Typography variant="h6" sx={{ mb: 1, color: "#472d30" }}>
-                {booking.room_id}
-              </Typography>
-
-              <Typography>Check‑in: {booking.check_in}</Typography>
-              <Typography>Check‑out: {booking.check_out}</Typography>
-              <Typography>Guests: {booking.guests}</Typography>
-
-              <Box sx={{ mt: 2, fontSize: "0.85rem", color: "#666" }}>
-                Booking ID: {booking.id}
+              <Box sx={{ fontSize: "0.85rem" }}>
+                <Typography variant="h6" sx={{ mb: 1, color: "#472d30" }}>
+                  {booking.rooms.name}
+                </Typography>
+                <Typography>
+                  Reservation number: #{booking.id.slice(-8)}
+                </Typography>
+                <Typography>Check‑in: {booking.check_in}</Typography>
+                <Typography>Check‑out: {booking.check_out}</Typography>
+                <Typography>Guests: {booking.guests}</Typography>
+                <Typography>Price: Euro {booking.rooms.price}</Typography>
+                <Typography>Total Price: Euro {booking.total_price}</Typography>
               </Box>
             </Box>
           ))}

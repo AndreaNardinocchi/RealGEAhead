@@ -34,17 +34,55 @@ export const getUserProfile = async (userId: string) => {
 };
 
 /**
- * Fetch a single user bookings from the "bookings" table.
- * Requires the authenticated user's ID.
+ * Fetch all bookings for a given user, including full room details, by joining the rooms table
+ * to the bookings'.
+ * This uses a Supabase relational join instead of manually merging
+ * bookings + rooms. 
+ * https://supabase.com/docs/reference/javascript/select check 'Query referenced tables through a join table'
+ * Ex.:
+ * const { data, error } = await supabase
+  .from('users')
+  .select(`
+    name,
+    teams (
+      name
+    )
+  `)
  */
 export const getUserBookings = async (userId: string) => {
   const { data, error } = await supabase
     .from("bookings")
-    .select("*")
-    .eq("user_id", userId);
+    .select(
+      `
+      *,
+      rooms (
+        id,
+        name,
+        images,
+        price
+      )
+    `,
+    )
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
 
   if (error) {
     throw new Error(`Unable to fetch bookings: ${error.message}`);
   }
-  return data;
+
+  // Take the Supabase result 'data'. which may be null, and ensure we always map over an array
+  return (data ?? []).map((b) => ({
+    // Spread the original booking fields (id, user_id, check_in, etc.)
+    ...b,
+    rooms: {
+      // Copy the room's unique identifier
+      id: b.rooms.id,
+      // Copy the room's display name
+      name: b.rooms.name,
+      // Copy the room's image array
+      images: b.rooms.images,
+      // Copy the room's price
+      price: b.rooms.price,
+    },
+  }));
 };
