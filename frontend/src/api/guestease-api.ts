@@ -70,19 +70,5 @@ export const getUserBookings = async (userId: string) => {
     throw new Error(`Unable to fetch bookings: ${error.message}`);
   }
 
-  // Take the Supabase result 'data'. which may be null, and ensure we always map over an array
-  return (data ?? []).map((b) => ({
-    // Spread the original booking fields (id, user_id, check_in, etc.)
-    ...b,
-    rooms: {
-      // Copy the room's unique identifier
-      id: b.rooms.id,
-      // Copy the room's display name
-      name: b.rooms.name,
-      // Copy the room's image array
-      images: b.rooms.images,
-      // Copy the room's price
-      price: b.rooms.price,
-    },
-  }));
+  return data ?? [];
 };

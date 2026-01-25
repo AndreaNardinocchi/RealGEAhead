@@ -5,6 +5,7 @@ import type { Booking } from "../types/interfaces";
 import { AuthContext } from "../contexts/authContext";
 import { useQuery } from "@tanstack/react-query";
 import { getPublicUrl } from "../utils/supabaseAssetsStorage";
+import BookedRoomCard from "../components/bookedRoomCard/bookedRoomCard";
 
 /**
  * The AccountMyTripsPage dissplays all upcoming and past reservations.
@@ -91,45 +92,11 @@ const AccountMyTripsPage: React.FC = () => {
           gap={3}
         >
           {(data ?? []).map((booking: Booking) => (
-            <Box
+            <BookedRoomCard
               key={booking.id}
-              sx={{
-                border: "1px solid #ddd",
-                borderRadius: 2,
-                p: 2,
-                backgroundColor: "#fafafa",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
-              }}
-            >
-              {/* Room Image */}
-              <Box
-                component="img"
-                src={getPublicUrl(
-                  `/rooms/${booking.room_id}/${booking.rooms.images[0]}`,
-                )}
-                alt="Room"
-                sx={{
-                  width: "100%",
-                  height: 160,
-                  objectFit: "cover",
-                  borderRadius: 2,
-                  mb: 2,
-                }}
-              />
-              <Box sx={{ fontSize: "0.85rem" }}>
-                <Typography variant="h6" sx={{ mb: 1, color: "#472d30" }}>
-                  {booking.rooms.name}
-                </Typography>
-                <Typography>
-                  Reservation number: #{booking.id.slice(-8)}
-                </Typography>
-                <Typography>Check‑in: {booking.check_in}</Typography>
-                <Typography>Check‑out: {booking.check_out}</Typography>
-                <Typography>Guests: {booking.guests}</Typography>
-                <Typography>Price: Euro {booking.rooms.price}</Typography>
-                <Typography>Total Price: Euro {booking.total_price}</Typography>
-              </Box>
-            </Box>
+              booking={booking}
+              room={booking.rooms}
+            />
           ))}
         </Box>
       </Box>
