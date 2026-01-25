@@ -1,15 +1,35 @@
 -- ============================================================
--- get_available_rooms(check_in, check_out, guests)
+-- 1. Enable required extension for exclusion constraints
+-- btree_gist teaches PostgreSQL how to compare normal values inside a GiST index.
+-- GiST is the toolbox that lets PostgreSQL index almost anything — including ranges, 
+-- geometric shapes, text search, and custom data types
+-- https://dev.to/jhonoryza/sql-index-types-b-tree-hash-gist-gist-brin-and-gin-44g0
+-- https://www.postgresql.org/docs/current/btree-gist.html
+-- https://neon.com/blog/btree_gist
+-- https://www.postgresql.org/docs/current/sql-createextension.html 
 -- ============================================================
--- This SQL function returns all rooms that:
--- Have enough capacity for the requested number of guests.
--- and are NOT booked during the requested date range.
--- It uses PostgreSQL range types and the "&&" overlap operator
--- to detect booking conflicts. 
--- PostgreSQL Range Operators (&& overlap) https://www.postgresql.org/docs/current/functions-range.html
--- Overlap query explanation (SimpleTalk) https://www.red-gate.com/simple-talk/databases/postgresql/overlapping-ranges-in-subsets-in-postgresql/
--- OVERLAPS operator tutorial (SlingAcademy) https://www.slingacademy.com/article/using-overlaps-operator-with-dates-in-postgresql/
 
+CREATE EXTENSION IF NOT EXISTS btree_gist;
+
+-- ============================================================
+-- 2. Add exclusion constraint to prevent overlapping bookings
+-- ============================================================
+-- This ensures that a room cannot have two bookings whose date ranges overlap.
+-- Even if two inserts happen at the same time, PostgreSQL will reject the second one.
+-- https://stackoverflow.com/questions/61501301/partial-constraint-exclude-using-gist#61503531
+-- https://www.postgresql.org/docs/current/sql-createtable.html#SQL-CREATETABLE-EXCLUDE
+
+ALTER TABLE bookings
+ADD CONSTRAINT no_overlapping_bookings
+EXCLUDE USING gist (
+  room_id WITH =,
+  period WITH &&
+);
+
+
+-- ============================================================
+-- 3. Create or replace the availability function
+-- ============================================================
 
 CREATE OR REPLACE FUNCTION public.get_available_rooms(
   check_in date,

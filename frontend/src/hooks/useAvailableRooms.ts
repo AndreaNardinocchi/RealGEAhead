@@ -28,6 +28,7 @@ export function useAvailableRooms(
        * which, in turn, calls in the Supabase PostgreSQL RPC function named "get_available_rooms".
        * https://supabase.com/docs/guides/database/functions
        */
+
       const result = await searchAvailableRooms(checkIn, checkOut, guests);
 
       if (!result.success) {
@@ -35,6 +36,14 @@ export function useAvailableRooms(
       }
       return result.rooms;
     },
+    /**
+     * After each new booking, we could still observe the booked room as 'avaialble'
+     * in the SearchResultsPage.
+     * The bug was due to a delayed refetching, which was fixed below.
+     */
+    refetchOnMount: "always",
+    staleTime: 0,
+
     /**
      * enabled: boolean
      * 'Set this to false to disable this query from automatically running.
