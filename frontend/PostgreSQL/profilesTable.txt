@@ -51,7 +51,6 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- TRIGGER ON auth.users
 -- Runs the function handle_new_user() after each new user signup.
--- Supabase docs (trigger setup):
 -- https://supabase.com/docs/guides/auth/managing-user-data#using-triggers
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 
@@ -61,16 +60,94 @@ FOR EACH ROW
 EXECUTE FUNCTION public.handle_new_user();
 
 -- ENABLE ROW LEVEL SECURITY
--- Supabase docs (RLS overview):
 -- https://supabase.com/docs/guides/auth/row-level-security
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
 -- RLS policy that enable users to read their data on the profile page
--- Supabase docs (policies):
 -- https://supabase.com/docs/guides/auth/row-level-security#policies
 DROP POLICY IF EXISTS "Users can select their own profile" ON public.profiles;
 
+-- Allow users to READ only their own profile row. 
+-- https://www.postgresql.org/docs/current/ddl-rowsecurity.html
 CREATE POLICY "Users can select their own profile"
 ON public.profiles
 FOR SELECT
 USING (auth.uid() = id);
+
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
+
+-- Allow users to UPDATE only their own profile row. 
+-- https://www.postgresql.org/docs/current/ddl-rowsecurity.html
+CREATE POLICY "Users can update their own profile"
+ON public.profiles
+FOR UPDATE
+USING (auth.uid() = id);
+
+DROP POLICY IF EXISTS "Users can update their own profile (check)" ON public.profiles;
+
+-- WITH CHECK ensures users can only WRITE values to their own row. 
+-- Prevents malicious updates targeting other users. 
+-- https://supabase.com/docs/guides/database/postgres/row-level-security#update-policies
+CREATE POLICY "Users can update their own profile (check)"
+ON public.profiles
+FOR UPDATE
+WITH CHECK (auth.uid() = id);
+
+
+-- Sync auth.users to public.profiles when the auth user is updated. 
+-- https://www.postgresql.org/docs/current/plpgsql-trigger.html
+CREATE OR REPLACE FUNCTION public.sync_user_profile()
+RETURNS trigger AS $$
+BEGIN
+  UPDATE public.profiles
+  SET
+    email = NEW.email,
+    first_name = NEW.raw_user_meta_data->>'first_name',
+    last_name = NEW.raw_user_meta_data->>'last_name',
+    country = NEW.raw_user_meta_data->>'country',
+    zip_code = NEW.raw_user_meta_data->>'zip_code'
+
+  -- Update the profile row whose primary key matches the user who was just updated.
+  WHERE id = NEW.id;
+-- and return it as updated
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- This is the trigger for the above function public.sync_user_profile();
+CREATE OR REPLACE TRIGGER on_auth_user_updated
+AFTER UPDATE ON auth.users
+FOR EACH ROW
+WHEN (OLD IS DISTINCT FROM NEW)
+EXECUTE FUNCTION public.sync_user_profile();
+
+
+-- Sync public.profiles to auth.users when the profile is updated. 
+-- https://www.postgresql.org/docs/current/plpgsql-trigger.html
+CREATE OR REPLACE FUNCTION public.sync_profile_to_auth()
+RETURNS trigger AS $$
+BEGIN
+  UPDATE auth.users
+  SET
+    email = NEW.email,
+    raw_user_meta_data = jsonb_build_object(
+      'first_name', NEW.first_name,
+      'last_name', NEW.last_name,
+      'country', NEW.country,
+      'zip_code', NEW.zip_code
+    )
+  WHERE id = NEW.id;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- jsonb_build_object is a PostgreSQL function that creates a JSONB object from key–value pairs.
+-- https://www.postgresql.org/docs/current/functions-json.html 
+-- and auth.user data has a JSONB column called 'raw_user_meta_data'
+-- https://supabase.com/docs/guides/auth/managing-user-data
+CREATE OR REPLACE TRIGGER on_profile_updated
+AFTER UPDATE ON public.profiles
+FOR EACH ROW
+WHEN (OLD IS DISTINCT FROM NEW)
+EXECUTE FUNCTION public.sync_profile_to_auth();

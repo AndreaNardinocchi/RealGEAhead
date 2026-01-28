@@ -453,3 +453,23 @@ export interface Booking {
     price: string;
   };
 }
+
+/**
+ * Props for the EditProfileDialog component, which defines the shape
+ * of data passed from the userProfilePage.
+ */
+export interface EditProfileDialogProps {
+  // This is the prop for the modal
+  open: boolean;
+  // The user data that will be passed to update
+  formData: {
+    first_name: string;
+    last_name: string;
+    country: string;
+    zip_code: string;
+  };
+  // Modal functions
+  setFormData: (data: any) => void;
+  onClose: () => void;
+  onSave: () => void;
+}

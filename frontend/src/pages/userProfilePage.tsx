@@ -1,15 +1,26 @@
-import React, { useContext, useEffect } from "react";
-import { Box, CircularProgress, Container, Typography } from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Typography,
+} from "@mui/material";
 import { getPublicUrl } from "../utils/supabaseAssetsStorage";
 import type { User } from "../types/interfaces";
-import { useQuery } from "@tanstack/react-query";
-import { getUserProfile } from "../api/guestease-api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getUserProfile, updateUserProfile } from "../api/guestease-api";
 import { AuthContext } from "../contexts/authContext";
 import AccountSubNav from "../accountSubNav/accountSubNav";
+import EditProfileDialog from "../components/editProfileDialog/EditProfileDialog";
 
 /**
  * This is the UserProfilePage where all user data are displayed.
  * The user will have the option to update and delete their account.
+ * Supabase, though, keeps auth.users for authentication and a separate profiles table for app data.
+ * PostgresSQL Triggers sync both ways because supabase may update auth.users, while our UI updates profiles.
+ * This ensures both tables stay consistent and each remains the source of truth for its own purpose.
+ * Auth handles login; profiles handle user info, andsyncing keeps them aligned.
  */
 
 const UserProfilePage: React.FC = () => {
@@ -41,6 +52,54 @@ const UserProfilePage: React.FC = () => {
   });
   console.log("This is the profile", profile);
 
+  /**
+   * React Query’s useMutation updates the user profile, then invalidates the
+   * cached "profile" query so fresh data is refetched.
+   * Local form state mirrors the profile data, and useEffect keeps it synced
+   * whenever the profile query returns new values from Supabase.
+   * https://tanstack.com/query/v4/docs/framework/react/guides/mutations
+   * https://tanstack.com/query/v4/docs/framework/react/guides/query-invalidation
+   */
+  const queryClient = useQueryClient();
+  const updateProfileMutation = useMutation({
+    // 'Constructs a type with all properties of Type set to optional.'
+    // This is perfect for update operations where we only send the fields that changed.
+    // https://www.typescriptlang.org/docs/handbook/utility-types.html#partialtype
+    mutationFn: (updates: Partial<User>) =>
+      updateUserProfile(user!.id, updates),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
+    },
+  });
+
+  // useState for the update pop up
+  const [open, setOpen] = useState(false);
+
+  // useState for the fields that can be updated by the user
+  const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
+    country: "",
+    zip_code: "",
+  });
+
+  /**
+   * When the profile data is fetched or updated, we sync it into local form state.
+   * The actual database sync between 'profiles' and 'auth.users' is handled by a
+   * PostgreSQL trigger 'on_profile_updated'.
+   * This effect keeps the form fields up to date with the latest profile values.
+   */
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        first_name: profile.first_name,
+        last_name: profile.last_name,
+        country: profile.country,
+        zip_code: profile.zip_code,
+      });
+    }
+  }, [profile]);
+
   // Browser title
   useEffect(() => {
     if (user) {
@@ -71,23 +130,14 @@ const UserProfilePage: React.FC = () => {
       <Container maxWidth="lg">
         <Box maxWidth="1200px" mx="auto" px={2}>
           <Typography variant="h3" component="h2">
-            Hey {user.first_name}
+            Hey {profile?.first_name}
           </Typography>
           <Typography variant="h5" component="h3">
-            Account #{user.id.slice(-8)}
+            Account #{profile?.id.slice(-8)}
           </Typography>
         </Box>
         <AccountSubNav />
         <Box maxWidth="1200px" mx="auto" mt={4} px={2}>
-          {/* <Typography
-            variant="h4"
-            component="h1"
-            align="center"
-            sx={{ color: "#472d30", mb: 1, mt: 3 }}
-          >
-            My Profile
-          </Typography> */}
-
           <Box
             sx={{
               display: "grid",
@@ -106,42 +156,42 @@ const UserProfilePage: React.FC = () => {
                 <Typography variant="subtitle2" color="text.secondary">
                   First Name
                 </Typography>
-                <Typography variant="body1">{user.first_name}</Typography>
+                <Typography variant="body1">{profile?.first_name}</Typography>
               </Box>
 
               <Box sx={{ mb: 1 }}>
                 <Typography variant="subtitle2" color="text.secondary">
                   Last Name
                 </Typography>
-                <Typography variant="body1">{user.last_name}</Typography>
+                <Typography variant="body1">{profile?.last_name}</Typography>
               </Box>
 
               <Box sx={{ mb: 1 }}>
                 <Typography variant="subtitle2" color="text.secondary">
                   Email
                 </Typography>
-                <Typography variant="body1">{user.email}</Typography>
+                <Typography variant="body1">{profile?.email}</Typography>
               </Box>
 
               <Box sx={{ mb: 1 }}>
                 <Typography variant="subtitle2" color="text.secondary">
                   Country
                 </Typography>
-                <Typography variant="body1">{user.country}</Typography>
+                <Typography variant="body1">{profile?.country}</Typography>
               </Box>
 
               <Box sx={{ mb: 1 }}>
                 <Typography variant="subtitle2" color="text.secondary">
                   Zip Code
                 </Typography>
-                <Typography variant="body1">{user.zip_code}</Typography>
+                <Typography variant="body1">{profile?.zip_code}</Typography>
               </Box>
 
               <Box sx={{ mb: 1 }}>
                 <Typography variant="subtitle2" color="text.secondary">
                   Role
                 </Typography>
-                <Typography variant="body1">{user.role}</Typography>
+                <Typography variant="body1">{profile?.role}</Typography>
               </Box>
 
               <Box sx={{ mb: 1 }}>
@@ -151,6 +201,20 @@ const UserProfilePage: React.FC = () => {
                 <Typography variant="body1">
                   {new Date(user.created_at).toLocaleDateString()}
                 </Typography>
+              </Box>
+
+              <Box sx={{ pt: { xs: 0, sm: 1 } }}>
+                <Button
+                  variant="contained"
+                  sx={{
+                    mb: 3,
+                    backgroundColor: "#472d30",
+                    "&:hover": { bgcolor: "#e26d5c" },
+                  }}
+                  onClick={() => setOpen(true)}
+                >
+                  Edit Profile
+                </Button>
               </Box>
             </Box>
 
@@ -193,6 +257,17 @@ const UserProfilePage: React.FC = () => {
             </Box>
           </Box>
         </Box>
+        {/* This is the pop up where we edit the user data */}
+        <EditProfileDialog
+          open={open}
+          formData={formData}
+          setFormData={setFormData}
+          onClose={() => setOpen(false)}
+          onSave={() => {
+            updateProfileMutation.mutate(formData);
+            setOpen(false);
+          }}
+        />
       </Container>
     </>
   );

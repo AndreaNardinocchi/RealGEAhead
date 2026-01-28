@@ -6,7 +6,7 @@
  * https://supabase.com/docs/reference/javascript/select
  */
 import { supabase } from "../supabase/supabaseClient";
-import { Booking } from "../types/interfaces";
+import { Booking, User } from "../types/interfaces";
 
 export const getRooms = async () => {
   const { data, error } = await supabase.from("rooms").select("*");
@@ -72,3 +72,21 @@ export const getUserBookings = async (userId: string) => {
 
   return data ?? [];
 };
+
+/**
+ * This API function will allow us to get user data updated
+ */
+export async function updateUserProfile(
+  userId: string,
+  updates: Partial<User>,
+) {
+  const { data, error } = await supabase
+    .from("profiles")
+    .update(updates)
+    .eq("id", userId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}

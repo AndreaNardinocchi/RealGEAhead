@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   CircularProgress,
@@ -55,6 +55,13 @@ const AccountMyTripsPage: React.FC = () => {
 
   console.log("This is the booking", data);
   console.log("This is the userId: ", user?.id);
+
+  // Browser title
+  useEffect(() => {
+    if (user) {
+      document.title = `${user.first_name}'s My Trips Page | GuestEase`;
+    }
+  }, [user]);
 
   // Creating the useState for the tabs
   // https://mui.com/material-ui/react-tabs/
