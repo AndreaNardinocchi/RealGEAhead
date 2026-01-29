@@ -13,6 +13,10 @@ import { getUserProfile, updateUserProfile } from "../api/guestease-api";
 import { AuthContext } from "../contexts/authContext";
 import AccountSubNav from "../accountSubNav/accountSubNav";
 import EditProfileDialog from "../components/editProfileDialog/EditProfileDialog";
+import { deleteUserApi } from "../api/guestease-api";
+import AlertDialogSlide from "../components/deleteUserConfirm/deleteUserConfirm";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabase/supabaseClient";
 
 /**
  * This is the UserProfilePage where all user data are displayed.
@@ -99,6 +103,23 @@ const UserProfilePage: React.FC = () => {
       });
     }
   }, [profile]);
+
+  /**
+   * We create a 'deleteUser' function with useMutation.
+   * 'mutations are typically used to create/update/delete data
+   * or perform server side-effects. For this purpose,
+   * TanStack Query exports a useMutation hook.'
+   * It wraps our the 'deleteUserApi' function in 'guestease-api.ts'
+   * https://tanstack.com/query/v4/docs/framework/react/guides/mutations
+   */
+  const deleteUser = useMutation({
+    mutationFn: deleteUserApi,
+  });
+
+  // This useState is used to open and close the modal
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   // Browser title
   useEffect(() => {
@@ -203,7 +224,7 @@ const UserProfilePage: React.FC = () => {
                 </Typography>
               </Box>
 
-              <Box sx={{ pt: { xs: 0, sm: 1 } }}>
+              <Box sx={{ pt: { xs: 2, sm: 3 } }}>
                 <Button
                   variant="contained"
                   sx={{
@@ -214,6 +235,18 @@ const UserProfilePage: React.FC = () => {
                   onClick={() => setOpen(true)}
                 >
                   Edit Profile
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{
+                    mb: 3,
+                    ml: 2,
+                    backgroundColor: "#e26d5c",
+                    "&:hover": { bgcolor: "red" },
+                  }}
+                  onClick={() => setDeleteOpen(true)}
+                >
+                  Delete Profile
                 </Button>
               </Box>
             </Box>
@@ -266,6 +299,25 @@ const UserProfilePage: React.FC = () => {
           onSave={() => {
             updateProfileMutation.mutate(formData);
             setOpen(false);
+          }}
+        />
+        <AlertDialogSlide
+          open={deleteOpen}
+          onClose={() => setDeleteOpen(false)}
+          onConfirm={async () => {
+            try {
+              // Using a promise to delete, waiting for the backend
+              // https://tanstack.com/query/v4/docs/framework/react/guides/mutations#promises
+              await deleteUser.mutateAsync(user.id);
+              // Sign out
+              await supabase.auth.signOut();
+              // Close modal
+              setDeleteOpen(false);
+              // Redirect
+              navigate("/login");
+            } catch (err) {
+              console.error(err);
+            }
           }}
         />
       </Container>

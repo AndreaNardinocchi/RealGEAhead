@@ -34,4 +34,4 @@ npm install @tanstack/react-query
 npm i --save-dev @types/express
 npm install @supabase/supabase-js (in the backend too)
 npm install --save-dev vite
-
+npm i --save-dev @types/cors

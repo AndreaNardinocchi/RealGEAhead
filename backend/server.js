@@ -1,4 +1,3 @@
-// server.js
 /**
  * Adding Supabase, database queries, email sending, file uploads,
  * or anything that returns a Promise requires handler async.
@@ -13,6 +12,7 @@ import userCancelBookings from "./routes/userCancelBookings.js";
 import userUpdateBookings from "./routes/userUpdateBookings.js";
 import emailPlaceholder from "./routes/emailPlaceholder.js";
 import paymentsPlaceholder from "./routes/paymentsPlaceholder.js";
+import userDeleteAccount from "./routes/userDeleteAccount.js";
 
 // --------------------
 // ENV SETUP
@@ -41,28 +41,6 @@ app.use((req, res, next) => {
   next();
 });
 
-/* ============================
-   USER PROFILE
-============================ */
-
-// --------------------
-// USER Delete Booking
-// --------------------
-
-/**
- * 'This function should only be called on a server.
- * Never expose your service_role key in the browser.'
- * deleteUser()
- *
- * https://supabase.com/docs/reference/javascript/auth-admin-deleteuser
- *  */
-app.post("/user/delete_user", async (req, res) => {
-  res.json({
-    status: "placeholder",
-    message: "Delete booking endpoint wired",
-  });
-});
-
 /**
  * Mounting the routes with app.use()
  *
@@ -76,40 +54,7 @@ app.use(userUpdateBookings);
 app.use(userCancelBookings);
 app.use(emailPlaceholder);
 app.use(paymentsPlaceholder);
-
-/* ============================
-   ROOMS (ADMIN) WILL BE HANDLED BY THE FRONTEND
-============================ */
-/**
- * We might actually create a logic in the front-end to manage rooms CRUD via
- * Supabase directly.
- * Right now, we don't have any sensitive or server‑only data that requires
- * backend processing. Even the room price is not a secret.
- *
- */
-// ADMIN Create Room
-// app.post("/admin/create_room", async (req, res) => {
-//   res.json({
-//     status: "placeholder",
-//     message: "Create room endpoint wired",
-//   });
-// });
-
-// // ADMIN Update Room
-// app.post("/admin/update_room", async (req, res) => {
-//   res.json({
-//     status: "placeholder",
-//     message: "Update room endpoint wired",
-//   });
-// });
-
-// // ADMIN Delete Room
-// app.post("/admin/delete_room", async (req, res) => {
-//   res.json({
-//     status: "placeholder",
-//     message: "Delete room endpoint wired",
-//   });
-// });
+app.use(userDeleteAccount);
 
 /* --------------------
    START SERVER

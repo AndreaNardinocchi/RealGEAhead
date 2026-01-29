@@ -90,3 +90,45 @@ export async function updateUserProfile(
   if (error) throw error;
   return data;
 }
+
+/**
+ * This API function will first find tha uthorized user, and will then 'post'
+ * a request to the backend userDeleteAccount.js
+ */
+export const deleteUserApi = async (userId: string) => {
+  const { error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", userId)
+    .single();
+
+  if (error) throw new Error(error.message);
+  const res = await fetch("http://localhost:3000/user/delete-account", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    /**
+     * Convert the booking object into JSON before sending.
+     * Express.json() on the backend will parse this automatically.
+     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
+     */
+    body: JSON.stringify({ userId }),
+  });
+
+  /**
+   * Parse the JSON response from the backend.
+   * If the backend returns an error, it will be included here.
+   */
+  const result = await res.json();
+
+  /**
+   * If the HTTP status is not in the 200–299 range,
+   * throw an error so the frontend can handle it.
+   * https://developer.mozilla.org/en-US/docs/Web/API/Response/ok
+   */
+  if (!res.ok) {
+    throw new Error(result.error || "Failed to create booking");
+  }
+
+  // Return the booking data to the caller.
+  return result;
+};
