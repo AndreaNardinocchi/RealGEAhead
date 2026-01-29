@@ -152,7 +152,7 @@ const AccountMyTripsPage: React.FC = () => {
 
   return (
     <>
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ minHeight: 500 }}>
         <Box maxWidth="1200px" mx="auto" px={2}>
           <Typography variant="h3" component="h2">
             Hey {user?.first_name}

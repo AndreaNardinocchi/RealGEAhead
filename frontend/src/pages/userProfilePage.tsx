@@ -306,6 +306,26 @@ const UserProfilePage: React.FC = () => {
           onClose={() => setDeleteOpen(false)}
           onConfirm={async () => {
             try {
+              const now = new Date().toISOString();
+              const { data: bookings, error: bookingErr } = await supabase
+                .from("bookings")
+                .select("*")
+                .eq("user_id", user.id)
+                .gt("check_out", now);
+
+              console.log("Date:", now);
+
+              if (bookingErr) {
+                return console.error(bookingErr);
+              }
+
+              if (bookings && bookings.length > 0) {
+                alert(
+                  "You currently have active bookings. Please cancel or complete them before deleting your account.",
+                );
+
+                return;
+              }
               // Using a promise to delete, waiting for the backend
               // https://tanstack.com/query/v4/docs/framework/react/guides/mutations#promises
               await deleteUser.mutateAsync(user.id);

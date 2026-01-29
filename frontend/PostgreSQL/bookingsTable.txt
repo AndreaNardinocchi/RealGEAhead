@@ -20,32 +20,46 @@ CREATE TABLE IF NOT EXISTS public.bookings (
   created_at timestamptz DEFAULT now()
 );
 
+-- -- ==========================================
+-- -- 2. Foreign key to Supabase auth.users
+-- -- ==========================================
+-- -- Links each booking to a valid authenticated user.
+-- -- ON DELETE CASCADE ensures user deletion removes their bookings.
+-- -- https://supabase.com/docs/guides/auth/managing-user-data#managing-user-data
+-- -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK
+-- -- https://stackoverflow.com/questions/9471348/alter-table-to-give-foreign-key-constraint#9489665
+-- ALTER TABLE public.bookings
+-- ADD CONSTRAINT bookings_user_id_fkey
+-- FOREIGN KEY (user_id)
+-- REFERENCES auth.users (id)
+-- ON DELETE CASCADE;
+
+
 -- ==========================================
--- 2. Foreign key to Supabase auth.users
+-- 2. Foreign key to profiles (user accounts)
 -- ==========================================
--- Links each booking to a valid authenticated user.
--- ON DELETE CASCADE ensures user deletion removes their bookings.
--- https://supabase.com/docs/guides/auth/managing-user-data#managing-user-data
+-- Ensures bookings always belong to an existing profile.
+-- ON DELETE RESTRICT prevents deleting a user who still has bookings.
 -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK
--- https://stackoverflow.com/questions/9471348/alter-table-to-give-foreign-key-constraint#9489665
 ALTER TABLE public.bookings
 ADD CONSTRAINT bookings_user_id_fkey
 FOREIGN KEY (user_id)
-REFERENCES auth.users (id)
-ON DELETE CASCADE;
+REFERENCES public.profiles (id)
+ON DELETE RESTRICT;
+
 
 -- ==========================================
 -- 3. Foreign key to rooms table (recommended)
 -- ==========================================
 -- Ensures room_id corresponds to an existing room.
--- ON DELETE CASCADE removes bookings if a room is deleted.
+-- ON DELETE RESTRICT removes bookings if a room is deleted.
 -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK
 -- https://stackoverflow.com/questions/9471348/alter-table-to-give-foreign-key-constraint#9489665
 ALTER TABLE public.bookings
 ADD CONSTRAINT bookings_room_id_fkey
 FOREIGN KEY (room_id)
 REFERENCES public.rooms (id)
-ON DELETE CASCADE;
+ON DELETE RESTRICT;
 
 -- ==========================================
 -- 4. Base permissions
@@ -60,3 +74,52 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON public.bookings TO public;
 -- Required for Supabase policies to take effect.
 -- https://supabase.com/docs/guides/auth/row-level-security
 ALTER TABLE public.bookings ENABLE ROW LEVEL SECURITY;
+
+-- https://supabase.com/docs/guides/database/postgres/row-level-security
+CREATE POLICY "Users can view their own bookings"
+ON public.bookings
+FOR SELECT
+USING (user_id = auth.uid());
+
+-- We wanted to be able to delete the user having no active reservations
+-- We did so by allowing the user_id field to be NULL
+ALTER TABLE public.bookings 
+ALTER COLUMN user_id DROP NOT NULL;
+
+-- We then dropped the previously set bookings_user_id_fkey constraint
+ALTER TABLE public.bookings
+DROP CONSTRAINT bookings_user_id_fkey;
+
+-- And establishing a new one which can be NULL on deleting a user
+ALTER TABLE public.bookings
+ADD CONSTRAINT bookings_user_id_fkey
+FOREIGN KEY (user_id)
+REFERENCES public.profiles (id)
+ON DELETE SET NULL;
+
+-- The function prevent_user_deletion_if_active_bookings() first check all existing
+-- bookings and compare the check_out date with the CURRENT_DATE.
+-- If check_out >= CURRENT_DATE, the user cannot be deleted
+-- https://www.postgresql.org/docs/current/plpgsql-errors-and-messages.html
+--
+CREATE OR REPLACE FUNCTION prevent_user_deletion_if_active_bookings()
+RETURNS trigger AS $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM public.bookings
+    WHERE user_id = OLD.id
+      AND check_out >= CURRENT_DATE
+  ) THEN
+    RAISE EXCEPTION 'Cannot delete user with active bookings';
+  END IF; -- closes the IF block
+
+  RETURN OLD; -- Give back the original row and do not apply any changes
+END;
+$$ LANGUAGE plpgsql;
+
+-- This is the trigger for the prevent_user_deletion_if_active_bookings() function
+-- https://supabase.com/docs/guides/auth/managing-user-data#using-triggers
+CREATE TRIGGER block_user_delete
+BEFORE DELETE ON public.profiles
+FOR EACH ROW
+EXECUTE FUNCTION prevent_user_deletion_if_active_bookings();
