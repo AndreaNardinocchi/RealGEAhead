@@ -270,8 +270,10 @@ const SearchRoomsForm: React.FC = () => {
            * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/number#min
            */
           min={1}
+          max={4}
           style={{
             padding: "0.85rem",
+            paddingRight: "7.2rem",
             fontSize: "1rem",
             borderRadius: "10px",
             border: "1px solid #ccc",

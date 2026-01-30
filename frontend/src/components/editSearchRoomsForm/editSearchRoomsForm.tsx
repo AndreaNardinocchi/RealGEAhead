@@ -188,10 +188,13 @@ const EditSearchRoomsForm: React.FC<editSearchRoomsFormProps> = ({
            * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/number#min
            * */
           min={1}
+          max={4}
           value={guests}
           onChange={(e) => setGuests(Number(e.target.value))}
           style={{
             padding: "0.85rem",
+            paddingRight: "7.2rem",
+
             fontSize: "1rem",
             borderRadius: "10px",
             border: "1px solid #ccc",

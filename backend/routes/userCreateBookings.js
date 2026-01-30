@@ -74,7 +74,6 @@ router.post("/user/create_booking", async (req, res) => {
         .status(500)
         .json({ error: insertError?.message || "Booking insertion failed" });
     }
-    // const booking = insertedBookings[0];
 
     // Response
     return res.json({ success: true, booking: insertedBookings[0] });

@@ -13,6 +13,8 @@ import { AuthContext } from "../contexts/authContext";
 import { useQuery } from "@tanstack/react-query";
 import BookedRoomCard from "../components/bookedRoomCard/bookedRoomCard";
 import AccountSubNav from "../accountSubNav/accountSubNav";
+import { useUserUpdateBooking } from "../hooks/useUserUpdateBooking";
+import EditBookingDialog from "../components/editBookingDialog/editBookingDialog";
 
 /**
  * The AccountMyTripsPage dissplays all upcoming and past reservations.
@@ -55,6 +57,37 @@ const AccountMyTripsPage: React.FC = () => {
 
   console.log("This is the booking", data);
   console.log("This is the userId: ", user?.id);
+
+  const updateBookingMutation = useUserUpdateBooking();
+
+  const [open, setOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
+
+  const handleUpdate = (booking: any) => {
+    setSelectedBooking(booking);
+    setOpen(true);
+  };
+
+  const handleSave = (updatedBooking: {
+    id: any;
+    room_id: any;
+    check_in: any;
+    check_out: any;
+    guests: any;
+  }) => {
+    updateBookingMutation.mutate({
+      bookingId: updatedBooking.id,
+      userId: user!.id,
+      updates: {
+        room_id: updatedBooking.room_id,
+        check_in: updatedBooking.check_in,
+        check_out: updatedBooking.check_out,
+        guests: updatedBooking.guests,
+      },
+    });
+
+    setOpen(false);
+  };
 
   // Browser title
   useEffect(() => {
@@ -108,6 +141,8 @@ const AccountMyTripsPage: React.FC = () => {
       );
     }
 
+    console.log("SELECTED BOOKING:", selectedBooking);
+
     return (
       <Box maxWidth="1200px" mx="auto" px={2} sx={{ mb: 4 }}>
         <Box
@@ -125,6 +160,7 @@ const AccountMyTripsPage: React.FC = () => {
               key={booking.id}
               booking={booking}
               room={booking.rooms}
+              handleUpdate={handleUpdate}
             />
           ))}
         </Box>
@@ -152,7 +188,7 @@ const AccountMyTripsPage: React.FC = () => {
 
   return (
     <>
-      <Container maxWidth="lg" sx={{ minHeight: 500 }}>
+      <Container maxWidth="lg">
         <Box maxWidth="1200px" mx="auto" px={2}>
           <Typography variant="h3" component="h2">
             Hey {user?.first_name}
@@ -208,6 +244,14 @@ const AccountMyTripsPage: React.FC = () => {
         {tabValue === 1 && renderBookings(pastBookings)}
 
         <Box maxWidth="1200px" mx="auto" px={2} sx={{ mb: 12 }}></Box>
+        <EditBookingDialog
+          open={open}
+          booking={selectedBooking}
+          room={selectedBooking?.rooms}
+          onClose={() => setOpen(false)}
+          setBooking={setSelectedBooking}
+          onSave={handleSave}
+        />
       </Container>
     </>
   );

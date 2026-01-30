@@ -7,6 +7,7 @@ import {
   Link as MuiLink,
   Divider,
   Box,
+  Button,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import { getPublicUrl } from "../../utils/supabaseAssetsStorage";
@@ -15,9 +16,14 @@ import { calculateNumberOfNights } from "../../utils/calculateNumberOfNights";
 interface BookingCardProps {
   booking: any;
   room: any;
+  handleUpdate: (booking: any) => void;
 }
 
-const BookedRoomCard: React.FC<BookingCardProps> = ({ booking, room }) => {
+const BookedRoomCard: React.FC<BookingCardProps> = ({
+  booking,
+  room,
+  handleUpdate,
+}) => {
   // Using the util calculateNumberOfNights.ts
   const nights = calculateNumberOfNights(booking.check_in, booking.check_out);
 
@@ -154,7 +160,6 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({ booking, room }) => {
             >
               <strong>Total price:</strong> €{booking.total_price.toFixed(2)}
             </Typography>
-            {/* )} */}
           </Box>
         </Box>
 
@@ -165,6 +170,22 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({ booking, room }) => {
         >
           Booked on: {new Date(booking.created_at || "").toLocaleDateString()}
         </Typography>
+        <Box sx={{ mt: 2 }}>
+          <Button
+            variant="contained"
+            // We call in the handleUpdate() function
+            onClick={() => handleUpdate(booking)}
+            // fullWidth
+            sx={{
+              backgroundColor: "#472d30",
+              color: "#fff",
+              "&:hover": { backgroundColor: "#E26D5C" },
+              px: 5,
+            }}
+          >
+            Update
+          </Button>
+        </Box>
       </CardContent>
     </Card>
   );

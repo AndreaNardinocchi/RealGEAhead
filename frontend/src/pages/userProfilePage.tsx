@@ -307,6 +307,11 @@ const UserProfilePage: React.FC = () => {
           onConfirm={async () => {
             try {
               const now = new Date().toISOString();
+              /**
+               * To ensure that 'past/inactive' bookings won't prevent a user from being
+               * able to delete their profile, we select from the bookings table in supabase
+               * those bookings whose check_out date is bigger than today's date...
+               */
               const { data: bookings, error: bookingErr } = await supabase
                 .from("bookings")
                 .select("*")
@@ -318,7 +323,10 @@ const UserProfilePage: React.FC = () => {
               if (bookingErr) {
                 return console.error(bookingErr);
               }
-
+              /**
+               * ...and if we find those bookings, the user won't be able to delete their profile up until
+               * those bookings are either deleted or get past today's date
+               */
               if (bookings && bookings.length > 0) {
                 alert(
                   "You currently have active bookings. Please cancel or complete them before deleting your account.",

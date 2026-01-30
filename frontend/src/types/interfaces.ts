@@ -451,6 +451,7 @@ export interface Booking {
     name: string;
     images: string[];
     price: string;
+    capacity: string;
   };
 }
 

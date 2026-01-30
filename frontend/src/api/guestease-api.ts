@@ -6,7 +6,7 @@
  * https://supabase.com/docs/reference/javascript/select
  */
 import { supabase } from "../supabase/supabaseClient";
-import { Booking, User } from "../types/interfaces";
+import { User } from "../types/interfaces";
 
 export const getRooms = async () => {
   const { data, error } = await supabase.from("rooms").select("*");
@@ -34,6 +34,24 @@ export const getUserProfile = async (userId: string) => {
 };
 
 /**
+ * This API function will allow us to get user data updated
+ */
+export async function updateUserProfile(
+  userId: string,
+  updates: Partial<User>,
+) {
+  const { data, error } = await supabase
+    .from("profiles")
+    .update(updates)
+    .eq("id", userId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
  * Fetch all bookings for a given user, including full room details, by joining the rooms table
  * to the bookings'.
  * This uses a Supabase relational join instead of manually merging
@@ -59,8 +77,9 @@ export const getUserBookings = async (userId: string) => {
         id,
         name,
         images,
-        price
-      )
+        price,
+        capacity
+              )
     `,
     )
     .eq("user_id", userId)
@@ -72,24 +91,6 @@ export const getUserBookings = async (userId: string) => {
 
   return data ?? [];
 };
-
-/**
- * This API function will allow us to get user data updated
- */
-export async function updateUserProfile(
-  userId: string,
-  updates: Partial<User>,
-) {
-  const { data, error } = await supabase
-    .from("profiles")
-    .update(updates)
-    .eq("id", userId)
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
-}
 
 /**
  * This API function will first find tha uthorized user, and will then 'post'
