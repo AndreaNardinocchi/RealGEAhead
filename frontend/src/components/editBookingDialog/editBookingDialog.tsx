@@ -35,6 +35,11 @@ interface EditBookingDialogProps {
   setBooking: React.Dispatch<React.SetStateAction<any | null>>;
 }
 
+/**
+ * This component creates a pop up / modal form to dialog with the booking data,
+ * and update them.
+ * https://mui.com/material-ui/react-dialog/
+ */
 const EditBookingDialog: React.FC<EditBookingDialogProps> = ({
   open,
   booking,

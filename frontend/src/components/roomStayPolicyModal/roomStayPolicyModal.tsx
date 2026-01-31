@@ -9,13 +9,7 @@ import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
 
 /**
- * Reusable confirmation dialog with slide transition.
- * Can be used for:
- * - confirming a room stay policy
- * - deleting a user account
- * - deleting a booking
- * - deleting a room
- * - any irreversible action
+ * Confirmation dialog
  */
 
 const Transition = React.forwardRef(function Transition(
@@ -25,6 +19,10 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+/**
+ * This component creates a pop up / modal showing the room stay policy
+ * https://mui.com/material-ui/react-dialog/
+ */
 export default function AlertDialogSlide({
   open,
   onClose,

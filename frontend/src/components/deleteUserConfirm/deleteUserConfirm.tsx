@@ -27,11 +27,6 @@ const Transition = React.forwardRef(function Transition(
  * Controls whether the dialog is visible, hence, the parent owns this state.
  * onClose: Called when the user cancels or closes the dialog.
  * onConfirm: Called when the user confirms the destructive action (e.g., delete).
- * It can be reusable for:
- * - deleting a user account
- * - deleting a booking
- * - deleting a room
- * - confirming any irreversible action
  */
 export default function AlertDialogSlide({
   open,

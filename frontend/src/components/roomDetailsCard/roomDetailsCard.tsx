@@ -3,6 +3,7 @@ import { Box, TextField, Button, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { RoomDetailsCardProps } from "../../types/interfaces";
 import AlertDialogSlide from "../roomStayPolicyModal/roomStayPolicyModal";
+import PaymentDialog from "../stripeCheckOutModal/stripeCheckOutModal";
 
 /**
  * RoomDetailsCard Component is used in the Room Details page, and it
@@ -37,12 +38,17 @@ const RoomDetailsCard: React.FC<RoomDetailsCardProps> = ({
   // useState to manage the roomStayPolicyModal
   const [policyOpen, setPolicyOpen] = useState(false);
 
+  const [stripeTestOpen, setStripeTestOpen] = useState(false);
+
   /**
    * The are the callbacks to handle the opening and closing of the modal
    * https://stackoverflow.com/questions/73752294/react-usestate-boolean-issue-functional-component
    */
   const handleOpenPolicy = () => setPolicyOpen(true);
   const handleClosePolicy = () => setPolicyOpen(false);
+
+  const handleStripeModalOpen = () => setStripeTestOpen(true);
+  const handleStripeModalClose = () => setStripeTestOpen(false);
 
   return (
     <Box
@@ -62,12 +68,10 @@ const RoomDetailsCard: React.FC<RoomDetailsCardProps> = ({
       >
         <strong>{room.name}</strong>
       </Typography>
-
       {/* Room Description */}
       <Typography variant="body1" gutterBottom sx={{ mb: 2 }}>
         {room.description}
       </Typography>
-
       <Typography
         variant="body1"
         gutterBottom
@@ -82,7 +86,6 @@ const RoomDetailsCard: React.FC<RoomDetailsCardProps> = ({
       >
         Check the GuestEase stay policy →
       </Typography>
-
       {/* Outer Gris: Left column + Right column */}
       <Box
         sx={{
@@ -202,6 +205,19 @@ const RoomDetailsCard: React.FC<RoomDetailsCardProps> = ({
             >
               Book Now
             </Button>
+
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "#472d30",
+                color: "#fff",
+                "&:hover": { backgroundColor: "#e26d5c" },
+              }}
+              fullWidth
+              onClick={handleStripeModalOpen}
+            >
+              Payment Testing
+            </Button>
           </Box>
         </Box>
 
@@ -233,6 +249,7 @@ const RoomDetailsCard: React.FC<RoomDetailsCardProps> = ({
         </Box>
       </Box>
       <AlertDialogSlide open={policyOpen} onClose={handleClosePolicy} />
+      <PaymentDialog open={stripeTestOpen} onClose={handleStripeModalClose} />
     </Box>
   );
 };
