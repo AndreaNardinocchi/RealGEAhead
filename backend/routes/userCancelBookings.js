@@ -22,6 +22,39 @@ router.post("/user/cancel-booking", async (req, res) => {
     return res.status(400).json({ error: "Missing bookingId" });
   }
 
+  /**
+   * We fetch the booking from Supabase
+   */
+  const { data: booking, error: returnError } = await supabase
+    .from("bookings")
+    .select("*")
+    .eq("id", bookingId)
+    .single();
+
+  if (returnError || !booking) {
+    // https://geeksforgeeks.org/blogs/error-404-not-found/
+    return res.status(404).json({
+      error: "Booking not found!",
+    });
+  }
+
+  /**
+   * We add the same logic applied in the bookedRoomCard for security purposes
+   */
+  const now = new Date();
+  const checkIn = new Date(booking.check_in);
+  const cutoff = new Date(checkIn.getTime() - 24 * 60 * 60 * 1000);
+
+  /**
+   * We are preventing the user from being able to cancel a reservation
+   * after the 24h before check-in cutoff period.
+   */
+  if (now >= cutoff) {
+    return res.status(400).json({
+      error: "This reservation can no longer be cancelled.",
+    });
+  }
+
   try {
     // Cancel booking https://supabase.com/docs/reference/javascript/delete
     const { error: bookingError } = await supabase

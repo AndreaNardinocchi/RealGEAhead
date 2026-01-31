@@ -37,6 +37,22 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
 
   console.log("Booking:", booking);
 
+  // Creating a variable for today's date
+  const today = new Date();
+  const checkIn = new Date(booking.check_in);
+
+  /**
+   * We implement a rule that won't enable to user to cancel a reservation after 24h
+   * away from the check-in. Hence, we first calculate the cutoff period from the check-in
+   * */
+  const cutoff = new Date(checkIn.getTime() - 24 * 60 * 60 * 1000);
+
+  // We then create a boolean variable canCancel that can be true or false
+  // If true, the user can cancel, if false the cancel button will be grey and disanled
+  const canCancel = today < cutoff;
+
+  console.log("canCancel: ", canCancel);
+
   return (
     <Card
       elevation={4}
@@ -196,6 +212,8 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
           </Button>
           <Button
             variant="contained"
+            // The button will be disabled when the canCancel condition is not met
+            disabled={!canCancel}
             sx={{
               // mb: 3,
               ml: 2,

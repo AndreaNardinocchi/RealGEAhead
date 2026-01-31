@@ -7,6 +7,7 @@ import {
   TextField,
   Button,
   Slide,
+  Typography,
 } from "@mui/material";
 import { useAvailableRooms } from "../../hooks/useAvailableRooms";
 import { TransitionProps } from "@mui/material/transitions";
@@ -196,6 +197,13 @@ const EditBookingDialog: React.FC<EditBookingDialogProps> = ({
           Save
         </Button>
       </DialogActions>
+      <Typography
+        sx={{ p: 1, px: 3, pb: 2, fontSize: "0.85rem" }}
+        color="text.secondary"
+      >
+        *Your payment process will be updated as well to reflect the latest
+        changes.
+      </Typography>
     </Dialog>
   );
 };
