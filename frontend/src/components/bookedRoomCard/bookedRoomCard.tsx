@@ -8,6 +8,7 @@ import {
   Divider,
   Box,
   Button,
+  Stack,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import { getPublicUrl } from "../../utils/supabaseAssetsStorage";
@@ -17,12 +18,19 @@ interface BookingCardProps {
   booking: any;
   room: any;
   handleUpdate: (booking: any) => void;
+  /**
+   * Typescript function to the delete confirmation dialog for a specific booking.
+   * Receives the booking object that the user intends to cancel.
+   * https://tanstack.com/query/latest/docs/framework/react/guides/mutations
+   */
+  setDeleteOpen: (booking: any) => void;
 }
 
 const BookedRoomCard: React.FC<BookingCardProps> = ({
   booking,
   room,
   handleUpdate,
+  setDeleteOpen,
 }) => {
   // Using the util calculateNumberOfNights.ts
   const nights = calculateNumberOfNights(booking.check_in, booking.check_out);
@@ -105,7 +113,6 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
                   "&:hover": { color: "#e26d5c" },
                 }}
               >
-                {" "}
                 #{booking.id.slice(-12)}
               </MuiLink>
             </Typography>
@@ -125,11 +132,6 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
             >
               <strong>Check-out: </strong> {booking.check_out}
             </Typography>
-          </Box>
-
-          {/* Right column */}
-
-          <Box sx={{ flex: 1 }}>
             <Typography
               variant="body2"
               color="text.secondary"
@@ -137,6 +139,10 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
             >
               <strong>Guests:</strong> {booking.guests}
             </Typography>
+          </Box>
+
+          {/* Right column */}
+          <Box sx={{ flex: 1 }}>
             <Typography
               variant="body2"
               color="text.secondary"
@@ -170,12 +176,15 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
         >
           Booked on: {new Date(booking.created_at || "").toLocaleDateString()}
         </Typography>
-        <Box sx={{ mt: 2 }}>
+        {/* 
+        Stack is a container component for arranging elements vertically or horizontally. 
+        https://mui.com/material-ui/react-stack/
+        */}
+        <Stack direction="row" spacing={2} sx={{ mt: "auto", pt: 2 }}>
           <Button
             variant="contained"
             // We call in the handleUpdate() function
             onClick={() => handleUpdate(booking)}
-            // fullWidth
             sx={{
               backgroundColor: "#472d30",
               color: "#fff",
@@ -185,7 +194,21 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
           >
             Update
           </Button>
-        </Box>
+          <Button
+            variant="contained"
+            sx={{
+              // mb: 3,
+              ml: 2,
+              backgroundColor: "#e26d5c",
+              "&:hover": { bgcolor: "red" },
+              px: 5,
+            }}
+            // We call in the setDeleteOpen() function and passing in the booking argument
+            onClick={() => setDeleteOpen(booking)}
+          >
+            Cancel
+          </Button>
+        </Stack>
       </CardContent>
     </Card>
   );

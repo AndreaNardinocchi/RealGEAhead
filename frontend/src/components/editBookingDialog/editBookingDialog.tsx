@@ -6,8 +6,24 @@ import {
   DialogActions,
   TextField,
   Button,
+  Slide,
 } from "@mui/material";
 import { useAvailableRooms } from "../../hooks/useAvailableRooms";
+import { TransitionProps } from "@mui/material/transitions";
+
+/**
+ * This is a nice transition effect we were eager to try out,
+ * and worked out well.
+ * https://mui.com/material-ui/react-dialog/#transitions
+ */
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 interface EditBookingDialogProps {
   open: boolean;
@@ -57,7 +73,7 @@ const EditBookingDialog: React.FC<EditBookingDialogProps> = ({
   const checkOutDate = new Date(booking.check_out);
   const dateError = checkInDate >= checkOutDate;
 
-  const { data: availableRooms, isLoading } = useAvailableRooms(
+  const { data: availableRooms } = useAvailableRooms(
     booking.check_in,
     booking.check_out,
     booking.guests,
@@ -77,7 +93,13 @@ const EditBookingDialog: React.FC<EditBookingDialogProps> = ({
   const overlapError = !roomIsAvailable;
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth="sm"
+      slots={{ transition: Transition }}
+    >
       <DialogTitle>Edit Booking</DialogTitle>
 
       <DialogContent>

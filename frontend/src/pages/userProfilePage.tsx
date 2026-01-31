@@ -8,8 +8,8 @@ import {
 } from "@mui/material";
 import { getPublicUrl } from "../utils/supabaseAssetsStorage";
 import type { User } from "../types/interfaces";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getUserProfile, updateUserProfile } from "../api/guestease-api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getUserProfile } from "../api/guestease-api";
 import { AuthContext } from "../contexts/authContext";
 import AccountSubNav from "../accountSubNav/accountSubNav";
 import EditProfileDialog from "../components/editProfileDialog/EditProfileDialog";
@@ -17,6 +17,7 @@ import { deleteUserApi } from "../api/guestease-api";
 import AlertDialogSlide from "../components/deleteUserConfirm/deleteUserConfirm";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabase/supabaseClient";
+import { useUserUpdateProfile } from "../hooks/useUserUpdateProfile";
 
 /**
  * This is the UserProfilePage where all user data are displayed.
@@ -57,24 +58,14 @@ const UserProfilePage: React.FC = () => {
   console.log("This is the profile", profile);
 
   /**
-   * React Query’s useMutation updates the user profile, then invalidates the
-   * cached "profile" query so fresh data is refetched.
-   * Local form state mirrors the profile data, and useEffect keeps it synced
-   * whenever the profile query returns new values from Supabase.
+   * We create a 'updateProfileMutation' function with useMutation.
+   * 'mutations are typically used to create/update/delete data
+   * or perform server side-effects. For this purpose,
+   * TanStack Query exports a useMutation hook.'
+   * It wraps our the 'deleteUserApi' function in 'guestease-api.ts'
    * https://tanstack.com/query/v4/docs/framework/react/guides/mutations
-   * https://tanstack.com/query/v4/docs/framework/react/guides/query-invalidation
    */
-  const queryClient = useQueryClient();
-  const updateProfileMutation = useMutation({
-    // 'Constructs a type with all properties of Type set to optional.'
-    // This is perfect for update operations where we only send the fields that changed.
-    // https://www.typescriptlang.org/docs/handbook/utility-types.html#partialtype
-    mutationFn: (updates: Partial<User>) =>
-      updateUserProfile(user!.id, updates),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
-    },
-  });
+  const updateProfileMutation = useUserUpdateProfile(user?.id);
 
   // useState for the update pop up
   const [open, setOpen] = useState(false);

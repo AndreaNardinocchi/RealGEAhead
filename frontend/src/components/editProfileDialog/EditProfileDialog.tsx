@@ -30,7 +30,6 @@ const Transition = React.forwardRef(function Transition(
  * This component creates a pop up / modal form to dialog with the user data,
  * and update them.
  * https://mui.com/material-ui/react-dialog/
- * https://mui.com/material-ui/react-text-field/
  */
 
 const EditProfileDialog: React.FC<EditProfileDialogProps> = ({
@@ -52,18 +51,11 @@ const EditProfileDialog: React.FC<EditProfileDialogProps> = ({
 
       <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <TextField
+          fullWidth
+          // https://mui.com/material-ui/customization/density/
+          margin="dense"
           label="First Name"
           value={formData.first_name}
-          /**
-           * Updates the 'first_name' field inside formData.
-           * 'e' is the change event from the TextField with '.target.value` which is the new text the user typed
-           * will be updating the data that are copied '{ ...formData }' from the existing form data
-           * 'first_name: e.target.value' replaces only the first_name field
-           * https://react.dev/learn/sharing-state-between-components#controlled-and-uncontrolled-components
-           * https://stackoverflow.com/questions/64105922/why-these-brackets-in-this-function-setformdata-formdata-e-target-name
-           * https://coderspacket.com/posts/submit-form-data-in-reactjs/
-           * https://clouddevs.com/react/forms/
-           */
           onChange={(e) =>
             setFormData({ ...formData, first_name: e.target.value })
           }

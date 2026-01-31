@@ -10,11 +10,14 @@ import {
 import { getUserBookings } from "../api/guestease-api";
 import type { Booking } from "../types/interfaces";
 import { AuthContext } from "../contexts/authContext";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import BookedRoomCard from "../components/bookedRoomCard/bookedRoomCard";
 import AccountSubNav from "../accountSubNav/accountSubNav";
 import { useUserUpdateBooking } from "../hooks/useUserUpdateBooking";
 import EditBookingDialog from "../components/editBookingDialog/editBookingDialog";
+import { cancelBookingApi } from "../api/user-booking-api";
+import AlertDialogSlide from "../components/cancelBookingConfirm/cancelBookingConfirm";
+import { useUserCancelBooking } from "../hooks/useUserCancelBooking";
 
 /**
  * The AccountMyTripsPage dissplays all upcoming and past reservations.
@@ -58,6 +61,8 @@ const AccountMyTripsPage: React.FC = () => {
   console.log("This is the booking", data);
   console.log("This is the userId: ", user?.id);
 
+  // React Query mutation hook for updating a booking.
+  // Encapsulates the API call and handles cache invalidation internally.
   const updateBookingMutation = useUserUpdateBooking();
 
   const [open, setOpen] = useState(false);
@@ -88,6 +93,18 @@ const AccountMyTripsPage: React.FC = () => {
 
     setOpen(false);
   };
+
+  // This useState is used to open and close the modal
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
+  const handleDeleteOpen = (booking: any) => {
+    setSelectedBooking(booking);
+    setDeleteOpen(true);
+  };
+
+  // React Query’s useMutation cancels the booking, then invalidates the cached "bookings" query so fresh data is refetched.
+  // The useUserCancelBooking hook will do that for us
+  const cancelBookingMutation = useUserCancelBooking(user?.id);
 
   // Browser title
   useEffect(() => {
@@ -123,7 +140,7 @@ const AccountMyTripsPage: React.FC = () => {
    */
   const pastBookings = (data ?? []).filter((b) => {
     const checkout = new Date(b.check_out);
-    console.log("Upcoming: ", checkout < today);
+    console.log("Past: ", checkout < today);
     return checkout < today;
   });
 
@@ -161,6 +178,7 @@ const AccountMyTripsPage: React.FC = () => {
               booking={booking}
               room={booking.rooms}
               handleUpdate={handleUpdate}
+              setDeleteOpen={handleDeleteOpen}
             />
           ))}
         </Box>
@@ -188,7 +206,7 @@ const AccountMyTripsPage: React.FC = () => {
 
   return (
     <>
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ minHeight: 500 }}>
         <Box maxWidth="1200px" mx="auto" px={2}>
           <Typography variant="h3" component="h2">
             Hey {user?.first_name}
@@ -252,6 +270,28 @@ const AccountMyTripsPage: React.FC = () => {
           setBooking={setSelectedBooking}
           onSave={handleSave}
         />
+
+        {/* We open the modal to ask confirmation to the user that 
+        they are sure they want to cancel their booking */}
+        {selectedBooking && (
+          <AlertDialogSlide
+            open={deleteOpen}
+            onClose={() => setDeleteOpen(false)}
+            onConfirm={async () => {
+              try {
+                // Using a promise to delete, waiting for the backend
+                // https://tanstack.com/query/v4/docs/framework/react/guides/mutations#promises
+                await cancelBookingMutation.mutateAsync(selectedBooking.id);
+
+                // Close modal
+                setDeleteOpen(false);
+                // Redirect
+              } catch (err) {
+                console.error(err);
+              }
+            }}
+          />
+        )}
       </Container>
     </>
   );
