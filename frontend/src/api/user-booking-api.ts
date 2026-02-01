@@ -136,3 +136,40 @@ export const cancelBookingApi = async (bookingId: string) => {
   // Return the updated booking data to the caller.
   return data;
 };
+
+/**
+ * Create the SetupIntent API
+ * This is a helper which sends a POST request to the backend to create a setup intent payment.
+ * A SetupIntent is used when securely collecting and storing a customer’s payment method for future use, without
+ * charging them immediately. The backend is responsible for calling Stripe’s API and returning the
+ * 'client secret' needed by the frontend to complete the setup flow using
+ * stripe.confirmCardSetup().
+ * https://docs.stripe.com/api/setup_intents/create
+ */
+export const createSetupIntentApi = async (customerId: string) => {
+  const res = await fetch("http://localhost:3000/create-setup-intent", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    /**
+     * Convert the update object into JSON before sending.
+     * Express.json() on the backend will parse this automatically.
+     */
+    body: JSON.stringify({ customerId }),
+  });
+
+  /**
+   * Parse the JSON response from the backend.
+   */
+  const data = await res.json();
+
+  /**
+   * If the HTTP status is not in the 200–299 range,
+   * throw an error so the frontend can handle it.
+   */
+  if (!res.ok) {
+    throw new Error(data.error || "Failed to create SetupIntent");
+  }
+
+  // Expected: { clientSecret: "seti_123_secret_abc" }
+  return data;
+};

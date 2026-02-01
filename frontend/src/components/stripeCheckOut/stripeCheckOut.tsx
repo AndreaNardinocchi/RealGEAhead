@@ -10,14 +10,38 @@ import {
   CircularProgress,
   TextField,
 } from "@mui/material";
+import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 
-/***
- * This component will eventually host the Stripe payment form.
- * For now, it displays a placeholder UI.
+interface StripeCheckoutProps {
+  // The client secret returned from your backend when creating a SetupIntent.
+  clientSecret: string;
+  // Receives the ID of the confirmed payment method.
+  onSuccess?: (paymentMethodId: string) => void;
+}
+
+/**
+ * This component will hosts the Stripe payment form.
  * https://stripe.com/docs/payments/accept-a-payment?platform=web&ui=elements
  * https://mui.com/material-ui/react-card/
  */
-const StripeCheckOut: React.FC = () => {
+const StripeCheckOut: React.FC<StripeCheckoutProps> = ({
+  clientSecret,
+  onSuccess,
+}) => {
+  /**
+   * 'The useStripe hook returns a reference to the Stripe instance passed to the Elements provider.'
+   * https://docs.stripe.com/sdks/stripejs-react?ui=elements#usestripe-hook
+   */
+  const stripe = useStripe();
+  /**
+   * 'To safely pass the payment information collected by the Payment Element to the Stripe API,
+   * access the Elements instance so that you can use it with stripe.confirmPayment.
+   * If you use the React Hooks API, then useElements is the recommended way to access a mounted Element.
+   * If you need to access an Element from a class component, use ElementsConsumer instead.'
+   * https://docs.stripe.com/sdks/stripejs-react?ui=elements#useelements-hook
+   */
+  const elements = useElements();
+
   // useState to load the modal
   const [loading, setLoading] = useState(false);
   // useState for the postal code field
@@ -27,18 +51,53 @@ const StripeCheckOut: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   /**
-   * Placeholder submit handler, which will call Stripe (SetupIntent or PaymentIntent)
+   * Handles form submission and triggers the SetupIntent confirmation flow.
    * https://stripe.com/docs/payments/accept-a-payment?platform=web&ui=elements#web-submit-payment
+   * https://stackoverflow.com/questions/74806761/stripe-cardelement-is-null-when-using-confirmcardpayment#74806982
    */
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    // https://docs.stripe.com/sdks/stripejs-react?ui=elements
+    if (!stripe || !elements) return;
+
     setLoading(true);
 
-    // Simulated delay to mimic async payment behaviour
-    setTimeout(() => {
+    const card = elements.getElement(CardElement);
+
+    if (!card) {
+      setError("Card element not found");
       setLoading(false);
-      setError("Payment processing is not connected yet.");
-    }, 800);
+      return;
+    }
+
+    /**
+     * Confirms the SetupIntent using the card details and billing info.
+     * This step securely exchanges card data with Stripe.
+     * https://docs.stripe.com/js/setup_intents/confirm_card_setup#stripe_confirm_card_setup-options
+     * */
+    const { setupIntent, error } = await stripe.confirmCardSetup(clientSecret, {
+      payment_method: {
+        card,
+        billing_details: { address: { postal_code: postalCode } },
+      },
+    });
+
+    setLoading(false);
+    // If Stripe returned an error during confirmation, surface it to the user.
+    if (error) {
+      setError(error.message || "Something went wrong");
+      return;
+    }
+    /**
+     * If the SetupIntent completed successfully and Stripe returned a payment method ID,
+     * call onSuccess callback so the parent component can handle the next step:
+     * maybe storing the payment method on supabase? IN PROGRESS.........
+     */
+    if (onSuccess && setupIntent.payment_method) {
+      onSuccess(setupIntent.payment_method as string);
+    }
   };
 
   return (
@@ -76,7 +135,16 @@ const StripeCheckOut: React.FC = () => {
               color: "#777",
             }}
           >
-            Card input will appear here
+            {/**
+             * This is the Renders Stripe’s secure CardElement, which collects card number,
+             * expiration date, and CVC inside a Stripe‑hosted iframe.
+             * It keeps sensitive card data out of our application and ensures PCI compliance.
+             * 'CardElement	A flexible single-line input that collects all necessary card details.'
+             * https://docs.stripe.com/sdks/stripejs-react#cardelement
+             * https://docs.stripe.com/sdks/stripejs-react?ui=elements
+             * https://stackoverflow.com/questions/46863072/do-not-collect-zip-code-with-stripe
+             * */}
+            <CardElement options={{ hidePostalCode: true }} />
           </Box>
 
           {/** Postal code input field */}
@@ -99,13 +167,13 @@ const StripeCheckOut: React.FC = () => {
             type="submit"
             variant="contained"
             fullWidth
-            disabled={loading}
+            disabled={loading || !stripe}
             sx={{
               py: 1.5,
               borderRadius: 2,
               backgroundColor: "#472d30",
               color: "#fff",
-              "&:hover": { backgroundColor: "#EFF5E0", color: "#472d30" },
+              "&:hover": { backgroundColor: "#e26d5c" },
             }}
           >
             {loading ? <CircularProgress size={26} /> : "Pay Now"}

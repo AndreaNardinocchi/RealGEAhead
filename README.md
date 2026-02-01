@@ -35,3 +35,5 @@ npm i --save-dev @types/express
 npm install @supabase/supabase-js (in the backend too)
 npm install --save-dev vite
 npm i --save-dev @types/cors
+npm install stripe --save (backend)
+npm install --save @stripe/react-stripe-js @stripe/stripe-js (frontend)

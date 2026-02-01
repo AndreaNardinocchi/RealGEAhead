@@ -11,7 +11,7 @@ import userCreateBookings from "./routes/userCreateBookings.js";
 import userCancelBookings from "./routes/userCancelBookings.js";
 import userUpdateBookings from "./routes/userUpdateBookings.js";
 import emailPlaceholder from "./routes/emailPlaceholder.js";
-import paymentsPlaceholder from "./routes/paymentsPlaceholder.js";
+import stripePayments from "./routes/stripePayments.js";
 import userDeleteAccount from "./routes/userDeleteAccount.js";
 
 // --------------------
@@ -53,7 +53,7 @@ app.use(userCreateBookings);
 app.use(userUpdateBookings);
 app.use(userCancelBookings);
 app.use(emailPlaceholder);
-app.use(paymentsPlaceholder);
+app.use(stripePayments);
 app.use(userDeleteAccount);
 
 /* --------------------
