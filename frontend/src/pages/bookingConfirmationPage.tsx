@@ -191,7 +191,7 @@ const BookingConfirmationPage: React.FC = () => {
                         <br />
                         <strong>Nights:</strong> {totalNights}
                         <br />
-                        <strong>Booked on:</strong>
+                        <strong>Booked on: </strong>
                         {new Date(booking.created_at).toLocaleDateString()}
                       </Typography>
                     </Box>

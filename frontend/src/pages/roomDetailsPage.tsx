@@ -1,14 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Box, Alert, Container, CircularProgress } from "@mui/material";
 import { supabase } from "../supabase/supabaseClient";
 import { useAvailableRooms } from "../hooks/useAvailableRooms";
 import { useQuery } from "@tanstack/react-query";
 import { getPublicUrl } from "../utils/supabaseAssetsStorage";
-import { createBookingApi } from "../api/user-booking-api";
+import {
+  createBookingApi,
+  createStripeCustomerApi,
+} from "../api/user-booking-api";
 import RoomDetailsCard from "../components/roomDetailsCard/roomDetailsCard";
 import RoomDetailsCarousel from "../components/roomDetailsCarousel/roomDetailsCarousel";
 import { getRoomById } from "../api/guestease-api";
+import PaymentDialog from "../components/stripeCheckOutModal/stripeCheckOutModal";
+import { AuthContext } from "../contexts/authContext";
+import { useUserProfile } from "../hooks/useFetchingUserProfile";
 
 /**
  * This will be the page where all the room details and image gallery
@@ -16,6 +22,13 @@ import { getRoomById } from "../api/guestease-api";
  */
 
 const RoomDetailsPage: React.FC = () => {
+  // We retrieve the user auth.users from supabase
+  const auth = useContext(AuthContext);
+  const { user } = auth || {};
+  // We then retrieve the 'profile' user from the 'profiles' table in supabase
+  // since this is the one that has the stripe_customer_id column
+  const { data: profile } = useUserProfile(user?.id);
+
   /**
    * Extract roomId from the URL.
    * React Router useParams:
@@ -37,7 +50,7 @@ const RoomDetailsPage: React.FC = () => {
   const paramCheckOut = params.get("checkOut") || "";
   const paramGuests = Number(params.get("guests")) || 1;
 
-  //Local state for date + guest selection
+  // Local state for date + guest selection
   const [checkIn, setCheckIn] = useState<string>(paramCheckIn);
   const [checkOut, setCheckOut] = useState<string>(paramCheckOut);
   const [guests, setGuests] = useState<number>(paramGuests);
@@ -103,6 +116,21 @@ const RoomDetailsPage: React.FC = () => {
     return <Alert severity="error">Error loading availability.</Alert>;
   }
 
+  /**
+   * Controls the stripeCheckOutModal payment dialog.
+   * When true, the PaymentDialog component (stripeCheckOutModal) opens and begins the
+   * SetupIntent: card entry and payment method saving flow.
+   */
+  const [stripeCheckOutModalOpen, setStripeCheckOutModalOpen] = useState(false);
+
+  /**
+   * Temporarily stores the booking details (room_id, dates, guests, userId)
+   * while the user completes the Stripe payment flow.
+   * Once the payment method is successfully saved, this data is used
+   * to create the actual booking in the backend.
+   */
+  const [pendingBookingData, setPendingBookingData] = useState<any>(null);
+
   /*
    * HandleBook validates dates, it checks availability
    */
@@ -111,40 +139,32 @@ const RoomDetailsPage: React.FC = () => {
       setError("Please select valid dates before booking.");
       return;
     }
+
     /**
-     * 'The some() method of Array instances returns true if it finds one element in the array
+     *'The some() method of Array instances returns true if it finds one element in the array
      * that satisfies the provided testing function. Otherwise, it returns false.'
      * In this case, we are expecting to fing the room 'id'.
      * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
-     */
+     * */
     const isAvailable = availability?.some((r: any) => r.id === room.id);
-
     if (!isAvailable) {
       setError("This room is not available for the selected dates.");
       return;
     }
-
     try {
       /**
        * To be able to book, a user must be logged in, therefore, we need
        * to retrieve the user from supabase.
        * https://supabase.com/docs/reference/javascript/auth-getuser
-       */
-      const user = await supabase.auth.getUser();
-      const userId = user.data.user?.id;
-
+       * */
+      const { data } = await supabase.auth.getUser();
+      const userId = data.user?.id;
       if (!userId) {
         setError("You must be logged in to book a room.");
         return;
       }
-
-      /**
-       * We then create the booking object to be sent to the user-booking-api,
-       * which in turn will post it to the userBooking.js in the backend.
-       * The userBooking.js file in the backend will create the booking server-side
-       * and send it to supabase ....IN PROGRESS...
-       */
-      const booking = await createBookingApi({
+      // We store the booking data temporarily until the payment flow completes.
+      setPendingBookingData({
         room_id: room.id,
         check_in: checkIn,
         check_out: checkOut,
@@ -152,13 +172,45 @@ const RoomDetailsPage: React.FC = () => {
         userId,
       });
 
-      // Redirect to a confirmation  ....IN PROGRESS...
-      navigate(`/booking-confirmation/${booking.booking.id}`);
+      /**
+       * We ensure the Stripe customer exists before opening the payment dialog.
+       * Checks if the user already has a Stripe customer, and  creates one if they don’t,
+       * and finally returns the Stripe customer ID
+       * */
+      await createStripeCustomerApi({ email: data.user?.email!, userId });
+      // Open the Stripe payment dialog so the user can enter their card details.
+      setStripeCheckOutModalOpen(true);
     } catch (err: any) {
       setError(err.message);
     }
   };
 
+  /**
+   * This callback is called after the user successfully completes
+   * the Stripe payment flow and the payment method has been saved.
+   * At this point we can safely create the booking in our backend.
+   * */
+  const handlePaymentSuccessSoBookNow = async (_paymentMethodId: string) => {
+    try {
+      if (!pendingBookingData) return;
+
+      /**
+       * We then create the booking object to be sent to the user-booking-api,
+       * which in turn will post it to the userCreateBooking.js in the backend.
+       * The userCreateBooking.js file in the backend will create the booking server-side
+       * and send it to supabase
+       * */
+      const booking = await createBookingApi(pendingBookingData);
+      // Close the payment dialog and clear the pending booking data.
+      setStripeCheckOutModalOpen(false);
+      setPendingBookingData(null);
+      // Redirect to the confirmation page
+      navigate(`/booking-confirmation/${booking.booking.id}`);
+    } catch (err: any) {
+      setError(err.message);
+      setStripeCheckOutModalOpen(false);
+    }
+  };
   return (
     <>
       <Box>
@@ -189,6 +241,14 @@ const RoomDetailsPage: React.FC = () => {
           setCheckIn={setCheckIn}
           setCheckOut={setCheckOut}
           onBook={handleBook}
+        />
+        {/* Stripe Payment Dialo opens after validation and before booking creation */}
+        <PaymentDialog
+          open={stripeCheckOutModalOpen}
+          onClose={() => setStripeCheckOutModalOpen(false)}
+          customerId={profile?.stripe_customer_id || ""}
+          // Passed through from the stripeCheckOut
+          onSuccess={handlePaymentSuccessSoBookNow}
         />
       </Container>
     </>

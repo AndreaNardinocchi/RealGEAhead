@@ -3,10 +3,10 @@ import { Box, TextField, Button, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { RoomDetailsCardProps } from "../../types/interfaces";
 import AlertDialogSlide from "../roomStayPolicyModal/roomStayPolicyModal";
-import PaymentDialog from "../stripeCheckOutModal/stripeCheckOutModal";
+// import PaymentDialog from "../stripeCheckOutModal/stripeCheckOutModal";
 import { AuthContext } from "../../contexts/authContext";
-import { useUserProfile } from "../../hooks/useFetchingUserProfile"; // adjust path if needed
-import { createStripeCustomerApi } from "../../api/user-booking-api";
+// import { useUserProfile } from "../../hooks/useFetchingUserProfile"; // adjust path if needed
+// import { createStripeCustomerApi } from "../../api/user-booking-api";
 
 /**
  * RoomDetailsCard Component is used in the Room Details page, and it
@@ -31,11 +31,6 @@ const RoomDetailsCard: React.FC<RoomDetailsCardProps> = ({
   setCheckOut,
   onBook,
 }) => {
-  const auth = useContext(AuthContext);
-  const { user } = auth || {};
-
-  const { data: profile } = useUserProfile(user?.id);
-
   /**
    * Generate today's date in YYYY-MM-DD format
    * Date.toISOString():
@@ -46,25 +41,12 @@ const RoomDetailsCard: React.FC<RoomDetailsCardProps> = ({
   // useState to manage the roomStayPolicyModal
   const [policyOpen, setPolicyOpen] = useState(false);
 
-  const [stripeTestOpen, setStripeTestOpen] = useState(false);
-
   /**
    * The are the callbacks to handle the opening and closing of the modal
    * https://stackoverflow.com/questions/73752294/react-usestate-boolean-issue-functional-component
    */
   const handleOpenPolicy = () => setPolicyOpen(true);
   const handleClosePolicy = () => setPolicyOpen(false);
-
-  const handleStripeModalOpen = async () => {
-    await createStripeCustomerApi({
-      email: user?.email!,
-      userId: user?.id!,
-    });
-
-    setStripeTestOpen(true);
-  };
-
-  const handleStripeModalClose = () => setStripeTestOpen(false);
 
   return (
     <Box
@@ -221,19 +203,6 @@ const RoomDetailsCard: React.FC<RoomDetailsCardProps> = ({
             >
               Book Now
             </Button>
-
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: "#472d30",
-                color: "#fff",
-                "&:hover": { backgroundColor: "#e26d5c" },
-              }}
-              fullWidth
-              onClick={handleStripeModalOpen}
-            >
-              Payment Testing
-            </Button>
           </Box>
         </Box>
 
@@ -265,11 +234,6 @@ const RoomDetailsCard: React.FC<RoomDetailsCardProps> = ({
         </Box>
       </Box>
       <AlertDialogSlide open={policyOpen} onClose={handleClosePolicy} />
-      <PaymentDialog
-        open={stripeTestOpen}
-        onClose={handleStripeModalClose}
-        customerId={profile?.stripe_customer_id}
-      />
     </Box>
   );
 };

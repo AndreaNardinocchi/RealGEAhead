@@ -36,6 +36,12 @@ interface PaymentDialogProps {
    * to their Stripe profile.
    * */
   customerId: string;
+  /**
+   * Called when Stripe successfully returns a paymentMethodId.
+   * This is passed up to RoomDetailsPage, where it is handled
+   * inside handlePaymentSuccessSoBookNow() to finish the booking flow.
+   */
+  onSuccess: (paymentMethodId: string) => void;
 }
 
 /**
@@ -49,8 +55,9 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({
   open,
   onClose,
   customerId,
+  onSuccess,
 }) => {
-  // We terieve the user auth.users from supabase
+  // We retrieve the user auth.users from supabase
   const auth = useContext(AuthContext);
   const { user } = auth || {};
   // We then retrieve the 'profile' user from the 'profiles' table in supabase
@@ -122,6 +129,8 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({
                 userId: profile?.id,
                 paymentMethodId,
               });
+              // Notify the parent component that payment succeeded so it can create the booking now
+              onSuccess(paymentMethodId);
             }}
           />
         )}
