@@ -3,10 +3,6 @@ import { Box, TextField, Button, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { RoomDetailsCardProps } from "../../types/interfaces";
 import AlertDialogSlide from "../roomStayPolicyModal/roomStayPolicyModal";
-// import PaymentDialog from "../stripeCheckOutModal/stripeCheckOutModal";
-import { AuthContext } from "../../contexts/authContext";
-// import { useUserProfile } from "../../hooks/useFetchingUserProfile"; // adjust path if needed
-// import { createStripeCustomerApi } from "../../api/user-booking-api";
 
 /**
  * RoomDetailsCard Component is used in the Room Details page, and it

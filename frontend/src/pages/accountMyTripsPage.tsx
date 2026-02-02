@@ -10,27 +10,28 @@ import {
 import { getUserBookings } from "../api/guestease-api";
 import type { Booking } from "../types/interfaces";
 import { AuthContext } from "../contexts/authContext";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import BookedRoomCard from "../components/bookedRoomCard/bookedRoomCard";
 import AccountSubNav from "../accountSubNav/accountSubNav";
 import { useUserUpdateBooking } from "../hooks/useUserUpdateBooking";
 import EditBookingDialog from "../components/editBookingDialog/editBookingDialog";
-import { cancelBookingApi } from "../api/user-booking-api";
 import AlertDialogSlide from "../components/cancelBookingConfirm/cancelBookingConfirm";
 import { useUserCancelBooking } from "../hooks/useUserCancelBooking";
+import PaymentDialog from "../components/stripeCheckOutModal/stripeCheckOutModal";
+import { useUserProfile } from "../hooks/useFetchingUserProfile";
+import { useNavigate } from "react-router-dom";
 
 /**
  * The AccountMyTripsPage dissplays all upcoming and past reservations.
  */
 
 const AccountMyTripsPage: React.FC = () => {
-  /**
-   * Access authentication state from AuthContext.
-   * 'auth' may be null before the provider initializes, so we safely
-   * destructure 'user' and 'loading' with a fallback to an empty object.
-   */
+  // We retrieve the user auth.users from supabase
   const auth = useContext(AuthContext);
   const { user } = auth || {};
+  // We then retrieve the 'profile' user from the 'profiles' table in supabase
+  // since this is the one that has the stripe_customer_id column
+  const { data: profile } = useUserProfile(user?.id);
 
   /**
    * React Query is a data-fetching and caching library that simplifies working with
@@ -61,12 +62,26 @@ const AccountMyTripsPage: React.FC = () => {
   console.log("This is the booking", data);
   console.log("This is the userId: ", user?.id);
 
+  const navigate = useNavigate();
+
   // React Query mutation hook for updating a booking.
   // Encapsulates the API call and handles cache invalidation internally.
   const updateBookingMutation = useUserUpdateBooking();
 
   const [open, setOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
+
+  // This useState will enable us to manage the StripeCheckoutModal
+  const [stripeCheckOutModalOpen, setStripeCheckOutModalOpen] = useState(false);
+  /**
+   * Holds booking changes that require an additional Stripe payment.
+   * When the user edits a booking and the new total price is higher,
+   * we store the updated booking data here and open the Stripe modal.
+   * After successful payment, this data is sent to the update mutation.
+   */
+  const [pendingUpdateData, setPendingUpdateData] = useState<any>(null);
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleUpdate = (booking: any) => {
     setSelectedBooking(booking);
@@ -79,7 +94,37 @@ const AccountMyTripsPage: React.FC = () => {
     check_in: any;
     check_out: any;
     guests: any;
+    total_price: number;
   }) => {
+    if (!selectedBooking) return;
+
+    // Original booking total price
+    const originalToTalPrice = selectedBooking.total_price;
+    // This is the updated booking price
+    const updatedTotalPrice = updatedBooking.total_price;
+    // We then calculate the difference
+    const amountDifference = updatedTotalPrice - originalToTalPrice;
+
+    console.log("ORIGINAL:", selectedBooking.total_price);
+    console.log("UPDATED:", updatedBooking.total_price);
+    console.log(
+      "DIFF:",
+      updatedBooking.total_price - selectedBooking.total_price,
+    );
+    /**
+     * If amountDifference is > 0 then we add it to the updated booking
+     * and create the pendingUpdateBooking...
+     */
+    if (amountDifference > 0) {
+      setPendingUpdateData({
+        ...updatedBooking,
+        amountDifference,
+      });
+      //..and will trigger the stripeCheckOutModal to have the user re-enter their payment method
+      setStripeCheckOutModalOpen(true);
+      return;
+    }
+    // Once the payment method is re-entered, we complete the booking update
     updateBookingMutation.mutate({
       bookingId: updatedBooking.id,
       userId: user!.id,
@@ -92,6 +137,54 @@ const AccountMyTripsPage: React.FC = () => {
     });
 
     setOpen(false);
+  };
+
+  /**
+   * This callback is called after the user successfully update
+   * the Stripe payment flow and the payment method has been saved.
+   * At this point we can safely create the booking in our backend.
+   * */
+  const handlePaymentSuccessSoUpdateNow = async (_paymentMethodId: string) => {
+    try {
+      if (!pendingUpdateData) return;
+      /**
+       * Build the final update payload after Stripe payment succeeds.
+       * We include only the fields the backend expects: the booking ID,
+       * the user ID, and the updated booking values.
+       */
+      const cleanUpdates = {
+        bookingId: pendingUpdateData.id,
+        userId: user!.id,
+        updates: {
+          room_id: pendingUpdateData.room_id,
+          check_in: pendingUpdateData.check_in,
+          check_out: pendingUpdateData.check_out,
+          guests: pendingUpdateData.guests,
+        },
+      };
+
+      /**
+       * This above payload is then passed into our React Query mutation,
+       * which updates the booking in Supabase via the API call in user-booking-api
+       * (posting to the backend), and automatically invalidates
+       * cached queries so the UI refreshes with the latest data.
+       * const updateBookingMutation = useUserUpdateBooking();
+       * */
+      updateBookingMutation.mutate(cleanUpdates, {
+        onSuccess: (data) => {
+          setStripeCheckOutModalOpen(false);
+          setPendingUpdateData(null);
+          navigate(`/booking-confirmation/${data.booking.id}`);
+        },
+        onError: (err: any) => {
+          setErrorMessage(err.message);
+          setStripeCheckOutModalOpen(false);
+        },
+      });
+    } catch (err: any) {
+      setErrorMessage(err.message);
+      setStripeCheckOutModalOpen(false);
+    }
   };
 
   // This useState is used to open and close the modal
@@ -267,7 +360,7 @@ const AccountMyTripsPage: React.FC = () => {
           booking={selectedBooking}
           room={selectedBooking?.rooms}
           onClose={() => setOpen(false)}
-          setBooking={setSelectedBooking}
+          // setBooking={setSelectedBooking}
           onSave={handleSave}
         />
 
@@ -292,6 +385,13 @@ const AccountMyTripsPage: React.FC = () => {
             }}
           />
         )}
+
+        <PaymentDialog
+          open={stripeCheckOutModalOpen}
+          onClose={() => setStripeCheckOutModalOpen(false)}
+          customerId={profile?.stripe_customer_id || ""}
+          onSuccess={handlePaymentSuccessSoUpdateNow}
+        />
       </Container>
     </>
   );

@@ -49,9 +49,9 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
 
   // We then create a boolean variable canCancel that can be true or false
   // If true, the user can cancel, if false the cancel button will be grey and disanled
-  const canCancel = today < cutoff;
+  const canCancelUpdate = today < cutoff;
 
-  console.log("canCancel: ", canCancel);
+  console.log("canCancel: ", canCancelUpdate);
 
   return (
     <Card
@@ -199,6 +199,8 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
         <Stack direction="row" spacing={2} sx={{ mt: "auto", pt: 2 }}>
           <Button
             variant="contained"
+            // The button will be disabled when the canCancelUpdate condition is not met
+            disabled={!canCancelUpdate}
             // We call in the handleUpdate() function
             onClick={() => handleUpdate(booking)}
             sx={{
@@ -212,8 +214,8 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
           </Button>
           <Button
             variant="contained"
-            // The button will be disabled when the canCancel condition is not met
-            disabled={!canCancel}
+            // The button will be disabled when the canCancelUpdate condition is not met
+            disabled={!canCancelUpdate}
             sx={{
               // mb: 3,
               ml: 2,

@@ -18,9 +18,15 @@ export function useUserUpdateBooking() {
     // https://www.typescriptlang.org/docs/handbook/utility-types.html#partialtype
     mutationFn: updateBookingApi,
 
-    onSuccess: () => {
+    onSuccess: (data) => {
+      const updatedBookingId = data.booking.id;
       // Refresh all bookings after update
-      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+      queryClient.invalidateQueries({ queryKey: ["bookings"], exact: false });
+
+      // Refresh the confirmation page
+      queryClient.invalidateQueries({
+        queryKey: ["booking", updatedBookingId],
+      });
     },
   });
 }
