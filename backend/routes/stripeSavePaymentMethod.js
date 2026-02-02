@@ -42,6 +42,12 @@ router.post("/save-payment-method", async (req, res) => {
     }
 
     /**
+     *  Clear previous default payment methods for this user
+     */
+
+    await supabase.from("user_payment_methods").delete().eq("user_id", userId);
+
+    /**
      * Creating/inserting the payment method in supabase
      */
     const { data: insertedPaymentMethods, error: insertError } = await supabase
