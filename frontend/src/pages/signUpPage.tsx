@@ -23,6 +23,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 //  https://supabase.com/docs/guides/storage
 import { getPublicUrl } from "../utils/supabaseAssetsStorage";
+import { createStripeCustomerApi } from "../api/user-booking-api";
 
 /**
  * This page has been built out by essentially refactoring the one built
@@ -158,6 +159,15 @@ const SignUpPage: React.FC = () => {
         setConfirmationMessage(
           "Account created! Please check your email to confirm your account.",
         );
+
+        /**
+         * This will create a Stripe Customer id for the new user and will
+         * allow him to book
+         */
+        createStripeCustomerApi({
+          userId: data.user.id,
+          email: data.user.email ?? "",
+        });
         // Redirect after a short delay
         setTimeout(() => {
           navigate("/login");
