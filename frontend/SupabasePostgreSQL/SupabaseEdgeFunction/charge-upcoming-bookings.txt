@@ -1,0 +1,146 @@
+/** 
+ * 'Edge Functions are server-side TypeScript functions, distributed globally at the edge—close to your
+ * users. They can be used for listening to webhooks or integrating your Supabase project with third-parties
+ * like Stripe. Edge Functions are developed using Deno, which offers a few benefits to you as a developer'
+ * Imports Supabase Edge Runtime types for Deno.
+ * https://supabase.com/docs/guides/functions
+ */
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+
+/**
+ * Supabase JavaScript client for database operations.
+ * https://supabase.com/docs/reference/javascript
+ */
+import { createClient } from "jsr:@supabase/supabase-js@2";
+
+/**
+ * Stripe SDK for server-side payment processing.
+ * https://stripe.com/docs/api
+ */
+import Stripe from "npm:stripe@12.0.0";
+
+/**
+ * Initialize Supabase client using service role key.
+ * Service role key must be kept secret.
+ */
+const supabase = createClient(
+  Deno.env.get("SUPABASE_URL")!,
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+);
+
+/**
+ * Initialize Stripe client with secret API key.
+ * https://stripe.com/docs/api/versioning
+ * https://dev.to/4thzoa/stripe-node-with-deno-1fc4
+ */
+const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
+  apiVersion: "2023-10-16",
+});
+
+/**
+ * Main server handler — runs automatically on schedule or invocation.
+ * https://deno.com/deploy/docs/runtime-fs#denoserve
+ */
+Deno.serve(async () => {
+  try {
+    const now = new Date();
+    const in24h = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+    /**
+     * 1. Fetch bookings with check-in within the next 24 hours
+     *    AND not yet charged.
+     * Supabase query docs: https://supabase.com/docs/reference/javascript/select
+     */
+    const { data: bookings, error } = await supabase
+      .from("bookings")
+      .select("*")
+      .lte("check_in", in24h.toISOString())
+      .gt("check_in", now.toISOString())
+      .eq("charged", false);
+
+    if (error) {
+      return new Response(JSON.stringify({ error }), {
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const results = [];
+
+    for (const booking of bookings) {
+      try {
+        /**
+         * 2. Retrieve the user's Stripe customer ID from profiles table.
+         */
+        const { data: user, error: userError } = await supabase
+          .from("profiles")
+          .select("stripe_customer_id")
+          .eq("id", booking.user_id)
+          .single();
+
+        if (userError || !user?.stripe_customer_id) {
+          results.push({
+            booking_id: booking.id,
+            status: "failed",
+            error: "User has no stripe_customer_id",
+          });
+          continue;
+        }
+
+        /**
+         * 3. Create a Stripe Payment Intent to charge the user.
+         * https://docs.stripe.com/api/payment_intents/create
+         */
+        const paymentIntent = await stripe.paymentIntents.create(
+          {
+            amount: booking.total_price * 100, // convert USD to cents
+            currency: "eur",
+            customer: user.stripe_customer_id,
+            description: `Booking ${booking.id} charge`,
+            automatic_payment_methods: { enabled: true },
+          },
+          {
+            // Ensures the same booking cannot be charged twice
+            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Idempotency-Key
+            idempotencyKey: booking.id,
+          }
+        );
+
+        /**
+         * 4. Mark booking as charged in the database.
+         */
+        await supabase
+          .from("bookings")
+          .update({ charged: true })
+          .eq("id", booking.id);
+        /**
+        * This will show the response
+        */
+        results.push({
+          booking_id: booking.id,
+          status: "charged",
+          stripe_payment_intent: paymentIntent.id,
+        });
+      } catch (err) {
+        results.push({
+          booking_id: booking.id,
+          status: "failed",
+          error: err.message,
+        });
+      }
+    }
+
+    return new Response(JSON.stringify({ results }), {
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (err) {
+    return new Response(JSON.stringify({ fatal_error: err.message }), {
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+});
+
+/**
+ * We also created a cron in https://console.cron-job.org/dashboard that runs every 2 hours, and
+ * changes the 'charged' column on the bookings table from 'false' to 'true' if it detects a booking
+ * whose check-in is within 24h
+ */
