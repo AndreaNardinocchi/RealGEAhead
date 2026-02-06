@@ -157,3 +157,9 @@ EXECUTE FUNCTION public.sync_profile_to_auth();
 -- life inside Stripe
 alter table profiles
 add column stripe_customer_id text;
+
+-- If the user's email is the one below
+-- their role will be changed to 'admin'
+update public.profiles
+set role = 'admin'
+where email = 'andrea.nardinocchi76@gmail.com';

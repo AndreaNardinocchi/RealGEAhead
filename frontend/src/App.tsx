@@ -14,6 +14,8 @@ import UserProfilePage from "./pages/userProfilePage";
 import ProtectedRoute from "./routes/protectedRoutes";
 import AccountMyTripsPage from "./pages/accountMyTripsPage";
 import BookingConfirmationPage from "./pages/bookingConfirmationPage";
+import AdminRoute from "./routes/adminRoute";
+import AdminBookingsPage from "./pages/adminBookingsPage";
 
 const App = () => {
   return (
@@ -53,6 +55,15 @@ const App = () => {
             <ProtectedRoute>
               <BookingConfirmationPage />
             </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/bookings"
+          element={
+            <AdminRoute>
+              <AdminBookingsPage />
+            </AdminRoute>
           }
         />
       </Routes>
