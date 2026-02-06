@@ -474,3 +474,22 @@ export interface EditProfileDialogProps {
   onClose: () => void;
   onSave: () => void;
 }
+
+/**
+ * This interface is used in adminBookingsPage to render the joined
+ * Bookings and auth.users table as per rpc function 'get_all_bookings'
+ */
+export interface BookingWithUser {
+  id: string;
+  room_id: string;
+  user_id: string;
+  user_email: string;
+  first_name: string;
+  last_name: string;
+  check_in: string;
+  check_out: string;
+  guests: number;
+  total_price: number;
+  created_at: string;
+  charged: boolean;
+}

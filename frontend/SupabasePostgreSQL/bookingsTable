@@ -123,3 +123,10 @@ CREATE TRIGGER block_user_delete
 BEFORE DELETE ON public.profiles
 FOR EACH ROW
 EXECUTE FUNCTION prevent_user_deletion_if_active_bookings();
+
+
+-- This adds the 'charged' column which will change to true within 24h
+-- from the check-in thanks to the function 'charge-upcoming-bookings'
+-- and the cron in https://console.cron-job.org/dashboard that runs every 2 hours,
+alter table bookings
+add column charged boolean default false;

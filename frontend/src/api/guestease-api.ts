@@ -6,7 +6,7 @@
  * https://supabase.com/docs/reference/javascript/select
  */
 import { supabase } from "../supabase/supabaseClient";
-import { User } from "../types/interfaces";
+import { BookingWithUser, User } from "../types/interfaces";
 
 export const getRooms = async () => {
   const { data, error } = await supabase.from("rooms").select("*");
@@ -168,4 +168,16 @@ export const getRoomById = async (roomId: string) => {
   }
 
   return data;
+};
+
+/**
+ * React Query Fetchers
+ * We fetach all bookings through the rpc 'get_all_bookings' which is a function
+ * that joind the bookings table with the auth.users so that the admin will be
+ * able to see all the users' bookings.
+ * */
+export const getAllBookings = async (): Promise<BookingWithUser[]> => {
+  const { data, error } = await supabase.rpc("get_all_bookings");
+  if (error) throw error;
+  return data || [];
 };

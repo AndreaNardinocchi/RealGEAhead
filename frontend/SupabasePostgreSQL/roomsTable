@@ -70,7 +70,7 @@ VALUES
 (
   'Clan Suite',
   'Spacious family suite styled after traditional Irish country homes. The Clan Suite is GuestEase’s most family-friendly accommodation, offering space, flexibility, and thoughtful amenities for all ages. With two double-beds, a dining area, and entertainment options, it’s designed for togetherness without compromise. No other room caters as completely to families and group living.',
-  4,
+  5,
   200.00,
   '["Kids’ reading nook", "Mini-fridge", "Microwave", "Board games", "Baby cot available", "Two double-beds", "Tea & Coffee Tray", "Comfort bathing", "Homely Touches & Charm", "Sitting Area"]',
   '["brigidshaven1.png","brigidshaven2.png","brigidshaven3.png","brigidshaven4.png"]'
