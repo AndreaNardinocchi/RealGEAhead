@@ -17,15 +17,20 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRoomName } from "../utils/getRoomName";
 import { getAllBookings, getRooms } from "../api/guestease-api";
-import { Booking, Room } from "../types/interfaces";
+import { BookingWithUser } from "../types/interfaces";
 import AdminBookingModal from "../components/adminBookingModal/adminBookingModal";
-import { adminCreateBookingApi } from "../api/admin-booking-api";
+import {
+  adminCreateBookingApi,
+  adminUpdateBookingApi,
+} from "../api/admin-booking-api";
 
 const AdminBookingsPage: React.FC = () => {
   // Controls visibility of the booking modal
   const [openBookingModal, setOpenBookingModal] = useState(false);
   // Holds the booking currently being edited (null = create mode)
-  const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
+  const [editingBooking, setEditingBooking] = useState<BookingWithUser | null>(
+    null,
+  );
   // React Query client used for cache invalidation after mutations
   const queryClient = useQueryClient();
   // Controls visibility of the success snackbar
@@ -89,8 +94,41 @@ const AdminBookingsPage: React.FC = () => {
     setOpenBookingModal(true);
   };
 
+  // Handles updating an existing booking
+  const handleUpdateBooking = async () => {
+    if (!editingBooking) return;
+    try {
+      await adminUpdateBookingApi({
+        booking_id: editingBooking.id,
+        room_id: bookingForm.room_id,
+        check_in: bookingForm.check_in,
+        check_out: bookingForm.check_out,
+        guests: Number(bookingForm.guests),
+      });
+      // Refresh bookings list
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+      setSnackbarOpen(true);
+      setOpenBookingModal(false);
+    } catch (err: any) {
+      alert(err.message || "Something went wrong");
+    }
+  };
+
+  // Opens the modal in 'update' mode and resets the form
+  const handleOpenUpdateBooking = (b: BookingWithUser) => {
+    setEditingBooking(b);
+    setBookingForm({
+      room_id: b.room_id,
+      user_email: b.user_email,
+      check_in: b.check_in,
+      check_out: b.check_out,
+      guests: String(b.guests),
+    });
+    setOpenBookingModal(true);
+  };
+
   // Handles creating a new booking through the admin API
-  const handleSaveBooking = async () => {
+  const handleCreateBooking = async () => {
     try {
       const newBooking = {
         room_id: bookingForm.room_id,
@@ -141,6 +179,7 @@ const AdminBookingsPage: React.FC = () => {
           <Button
             variant="contained"
             sx={{ backgroundColor: "#e26d5c" }}
+            // color="#e26d5c"
             onClick={handleOpenCreateBooking}
           >
             + Create Booking
@@ -178,6 +217,7 @@ const AdminBookingsPage: React.FC = () => {
                 <TableCell sx={{ fontWeight: "bold" }}>Total Price</TableCell>
                 <TableCell sx={{ fontWeight: "bold" }}>Created At</TableCell>
                 <TableCell sx={{ fontWeight: "bold" }}>Charged</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}></TableCell>
               </TableRow>
             </TableHead>
 
@@ -197,6 +237,22 @@ const AdminBookingsPage: React.FC = () => {
                     {new Date(b.created_at).toLocaleString()}
                   </TableCell>
                   <TableCell>{b.charged ? "Yes" : "No"}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outlined"
+                      sx={{ mr: 1 }}
+                      onClick={() => handleOpenUpdateBooking(b)}
+                    >
+                      Update
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      // onClick={() => handleDeleteBooking(b.id)}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -206,7 +262,7 @@ const AdminBookingsPage: React.FC = () => {
         <AdminBookingModal
           open={openBookingModal}
           onClose={() => setOpenBookingModal(false)}
-          onSave={handleSaveBooking}
+          onSave={editingBooking ? handleUpdateBooking : handleCreateBooking}
           rooms={rooms ?? []}
           editingBooking={editingBooking}
           bookingForm={bookingForm}

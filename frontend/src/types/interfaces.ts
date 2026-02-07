@@ -506,7 +506,7 @@ export interface BookingModalProps {
   // List of available rooms used to populate the room dropdown
   rooms: Room[];
   // If provided, the modal is in "edit" mode; otherwise it's creating a new booking
-  editingBooking: Booking | null;
+  editingBooking: BookingWithUser | null;
   // Current values of the booking form fields
   bookingForm: {
     room_id: string;

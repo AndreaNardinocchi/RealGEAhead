@@ -73,9 +73,20 @@ const AdminBookingModal: React.FC<BookingModalProps> = ({
           renderValue={(value) =>
             value ? value : <span style={{ color: "#aaa" }}>Rooms</span>
           }
-          onChange={(e) =>
-            setBookingForm({ ...bookingForm, room_id: e.target.value })
-          }
+          onChange={(e) => {
+            // Creating variable newRoomId upon selecting a room
+            const newRoomId = e.target.value;
+            // We retrieve the roomobjedt
+            const newRoom = rooms.find((r) => r.id === newRoomId);
+            // We than get the selected room capacity
+            const newMaxGuests = newRoom?.capacity || 1;
+            setBookingForm({
+              ...bookingForm,
+              room_id: newRoomId,
+              // We immeditaley show the maximum capacity of the selcetd room
+              guests: String(newMaxGuests),
+            });
+          }}
         >
           {rooms.map((r) => (
             <MenuItem key={r.id} value={r.id}>
@@ -137,14 +148,21 @@ const AdminBookingModal: React.FC<BookingModalProps> = ({
         <TextField
           margin="dense"
           type="number"
-          label="Guests"
+          label={`Guests (max ${maxGuests})`}
           fullWidth
           value={bookingForm.guests}
           onChange={(e) => {
-            const value = Number(e.target.value);
-            // Prevent exceeding capacity
-            if (value > maxGuests || value < 1) return;
-            setBookingForm({ ...bookingForm, guests: e.target.value });
+            // Create variable guestData
+            const guestData = e.target.value;
+            // We allow it to be empty while typing
+            if (guestData === "") {
+              setBookingForm({ ...bookingForm, guests: "" });
+              return;
+            }
+            const value = Number(guestData);
+            // We set a range of guests
+            if (value < 1 || value > maxGuests) return;
+            setBookingForm({ ...bookingForm, guests: guestData });
           }}
         />
       </DialogContent>

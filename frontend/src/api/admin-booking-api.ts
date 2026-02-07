@@ -23,3 +23,28 @@ export const adminCreateBookingApi = async (bookingData: {
 
   return data;
 };
+
+/**
+ * Update Booking (Admin)
+ */
+export const adminUpdateBookingApi = async (updateData: {
+  booking_id: string;
+  room_id: string;
+  check_in: string;
+  check_out: string;
+  guests: number;
+}) => {
+  const res = await fetch("http://localhost:3000/admin/update-booking", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updateData),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || "Failed to update booking");
+  }
+
+  return data;
+};
