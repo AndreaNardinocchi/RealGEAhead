@@ -7,6 +7,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import adminUsersPlaceholder from "./routes/adminUsersPlaceholder.js";
 import adminCreateBookings from "./routes/adminCreateBookings.js";
+import adminCancelBookings from "./routes/adminCancelBookings.js";
 import adminUpdateBookings from "./routes/adminUpdateBookings.js";
 import userCreateBookings from "./routes/userCreateBookings.js";
 import userCancelBookings from "./routes/userCancelBookings.js";
@@ -52,6 +53,7 @@ app.use((req, res, next) => {
  * */
 app.use(adminUsersPlaceholder);
 app.use(adminCreateBookings);
+app.use(adminCancelBookings);
 app.use(adminUpdateBookings);
 app.use(userCreateBookings);
 app.use(userUpdateBookings);

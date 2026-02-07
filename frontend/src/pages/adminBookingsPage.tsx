@@ -20,9 +20,11 @@ import { getAllBookings, getRooms } from "../api/guestease-api";
 import { BookingWithUser } from "../types/interfaces";
 import AdminBookingModal from "../components/adminBookingModal/adminBookingModal";
 import {
+  adminCancelBookingApi,
   adminCreateBookingApi,
   adminUpdateBookingApi,
 } from "../api/admin-booking-api";
+import AlertDialogSlide from "../components/cancelBookingConfirm/cancelBookingConfirm";
 
 const AdminBookingsPage: React.FC = () => {
   // Controls visibility of the booking modal
@@ -35,6 +37,15 @@ const AdminBookingsPage: React.FC = () => {
   const queryClient = useQueryClient();
   // Controls visibility of the success snackbar
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  // Stores the text that will appear inside the Snackbar
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  // Controls whether the delete‑confirmation dialog is visible
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  // Holds the ID of the booking the user intends to delete
+  const [bookingToDelete, setBookingToDelete] = useState<string | null>(null);
 
   /**
    * React Query is a data-fetching and caching library that simplifies working with
@@ -107,6 +118,7 @@ const AdminBookingsPage: React.FC = () => {
       });
       // Refresh bookings list
       queryClient.invalidateQueries({ queryKey: ["bookings"] });
+      setSnackbarMessage("Booking updated successfully!");
       setSnackbarOpen(true);
       setOpenBookingModal(false);
     } catch (err: any) {
@@ -143,11 +155,29 @@ const AdminBookingsPage: React.FC = () => {
       // https://tanstack.com/query/v4/docs/framework/react/guides/query-invalidation
       queryClient.invalidateQueries({ queryKey: ["bookings"] });
       // Message to confirm the booking has beeen created
+      setSnackbarMessage("Booking created successfully!");
       setSnackbarOpen(true);
-
       setOpenBookingModal(false);
     } catch (err: any) {
       alert(err.message || "Something went wrong");
+    }
+  };
+
+  // It will handle the booking delete
+  const handleDeleteBooking = async (booking_id: string) => {
+    if (!bookingToDelete) return;
+    try {
+      // The booking to delete will sent off to the backend
+      await adminCancelBookingApi(booking_id);
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+      setSnackbarMessage("Booking deleted successfully!");
+      setSnackbarOpen(true);
+    } catch (err: any) {
+      alert(err.message || "Something went wrong");
+    } finally {
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch#syntax
+      setDeleteDialogOpen(false);
+      setBookingToDelete(null);
     }
   };
 
@@ -245,10 +275,21 @@ const AdminBookingsPage: React.FC = () => {
                     >
                       Update
                     </Button>
+                    {/* <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => handleDeleteBooking(b.id)}
+                    >
+                      Delete
+                    </Button> */}
+
                     <Button
                       variant="outlined"
                       color="error"
-                      // onClick={() => handleDeleteBooking(b.id)}
+                      onClick={() => {
+                        setBookingToDelete(b.id);
+                        setDeleteDialogOpen(true);
+                      }}
                     >
                       Delete
                     </Button>
@@ -273,7 +314,12 @@ const AdminBookingsPage: React.FC = () => {
           open={snackbarOpen}
           autoHideDuration={3000}
           onClose={() => setSnackbarOpen(false)}
-          message="Booking created successfully!"
+          message={snackbarMessage}
+        />
+        <AlertDialogSlide
+          open={deleteDialogOpen}
+          onClose={() => setDeleteDialogOpen(false)}
+          onConfirm={() => handleDeleteBooking(bookingToDelete ?? "")}
         />
       </Container>
     </>

@@ -48,3 +48,22 @@ export const adminUpdateBookingApi = async (updateData: {
 
   return data;
 };
+
+/**
+ * Delete / Cancel Booking (Admin)
+ */
+export const adminCancelBookingApi = async (booking_id: string) => {
+  const res = await fetch("http://localhost:3000/admin/cancel-booking", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ booking_id }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || "Failed to cancel booking");
+  }
+
+  return data;
+};
