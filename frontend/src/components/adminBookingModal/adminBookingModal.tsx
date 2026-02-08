@@ -9,9 +9,25 @@ import {
   Select,
   MenuItem,
   TextField,
+  Slide,
 } from "@mui/material";
 import { BookingModalProps } from "../../types/interfaces";
 import { getRoomName } from "../../utils/getRoomName";
+import { TransitionProps } from "@mui/material/transitions";
+
+/**
+ * This is a nice transition effect we were eager to try out,
+ * and worked out well.
+ * https://mui.com/material-ui/react-dialog/#transitions
+ */
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const AdminBookingModal: React.FC<BookingModalProps> = ({
   open,
@@ -31,7 +47,7 @@ const AdminBookingModal: React.FC<BookingModalProps> = ({
 
   /**
    * Compute the minimum allowed check-out date.
-   * If check-in is selected next day after check-in is
+   * If check-in is selected, next day after check-in is
    * the minimum allowed date possible.
    * If not, then, 'tomorrow'
    * */
@@ -45,7 +61,7 @@ const AdminBookingModal: React.FC<BookingModalProps> = ({
         .split("T")[0]
     : null;
 
-  // We get the selected room usind the find() function...
+  // We get the selected room using the find() function...
   const selectedRoom = rooms.find((r) => r.id === bookingForm.room_id);
 
   // ...and we set the max capacity
@@ -58,6 +74,7 @@ const AdminBookingModal: React.FC<BookingModalProps> = ({
       fullWidth
       maxWidth="sm"
       slotProps={{ paper: { sx: { mx: 2 } } }}
+      slots={{ transition: Transition }}
     >
       <DialogTitle>
         {editingBooking ? "Update Booking" : "Create Booking"}
@@ -73,20 +90,9 @@ const AdminBookingModal: React.FC<BookingModalProps> = ({
           renderValue={(value) =>
             value ? value : <span style={{ color: "#aaa" }}>Rooms</span>
           }
-          onChange={(e) => {
-            // Creating variable newRoomId upon selecting a room
-            const newRoomId = e.target.value;
-            // We retrieve the roomobjedt
-            const newRoom = rooms.find((r) => r.id === newRoomId);
-            // We than get the selected room capacity
-            const newMaxGuests = newRoom?.capacity || 1;
-            setBookingForm({
-              ...bookingForm,
-              room_id: newRoomId,
-              // We immeditaley show the maximum capacity of the selcetd room
-              guests: String(newMaxGuests),
-            });
-          }}
+          onChange={(e) =>
+            setBookingForm({ ...bookingForm, room_id: e.target.value })
+          }
         >
           {rooms.map((r) => (
             <MenuItem key={r.id} value={r.id}>
@@ -148,21 +154,14 @@ const AdminBookingModal: React.FC<BookingModalProps> = ({
         <TextField
           margin="dense"
           type="number"
-          label={`Guests (max ${maxGuests})`}
+          label="Guests"
           fullWidth
           value={bookingForm.guests}
           onChange={(e) => {
-            // Create variable guestData
-            const guestData = e.target.value;
-            // We allow it to be empty while typing
-            if (guestData === "") {
-              setBookingForm({ ...bookingForm, guests: "" });
-              return;
-            }
-            const value = Number(guestData);
-            // We set a range of guests
-            if (value < 1 || value > maxGuests) return;
-            setBookingForm({ ...bookingForm, guests: guestData });
+            const value = Number(e.target.value);
+            // Prevent exceeding capacity
+            if (value > maxGuests) return;
+            setBookingForm({ ...bookingForm, guests: e.target.value });
           }}
         />
       </DialogContent>

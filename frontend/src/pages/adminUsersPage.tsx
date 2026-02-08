@@ -1,10 +1,12 @@
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Box,
+  Button,
   CircularProgress,
   Container,
   Paper,
+  Snackbar,
   Table,
   TableBody,
   TableCell,
@@ -14,6 +16,9 @@ import {
   Typography,
 } from "@mui/material";
 import { getUsers } from "../api/guestease-api";
+import { countries, User } from "../types/interfaces";
+import { adminCreateUserApi } from "../api/admin-users-api";
+import AdminUserModal from "../components/adminUserModal/adminUserModal";
 
 /**
  * This is the admin users page wher all users can be viewed, created, updated and deleted
@@ -21,6 +26,33 @@ import { getUsers } from "../api/guestease-api";
  */
 
 const AdminUsersPage: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const [openUserModal, setOpenUserModal] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+
+  // React Query client used for cache invalidation after mutations
+  const queryClient = useQueryClient();
+  // Controls visibility of the success snackbar
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  // Stores the text that will appear inside the Snackbar
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const [userForm, setUserForm] = useState({
+    first_name: "",
+    last_name: "",
+    country: "",
+    zip_code: "",
+    email: "",
+    role: "guest",
+  });
+
+  useEffect(() => {
+    document.title = "Users Admin Dashboard | GuestEase";
+  });
+
   /**
    * React Query is a data-fetching and caching library that simplifies working with
    * asynchronous data in React applications. Instead of manually managing loading states,
@@ -35,7 +67,7 @@ const AdminUsersPage: React.FC = () => {
    * https://tanstack.com/query/latest/docs/framework/react/quick-start
    *    */
   const {
-    data: users,
+    data: profiles,
     isLoading,
     isError,
     error,
@@ -43,6 +75,43 @@ const AdminUsersPage: React.FC = () => {
     queryKey: ["users"],
     queryFn: getUsers,
   });
+
+  const handleOpenCreateUser = () => {
+    setEditingUser(null);
+    setUserForm({
+      first_name: "",
+      last_name: "",
+      email: "",
+      role: "guest",
+      country: "",
+      zip_code: "",
+    });
+    setOpenUserModal(true);
+  };
+
+  const handleSaveUser = async () => {
+    try {
+      const newUser = {
+        first_name: userForm.first_name,
+        last_name: userForm.last_name,
+        email: userForm.email,
+        role: userForm.role,
+        country: userForm.country,
+        zip_code: userForm.zip_code,
+      };
+      await adminCreateUserApi(newUser);
+      // This clears out the cache and alloes us to see the created booking without having to refresh the page
+      // https://tanstack.com/query/v4/docs/framework/react/guides/query-invalidation
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      // Message to confirm the booking has beeen created
+
+      setSnackbarMessage("User created successfully!");
+      setSnackbarOpen(true);
+      setOpenUserModal(false);
+    } catch (err: any) {
+      alert(err.message || "Something went wrong");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -66,9 +135,16 @@ const AdminUsersPage: React.FC = () => {
 
   return (
     <Container sx={{ pb: 8, overflow: "visible", mt: 4 }}>
-      <Typography variant="h4" mb={3}>
-        Users
-      </Typography>
+      <Box my={4} display="flex" justifyContent="space-between">
+        <Typography variant="h4">Users</Typography>
+        <Button
+          variant="contained"
+          onClick={handleOpenCreateUser}
+          sx={{ backgroundColor: "#e26d5c" }}
+        >
+          + Create User
+        </Button>
+      </Box>
 
       <TableContainer
         component={Paper}
@@ -99,7 +175,7 @@ const AdminUsersPage: React.FC = () => {
           </TableHead>
 
           <TableBody>
-            {users?.map((u) => (
+            {profiles?.map((u) => (
               <TableRow
                 key={u.id}
                 sx={{
@@ -120,6 +196,22 @@ const AdminUsersPage: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <AdminUserModal
+        open={openUserModal}
+        onClose={() => setOpenUserModal(false)}
+        onSave={editingUser ? handleSaveUser : handleSaveUser}
+        countries={countries ?? []}
+        editingUser={editingUser}
+        userForm={userForm}
+        setUserForm={setUserForm}
+      />
+      {/* https://mui.com/material-ui/react-snackbar/ */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        message={snackbarMessage}
+      />
     </Container>
   );
 };

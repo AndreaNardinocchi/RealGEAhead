@@ -284,9 +284,12 @@ const BookingConfirmationPage: React.FC = () => {
                     "&:hover": { color: "#E26D5C" },
                   }}
                 >
-                  <strong>{room.name}</strong>
+                  <strong>
+                    {room.name} →.
+                    <br />
+                  </strong>
                 </MuiLink>
-                . We’re excited to welcome you and hope you enjoy your stay!
+                We’re excited to welcome you and hope you enjoy your stay!
               </Typography>
             </Box>
           </Box>

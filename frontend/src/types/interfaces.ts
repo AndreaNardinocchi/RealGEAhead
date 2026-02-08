@@ -531,3 +531,42 @@ export interface BookingModalProps {
     }>
   >;
 }
+
+/**
+ * Props for the AdminUserModal component.
+ * Defines all data and handlers required to display and manage the
+ * admin user form modal.
+ */
+export interface UserModalProps {
+  open: boolean;
+  onClose: () => void;
+  onSave: () => void;
+  countries: Country[];
+  // If provided, the modal is in "edit" mode; otherwise it's creating a new user
+  editingUser: User | null;
+  // Current values of the user form fields
+  userForm: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    role: string;
+    country: string;
+    zip_code: string;
+  };
+  /**
+   * State setter used to update individual user form fields.
+   * Passed down from the parent so the modal can modify form state.
+   * http://stackoverflow.com/questions/65823778/ddg#65824149
+   * https://www.xjavascript.com/blog/how-can-i-define-type-for-setstate-when-react-dispatch-react-setstateaction-string-not-accepted/
+   */
+  setUserForm: React.Dispatch<
+    React.SetStateAction<{
+      first_name: string;
+      last_name: string;
+      email: string;
+      role: string;
+      country: string;
+      zip_code: string;
+    }>
+  >;
+}
