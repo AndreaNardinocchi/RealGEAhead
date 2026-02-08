@@ -181,3 +181,20 @@ export const getAllBookings = async (): Promise<BookingWithUser[]> => {
   if (error) throw error;
   return data || [];
 };
+
+/**
+ * Fetch all users from the Supabase "profles" table.
+ * It uses the Supabase client to query the "profiles" table.
+ * `.select("*")` retrieves every column for each profile.
+ *
+ * https://supabase.com/docs/reference/javascript/select
+ */
+export const getUsers = async () => {
+  const { data, error } = await supabase.from("profiles").select("*");
+
+  // If Supabase returns an error, we throw a descriptive exception
+  if (error) {
+    throw new Error(`Unable to fetch users: ${error.message}`);
+  }
+  return data;
+};

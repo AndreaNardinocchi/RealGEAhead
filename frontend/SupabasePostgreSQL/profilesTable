@@ -163,3 +163,79 @@ add column stripe_customer_id text;
 update public.profiles
 set role = 'admin'
 where email = 'andrea.nardinocchi76@gmail.com';
+
+--------------------------------------------------------------------------------
+--------             User     POLICIES              ----------------------------
+--------------------------------------------------------------------------------
+
+-- USERS: SELECT
+-- https://www.postgresql.org/docs/current/ddl-rowsecurity.html
+DROP POLICY IF EXISTS "Users can select their own profile" ON public.profiles;
+CREATE POLICY "Users can select their own profile"
+ON public.profiles
+FOR SELECT
+USING (auth.uid() = id);  -- User can read only their own row
+
+
+-- USERS: UPDATE
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
+CREATE POLICY "Users can update their own profile"
+ON public.profiles
+FOR UPDATE
+USING (auth.uid() = id)   -- User can UPDATE only their own row
+WITH CHECK (auth.uid() = id);  -- WITH CHECK OPTION prevents us from updating or inserting rows that are not visible through the UI https://www.mysqltutorial.org/mysql-views/mysql-view-with-check-option/.
+
+
+
+-- USERS: DELETE
+DROP POLICY IF EXISTS "Users can delete their own profile" ON public.profiles;
+CREATE POLICY "Users can delete their own profile"
+ON public.profiles
+FOR DELETE
+USING (auth.uid() = id);  -- User can delete only their own row
+
+-------------------------------------------------------------------------
+-- ADMIN role Function
+-- This function checks whether a given user (uid) is an admin.
+-- It is used inside RLS policies to safely determine admin privileges.
+-- https://www.postgresql.org/docs/current/ddl-rowsecurity.html
+-- https://www.postgresql.org/docs/current/sql-createfunction.html#SQL-CREATEFUNCTION-SECURITY
+-------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.is_admin(uid uuid)
+RETURNS boolean   -- The function returns TRUE or FALSE
+LANGUAGE sql          -- This is a simple SQL function
+SECURITY DEFINER       -- The function runs with the privileges of the function owner, not the logged‑in user.
+                       --Therefore, it can read public.profiles without being restricted by RLS.
+AS $$
+  SELECT role = 'admin'              -- Returns TRUE if the role equals 'admin'
+  FROM public.profiles               
+  WHERE id = uid;                 
+$$;
+
+
+
+-- ADMINS: SELECT ALL
+DROP POLICY IF EXISTS "Admins can select all profiles" ON public.profiles;
+CREATE POLICY "Admins can select all profiles"
+ON public.profiles
+FOR SELECT
+USING (public.is_admin(auth.uid()));  -- Admin can read all rows
+
+
+-- ADMINS: DELETE ANY
+DROP POLICY IF EXISTS "Admins can delete any profile" ON public.profiles;
+CREATE POLICY "Admins can delete any profile"
+ON public.profiles
+FOR DELETE
+USING (public.is_admin(auth.uid()));  -- Admin can delete any row
+
+
+-- ADMINS: UPDATE ANY
+DROP POLICY IF EXISTS "Admins can update any profile" ON public.profiles;
+CREATE POLICY "Admins can update any profile"
+ON public.profiles
+FOR UPDATE
+USING (public.is_admin(auth.uid()))   -- Admin can update any row
+WITH CHECK (public.is_admin(auth.uid()));  -- WITH CHECK OPTION prevents us from updating or inserting rows that are not visible through the UI https://www.mysqltutorial.org/mysql-views/mysql-view-with-check-option/.
+
+

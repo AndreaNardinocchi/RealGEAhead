@@ -16,6 +16,7 @@ import AccountMyTripsPage from "./pages/accountMyTripsPage";
 import BookingConfirmationPage from "./pages/bookingConfirmationPage";
 import AdminRoute from "./routes/adminRoute";
 import AdminBookingsPage from "./pages/adminBookingsPage";
+import AdminUsersPage from "./pages/adminUsersPage";
 
 const App = () => {
   return (
@@ -63,6 +64,14 @@ const App = () => {
           element={
             <AdminRoute>
               <AdminBookingsPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <AdminRoute>
+              <AdminUsersPage />
             </AdminRoute>
           }
         />
