@@ -10,8 +10,9 @@ import {
   MenuItem,
   TextField,
   Slide,
+  FormControl,
 } from "@mui/material";
-import { UserModalProps } from "../../types/interfaces";
+import { roles, UserModalProps } from "../../types/interfaces";
 import { TransitionProps } from "@mui/material/transitions";
 
 /**
@@ -37,6 +38,23 @@ const AdminUserModal: React.FC<UserModalProps> = ({
   userForm,
   setUserForm,
 }) => {
+  const [errors, setErrors] = React.useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    role: "",
+    country: "",
+    zip_code: "",
+  });
+
+  const sanitize = {
+    lettersOnly: (value: string) => value.replace(/[^A-Za-z]/g, ""),
+    noSpaces: (value: string) => value.replace(/\s+/g, ""),
+    lettersNumbersHyphens: (value: string) =>
+      value.replace(/[^A-Za-z0-9-]/g, "").replace(/\s+/g, ""),
+    emailSafe: (value: string) => value.replace(/\s+/g, ""),
+  };
+
   return (
     <Dialog
       open={open}
@@ -51,7 +69,6 @@ const AdminUserModal: React.FC<UserModalProps> = ({
       <DialogContent>
         <TextField
           margin="dense"
-          type="text"
           label="First Name"
           fullWidth
           slotProps={{
@@ -59,9 +76,11 @@ const AdminUserModal: React.FC<UserModalProps> = ({
           }}
           value={userForm.first_name}
           onChange={(e) => {
-            setUserForm({ ...userForm, first_name: e.target.value });
+            const value = sanitize.lettersOnly(e.target.value);
+            setUserForm({ ...userForm, first_name: value });
           }}
         />
+
         <TextField
           margin="dense"
           type="text"
@@ -75,9 +94,10 @@ const AdminUserModal: React.FC<UserModalProps> = ({
             inputLabel: { shrink: true },
           }}
           value={userForm.last_name}
-          onChange={(e) =>
-            setUserForm({ ...userForm, last_name: e.target.value })
-          }
+          onChange={(e) => {
+            const value = sanitize.lettersOnly(e.target.value);
+            setUserForm({ ...userForm, last_name: value });
+          }}
         />
 
         {!editingUser && (
@@ -89,53 +109,73 @@ const AdminUserModal: React.FC<UserModalProps> = ({
               inputLabel: { shrink: true },
             }}
             value={userForm.email}
-            onChange={(e) =>
-              setUserForm({ ...userForm, email: e.target.value })
-            }
+            onChange={(e) => {
+              const value = sanitize.emailSafe(e.target.value);
+              setUserForm({ ...userForm, email: value });
+            }}
           />
         )}
 
-        <TextField
-          margin="dense"
-          label="Role"
-          fullWidth
-          value={userForm.role}
-          onChange={(e) => setUserForm({ ...userForm, role: e.target.value })}
-        />
+        <FormControl fullWidth margin="dense">
+          <InputLabel id="role-label" shrink>
+            Role
+          </InputLabel>
 
-        <InputLabel id="countries" shrink>
-          Countries
-        </InputLabel>
-        <Select
-          value={userForm.country}
-          onChange={(e) =>
-            // countries[] is an array of strings; this sets one selected string
-            setUserForm({ ...userForm, country: e.target.value as string })
-          }
-          fullWidth
-          displayEmpty
-          renderValue={(value) =>
-            value ? value : <span style={{ color: "#aaa" }}>Country</span>
-          }
-        >
-          {countries.map((c) => (
-            <MenuItem key={c.code} value={c.name}>
-              {c.name}
+          <Select
+            labelId="role-label"
+            id="role"
+            value={userForm.role}
+            label="Role"
+            onChange={(e) =>
+              setUserForm({ ...userForm, role: e.target.value as string })
+            }
+            displayEmpty
+          >
+            <MenuItem disabled value="">
+              <span style={{ color: "#aaa" }}>Select role</span>
             </MenuItem>
-          ))}
-        </Select>
+
+            {roles.map((r) => (
+              <MenuItem key={r.value} value={r.value}>
+                {r.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth margin="dense">
+          <InputLabel id="country-label">Country</InputLabel>
+
+          <Select
+            labelId="country-label"
+            id="country"
+            value={userForm.country}
+            label="Country"
+            onChange={(e) =>
+              setUserForm({ ...userForm, country: e.target.value as string })
+            }
+            displayEmpty
+          >
+            <MenuItem disabled value="">
+              <span style={{ color: "#aaa" }}>Country</span>
+            </MenuItem>
+
+            {countries.map((c) => (
+              <MenuItem key={c.code} value={c.name}>
+                {c.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         <TextField
           margin="dense"
           label="Zip Code"
           fullWidth
-          slotProps={{
-            inputLabel: { shrink: true },
-          }}
           value={userForm.zip_code}
-          onChange={(e) =>
-            setUserForm({ ...userForm, zip_code: e.target.value })
-          }
+          onChange={(e) => {
+            const value = sanitize.lettersNumbersHyphens(e.target.value);
+            setUserForm({ ...userForm, zip_code: value });
+          }}
         />
       </DialogContent>
 
@@ -151,7 +191,10 @@ const AdminUserModal: React.FC<UserModalProps> = ({
         </Button>
         <Button
           variant="contained"
-          onClick={onSave}
+          onClick={() => {
+            // console.log("FINAL SAVE PAYLOAD:", userForm);
+            onSave();
+          }}
           sx={{
             backgroundColor: "#472d30",
             color: "#fff",

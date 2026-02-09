@@ -24,6 +24,8 @@ import {
 } from "../api/admin-users-api";
 import AdminUserModal from "../components/adminUserModal/adminUserModal";
 import AlertDialogSlide from "../components/deleteUserConfirm/deleteUserConfirm";
+import AdminDashboardHeader from "../components/adminDashboardHeader/adminDashboardHeader";
+import AdminSubNav from "../components/adminSubNav/adminSubNav";
 
 /**
  * This is the admin users page wher all users can be viewed, created, updated and deleted
@@ -94,7 +96,7 @@ const AdminUsersPage: React.FC = () => {
       first_name: "",
       last_name: "",
       email: "",
-      role: "guest",
+      role: "",
       country: "",
       zip_code: "",
     });
@@ -107,10 +109,11 @@ const AdminUsersPage: React.FC = () => {
         first_name: userForm.first_name,
         last_name: userForm.last_name,
         email: userForm.email,
-        role: userForm.role,
+        role: userForm.role?.toLowerCase().trim(),
         country: userForm.country,
         zip_code: userForm.zip_code,
       };
+
       await adminCreateUserApi(newUser);
       // This clears out the cache and allow us to see the created user without having to refresh the page
       // https://tanstack.com/query/v4/docs/framework/react/guides/query-invalidation
@@ -131,7 +134,7 @@ const AdminUsersPage: React.FC = () => {
       first_name: u.first_name ?? "",
       last_name: u.last_name ?? "",
       email: u.email ?? "",
-      role: u.role || "guest",
+      role: u.role?.toLowerCase().trim() || "guest",
       country: u.country ?? "",
       zip_code: u.zip_code ?? "",
     });
@@ -144,7 +147,7 @@ const AdminUsersPage: React.FC = () => {
         first_name: userForm.first_name,
         last_name: userForm.last_name,
         email: userForm.email,
-        role: userForm.role,
+        role: userForm.role?.toLowerCase().trim(),
         country: userForm.country,
         zip_code: userForm.zip_code,
       };
@@ -210,112 +213,118 @@ const AdminUsersPage: React.FC = () => {
   }
 
   return (
-    <Container sx={{ pb: 8, overflow: "visible", mt: 4 }}>
-      <Box my={4} display="flex" justifyContent="space-between">
-        <Typography variant="h4">Users</Typography>
-        <Button
-          variant="contained"
-          onClick={handleOpenCreateUser}
-          sx={{ backgroundColor: "#e26d5c" }}
+    <>
+      <AdminDashboardHeader />
+      <AdminSubNav />
+      <Container sx={{ pb: 8, overflow: "visible", mt: 4 }}>
+        <Box my={4} display="flex" justifyContent="space-between">
+          <Typography variant="h4">Users</Typography>
+          <Button
+            variant="contained"
+            onClick={handleOpenCreateUser}
+            sx={{ backgroundColor: "#e26d5c" }}
+          >
+            + Create User
+          </Button>
+        </Box>
+
+        <TableContainer
+          component={Paper}
+          sx={{
+            mb: 6,
+            overflowX: "auto",
+            borderRadius: 2,
+            boxShadow: 3,
+            "&::-webkit-scrollbar": { height: 8 },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#bbb",
+              borderRadius: 4,
+            },
+          }}
         >
-          + Create User
-        </Button>
-      </Box>
-
-      <TableContainer
-        component={Paper}
-        sx={{
-          mb: 6,
-          overflowX: "auto",
-          borderRadius: 2,
-          boxShadow: 3,
-          "&::-webkit-scrollbar": { height: 8 },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "#bbb",
-            borderRadius: 4,
-          },
-        }}
-      >
-        <Table sx={{ minWidth: 900 }}>
-          <TableHead>
-            <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
-              <TableCell sx={{ fontWeight: "bold" }}>User ID</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Email</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>First Name</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Last Name</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Country</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Zip Code</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Role</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Created At</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}></TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {profiles?.map((u) => (
-              <TableRow
-                key={u.id}
-                sx={{
-                  "&:hover": { backgroundColor: "#fafafa" },
-                  transition: "0.2s",
-                }}
-              >
-                <TableCell sx={{ fontWeight: 500 }}>{u.id}</TableCell>
-                <TableCell>{u.email}</TableCell>
-                <TableCell>{u.first_name}</TableCell>
-                <TableCell>{u.last_name}</TableCell>
-                <TableCell>{u.country}</TableCell>
-                <TableCell>{u.zip_code}</TableCell>
-                <TableCell>{u.role}</TableCell>
-                <TableCell>{new Date(u.created_at).toLocaleString()}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="outlined"
-                    sx={{ mr: 1 }}
-                    onClick={() => handleOpenUpdateUser(u)}
-                  >
-                    Update
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    onClick={() => handleOpenDeleteUser(u.id, u.role)}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
+          <Table sx={{ minWidth: 900 }}>
+            <TableHead>
+              <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+                <TableCell sx={{ fontWeight: "bold" }}>User ID</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Email</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>First Name</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Last Name</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Country</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Zip Code</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Role</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Created At</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}></TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <AdminUserModal
-        open={openUserModal}
-        onClose={() => setOpenUserModal(false)}
-        // If editing the user than handle update user, otherwise create it
-        onSave={editingUser ? handleUpdateUser : handleCreateUser}
-        countries={countries ?? []}
-        editingUser={editingUser}
-        userForm={userForm}
-        setUserForm={setUserForm}
-      />
-      {/* https://mui.com/material-ui/react-snackbar/ */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarOpen(false)}
-        message={snackbarMessage}
-      />
-      <AlertDialogSlide
-        open={deleteDialogOpen}
-        onClose={() => setDeleteDialogOpen(false)}
-        onConfirm={async () => {
-          // We state that these 2 values are not null via the non‑null assertion operator
-          // https://learntypescript.dev/07/l2-non-null-assertion-operator
-          handleDeleteUser(userToDelete!.id, userToDelete!.role);
-        }}
-      />
-    </Container>
+            </TableHead>
+
+            <TableBody>
+              {profiles?.map((u) => (
+                <TableRow
+                  key={u.id}
+                  sx={{
+                    "&:hover": { backgroundColor: "#fafafa" },
+                    transition: "0.2s",
+                  }}
+                >
+                  <TableCell sx={{ fontWeight: 500 }}>{u.id}</TableCell>
+                  <TableCell>{u.email}</TableCell>
+                  <TableCell>{u.first_name}</TableCell>
+                  <TableCell>{u.last_name}</TableCell>
+                  <TableCell>{u.country}</TableCell>
+                  <TableCell>{u.zip_code}</TableCell>
+                  <TableCell>{u.role}</TableCell>
+                  <TableCell>
+                    {new Date(u.created_at).toLocaleString()}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outlined"
+                      sx={{ mr: 1 }}
+                      onClick={() => handleOpenUpdateUser(u)}
+                    >
+                      Update
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => handleOpenDeleteUser(u.id, u.role)}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <AdminUserModal
+          open={openUserModal}
+          onClose={() => setOpenUserModal(false)}
+          // If editing the user than handle update user, otherwise create it
+          onSave={editingUser ? handleUpdateUser : handleCreateUser}
+          countries={countries ?? []}
+          editingUser={editingUser}
+          userForm={userForm}
+          setUserForm={setUserForm}
+        />
+        {/* https://mui.com/material-ui/react-snackbar/ */}
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={3000}
+          onClose={() => setSnackbarOpen(false)}
+          message={snackbarMessage}
+        />
+        <AlertDialogSlide
+          open={deleteDialogOpen}
+          onClose={() => setDeleteDialogOpen(false)}
+          onConfirm={async () => {
+            // We state that these 2 values are not null via the non‑null assertion operator
+            // https://learntypescript.dev/07/l2-non-null-assertion-operator
+            handleDeleteUser(userToDelete!.id, userToDelete!.role);
+          }}
+        />
+      </Container>
+    </>
   );
 };
 

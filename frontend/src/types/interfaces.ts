@@ -570,3 +570,11 @@ export interface UserModalProps {
     }>
   >;
 }
+
+/**
+ * Created a role list to use when updating a user via admin
+ */
+export const roles = [
+  { value: "guest", label: "Guest" },
+  { value: "admin", label: "Admin" },
+];

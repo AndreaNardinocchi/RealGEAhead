@@ -23,8 +23,10 @@ import {
   adminCancelBookingApi,
   adminCreateBookingApi,
   adminUpdateBookingApi,
-} from "../api/admin-booking-api";
+} from "../api/admin-bookings-api";
 import AlertDialogSlide from "../components/cancelBookingConfirm/cancelBookingConfirm";
+import AdminDashboardHeader from "../components/adminDashboardHeader/adminDashboardHeader";
+import AdminSubNav from "../components/adminSubNav/adminSubNav";
 
 const AdminBookingsPage: React.FC = () => {
   // Controls visibility of the booking modal
@@ -203,6 +205,8 @@ const AdminBookingsPage: React.FC = () => {
 
   return (
     <>
+      <AdminDashboardHeader />
+      <AdminSubNav />
       <Container maxWidth="xl" sx={{ pb: 8 }}>
         <Box my={4} display="flex" justifyContent="space-between">
           <Typography variant="h4">Bookings</Typography>
@@ -258,7 +262,14 @@ const AdminBookingsPage: React.FC = () => {
                   <TableCell>{getRoomName(b.room_id, rooms)}</TableCell>
                   <TableCell>{b.first_name}</TableCell>
                   <TableCell>{b.last_name}</TableCell>
-                  <TableCell>{b.user_email}</TableCell>
+                  <TableCell
+                    sx={{
+                      wordBreak: "break-word",
+                      maxWidth: 200,
+                    }}
+                  >
+                    {b.user_email}
+                  </TableCell>
                   <TableCell>{b.check_in}</TableCell>
                   <TableCell>{b.check_out}</TableCell>
                   <TableCell>{b.guests}</TableCell>
@@ -275,13 +286,6 @@ const AdminBookingsPage: React.FC = () => {
                     >
                       Update
                     </Button>
-                    {/* <Button
-                      variant="outlined"
-                      color="error"
-                      onClick={() => handleDeleteBooking(b.id)}
-                    >
-                      Delete
-                    </Button> */}
 
                     <Button
                       variant="outlined"

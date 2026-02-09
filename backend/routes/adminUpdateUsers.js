@@ -63,6 +63,16 @@ router.post("/admin/update-user", async (req, res) => {
       return res.status(400).json({ error: authUpdateError.message });
     }
 
+    // Update role in the public.profiles table
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({ role: updates.role })
+      .eq("email", updates.email);
+
+    if (profileError) {
+      return res.status(400).json({ error: profileError.message });
+    }
+
     // Everything succeeded — return the updated user
     return res.json({
       message: "User updated successfully",
