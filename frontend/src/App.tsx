@@ -17,6 +17,7 @@ import BookingConfirmationPage from "./pages/bookingConfirmationPage";
 import AdminRoute from "./routes/adminRoute";
 import AdminBookingsPage from "./pages/adminBookingsPage";
 import AdminUsersPage from "./pages/adminUsersPage";
+import AdminRoomsPage from "./pages/adminRoomsPage";
 
 const App = () => {
   return (
@@ -72,6 +73,14 @@ const App = () => {
           element={
             <AdminRoute>
               <AdminUsersPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/rooms"
+          element={
+            <AdminRoute>
+              <AdminRoomsPage />
             </AdminRoute>
           }
         />

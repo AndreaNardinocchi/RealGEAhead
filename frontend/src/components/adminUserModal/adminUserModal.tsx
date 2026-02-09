@@ -48,6 +48,9 @@ const AdminUserModal: React.FC<UserModalProps> = ({
   });
 
   const sanitize = {
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Character_Classes
     lettersOnly: (value: string) => value.replace(/[^A-Za-z]/g, ""),
     noSpaces: (value: string) => value.replace(/\s+/g, ""),
     lettersNumbersHyphens: (value: string) =>
