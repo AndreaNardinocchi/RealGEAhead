@@ -59,9 +59,6 @@ const AccountMyTripsPage: React.FC = () => {
     staleTime: 0,
   });
 
-  console.log("This is the booking", data);
-  console.log("This is the userId: ", user?.id);
-
   const navigate = useNavigate();
 
   // React Query mutation hook for updating a booking.
@@ -105,12 +102,6 @@ const AccountMyTripsPage: React.FC = () => {
     // We then calculate the difference
     const amountDifference = updatedTotalPrice - originalToTalPrice;
 
-    console.log("ORIGINAL:", selectedBooking.total_price);
-    console.log("UPDATED:", updatedBooking.total_price);
-    console.log(
-      "DIFF:",
-      updatedBooking.total_price - selectedBooking.total_price,
-    );
     /**
      * If amountDifference is > 0 then we add it to the updated booking
      * and create the pendingUpdateBooking...
@@ -242,7 +233,7 @@ const AccountMyTripsPage: React.FC = () => {
    * If the provided bookings array is empty, it displays a friendly message indicating that
    * there are no reservations for the selected category.
    */
-  const renderBookings = (bookings: Booking[]) => {
+  const renderBookings = (bookings: Booking[], type: "upcoming" | "past") => {
     if (!bookings.length) {
       return (
         <Typography align="center" sx={{ mt: 3, color: "#472d30" }}>
@@ -250,8 +241,6 @@ const AccountMyTripsPage: React.FC = () => {
         </Typography>
       );
     }
-
-    console.log("SELECTED BOOKING:", selectedBooking);
 
     return (
       <Box maxWidth="1200px" mx="auto" px={2} sx={{ mb: 4 }}>
@@ -272,6 +261,8 @@ const AccountMyTripsPage: React.FC = () => {
               room={booking.rooms}
               handleUpdate={handleUpdate}
               setDeleteOpen={handleDeleteOpen}
+              handleReview={(id) => navigate(`/review/${id}`)}
+              type={type}
             />
           ))}
         </Box>
@@ -350,9 +341,9 @@ const AccountMyTripsPage: React.FC = () => {
 
         {/* When tabValue is 0, render upcoming bookings */}
         {/* Conditional rendering docs: https://react.dev/learn/conditional-rendering */}
-        {tabValue === 0 && renderBookings(upcomingBookings)}
+        {tabValue === 0 && renderBookings(upcomingBookings, "upcoming")}
         {/* When tabValue is 1, render past bookings */}
-        {tabValue === 1 && renderBookings(pastBookings)}
+        {tabValue === 1 && renderBookings(pastBookings, "past")}
 
         <Box maxWidth="1200px" mx="auto" px={2} sx={{ mb: 12 }}></Box>
         <EditBookingDialog

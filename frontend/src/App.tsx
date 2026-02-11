@@ -18,6 +18,7 @@ import AdminRoute from "./routes/adminRoute";
 import AdminBookingsPage from "./pages/adminBookingsPage";
 import AdminUsersPage from "./pages/adminUsersPage";
 import AdminRoomsPage from "./pages/adminRoomsPage";
+import ReviewPage from "./pages/reviewPage";
 
 const App = () => {
   return (
@@ -56,6 +57,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <BookingConfirmationPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/review/:id"
+          element={
+            <ProtectedRoute>
+              <ReviewPage />
             </ProtectedRoute>
           }
         />

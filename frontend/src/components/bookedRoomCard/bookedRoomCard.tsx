@@ -24,6 +24,8 @@ interface BookingCardProps {
    * https://tanstack.com/query/latest/docs/framework/react/guides/mutations
    */
   setDeleteOpen: (booking: any) => void;
+  handleReview: (id: string) => void;
+  type: "upcoming" | "past";
 }
 
 const BookedRoomCard: React.FC<BookingCardProps> = ({
@@ -31,11 +33,13 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
   room,
   handleUpdate,
   setDeleteOpen,
+  handleReview,
+  type,
 }) => {
   // Using the util calculateNumberOfNights.ts
   const nights = calculateNumberOfNights(booking.check_in, booking.check_out);
 
-  console.log("Booking:", booking);
+  // console.log("Booking:", booking);
 
   // Creating a variable for today's date
   const today = new Date();
@@ -51,7 +55,8 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
   // If true, the user can cancel, if false the cancel button will be grey and disanled
   const canCancelUpdate = today < cutoff;
 
-  console.log("canCancelUpdate: ", canCancelUpdate);
+  // We create this new variable to determine when the button 'Review' should display
+  const hasCheckedOut = today > new Date(booking.check_out);
 
   return (
     <Card
@@ -197,37 +202,57 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
         https://mui.com/material-ui/react-stack/
         */}
         <Stack direction="row" spacing={2} sx={{ mt: "auto", pt: 2 }}>
-          <Button
-            variant="contained"
-            // The button will be disabled when the canCancelUpdate condition is not met
-            disabled={!canCancelUpdate}
-            // We call in the handleUpdate() function
-            onClick={() => handleUpdate(booking)}
-            sx={{
-              backgroundColor: "#472d30",
-              color: "#fff",
-              "&:hover": { backgroundColor: "#E26D5C" },
-              px: 5,
-            }}
-          >
-            Update
-          </Button>
-          <Button
-            variant="contained"
-            // The button will be disabled when the canCancelUpdate condition is not met
-            disabled={!canCancelUpdate}
-            sx={{
-              // mb: 3,
-              ml: 2,
-              backgroundColor: "#e26d5c",
-              "&:hover": { bgcolor: "red" },
-              px: 5,
-            }}
-            // We call in the setDeleteOpen() function and passing in the booking argument
-            onClick={() => setDeleteOpen(booking)}
-          >
-            Cancel
-          </Button>
+          {/* We implement the below ternary operator to determine which buttons to display */}
+          {!hasCheckedOut ? (
+            <>
+              <Button
+                variant="contained"
+                // The button will be disabled when the canCancelUpdate condition is not met
+                disabled={!canCancelUpdate}
+                // We call in the handleUpdate() function
+                onClick={() => handleUpdate(booking)}
+                sx={{
+                  backgroundColor: "#472d30",
+                  color: "#fff",
+                  "&:hover": { backgroundColor: "#E26D5C" },
+                  px: 5,
+                }}
+              >
+                Update
+              </Button>
+              <Button
+                variant="contained"
+                // The button will be disabled when the canCancelUpdate condition is not met
+                disabled={!canCancelUpdate}
+                sx={{
+                  // mb: 3,
+                  ml: 2,
+                  backgroundColor: "#e26d5c",
+                  "&:hover": { bgcolor: "red" },
+                  px: 5,
+                }}
+                // We call in the setDeleteOpen() function and passing in the booking argument
+                onClick={() => setDeleteOpen(booking)}
+              >
+                Cancel
+              </Button>
+            </>
+          ) : (
+            hasCheckedOut && (
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: "#E26D5C",
+                  color: "#fff",
+                  "&:hover": { backgroundColor: "#c95b4d" },
+                }}
+                onClick={() => handleReview(booking.id!)}
+                fullWidth
+              >
+                Write Review
+              </Button>
+            )
+          )}
         </Stack>
       </CardContent>
     </Card>
