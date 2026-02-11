@@ -198,3 +198,20 @@ export const getUsers = async () => {
   }
   return data;
 };
+
+/**
+ * This is a helper to fetch booking data by its id
+ */
+export const getBookingById = async (bookingId: string) => {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*")
+    .eq("id", bookingId)
+    .single();
+
+  if (error) {
+    throw new Error(`Unable to fetch room: ${error.message}`);
+  }
+
+  return data;
+};

@@ -1,0 +1,21 @@
+DROP TABLE IF EXISTS public.reviews;
+CREATE TABLE IF NOT EXISTS reviews (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  booking_id UUID NOT NULL REFERENCES bookings(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  room_id UUID NOT NULL REFERENCES rooms(id) ON DELETE CASCADE,
+  rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
+  comment TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  visibility_status TEXT DEFAULT 'visible',
+  CONSTRAINT one_review_per_booking UNIQUE (booking_id)
+);
+
+INSERT INTO reviews (booking_id, room_id, user_id, rating, comment)
+VALUES (
+  'deb89573-3a94-45a5-b90a-ce4cef418cff',  -- must exist in bookings.id
+  '6cc51864-9efc-45f9-9c9d-ed5f26b40455',  -- room_id as per your booking
+  '8d4e383b-13c0-4436-a5d0-5a76c89fa083',  -- user_id as per your booking
+  5,
+  'Great!'
+);
