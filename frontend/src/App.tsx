@@ -19,6 +19,7 @@ import AdminBookingsPage from "./pages/adminBookingsPage";
 import AdminUsersPage from "./pages/adminUsersPage";
 import AdminRoomsPage from "./pages/adminRoomsPage";
 import ReviewPage from "./pages/reviewPage";
+import AdminReviewsPage from "./pages/adminReviewsPage";
 
 const App = () => {
   return (
@@ -90,6 +91,14 @@ const App = () => {
           element={
             <AdminRoute>
               <AdminRoomsPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/reviews"
+          element={
+            <AdminRoute>
+              <AdminReviewsPage />
             </AdminRoute>
           }
         />
