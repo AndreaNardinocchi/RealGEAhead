@@ -29,6 +29,7 @@ import { getRoomName } from "../utils/getRoomName";
 import AdminBookingModal from "../components/adminBookingModal/adminBookingModal";
 import PaymentDialog from "../components/stripeCheckOutModal/stripeCheckOutModal";
 import AlertDialogSlide from "../components/cancelBookingConfirm/cancelBookingConfirm";
+import BookingFilterUI from "../components/bookingFilterUI/bookingFilterUI";
 
 const AdminBookingsPage: React.FC = () => {
   // Controls visibility of the booking modal
@@ -247,6 +248,8 @@ const AdminBookingsPage: React.FC = () => {
             + Create Booking
           </Button>
         </Box>
+
+        <BookingFilterUI />
 
         {/**
          * Material UI TableContainer component used to wrap the bookings table.
