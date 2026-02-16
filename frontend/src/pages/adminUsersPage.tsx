@@ -26,6 +26,8 @@ import AdminUserModal from "../components/adminUserModal/adminUserModal";
 import AlertDialogSlide from "../components/deleteUserConfirm/deleteUserConfirm";
 import AdminDashboardHeader from "../components/adminDashboardHeader/adminDashboardHeader";
 import AdminSubNav from "../components/adminSubNav/adminSubNav";
+import { useFilteredUsers } from "../hooks/useFilteredUsers";
+import UserFilterUI from "../components/userFilterUI/userFilterUI";
 
 /**
  * This is the admin users page wher all users can be viewed, created, updated and deleted
@@ -53,6 +55,17 @@ const AdminUsersPage: React.FC = () => {
 
   // Stores the text that will appear inside the Snackbar
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  // We set a useState for the filters and leave the fields as empty
+  const [filters, setFilters] = useState({
+    search: "",
+    email: "",
+    first_name: "",
+    last_name: "",
+    country: "",
+    role: "",
+    created_at: "",
+  });
 
   const [userForm, setUserForm] = useState({
     first_name: "",
@@ -160,7 +173,8 @@ const AdminUsersPage: React.FC = () => {
       setSnackbarOpen(true);
       setOpenUserModal(false);
     } catch (err: any) {
-      alert(err.message || "Something went wrong");
+      setSnackbarOpen(err.message || "Something went wrong");
+      setOpenUserModal(false);
     }
   };
 
@@ -184,13 +198,17 @@ const AdminUsersPage: React.FC = () => {
       setSnackbarOpen(true);
       setOpenUserModal(false);
     } catch (err: any) {
-      alert(err.message || "Something went wrong");
+      setSnackbarMessage(err.message || "Something went wrong");
+      setSnackbarOpen(true);
     } finally {
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch#syntax
       setDeleteDialogOpen(false);
       setUserToDelete(null);
     }
   };
+
+  // We call the filteredUsers through the hook useFilteredUsers
+  const filteredProfiles = useFilteredUsers(profiles, filters);
 
   if (isLoading) {
     return (
@@ -228,6 +246,8 @@ const AdminUsersPage: React.FC = () => {
           </Button>
         </Box>
 
+        <UserFilterUI filters={filters} setFilters={setFilters} />
+
         <TableContainer
           component={Paper}
           sx={{
@@ -258,7 +278,7 @@ const AdminUsersPage: React.FC = () => {
             </TableHead>
 
             <TableBody>
-              {profiles?.map((u) => (
+              {filteredProfiles?.map((u) => (
                 <TableRow
                   key={u.id}
                   sx={{

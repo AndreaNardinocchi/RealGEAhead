@@ -29,6 +29,7 @@ export function useFilteredBookings(
       new Date(b.created_at).toLocaleString(),
       b.charged,
     ]
+      // We combine all the booking fields to be able to search anything that is included in the rows
       .join(" ")
       .toLowerCase();
 

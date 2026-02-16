@@ -656,7 +656,7 @@ export interface AdminRoomModalProps {
 }
 
 /**
- * Props for the filter card.
+ * Props for the booking filter card.
  * The parent component owns the filter state; this card only updates it.
  */
 export interface FilterBookingsCardProps {
@@ -674,4 +674,21 @@ export interface FilterBookingsCardProps {
   };
   setFilters: (filters: any) => void;
   rooms: { id: string; name: string }[];
+}
+
+/**
+ * Props for the user filter card.
+ * The parent component owns the filter state; this card only updates it.
+ */
+export interface UserFilterCardProps {
+  filters: {
+    search: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    country: string;
+    role: string;
+    created_at: string;
+  };
+  setFilters: (filters: any) => void;
 }
