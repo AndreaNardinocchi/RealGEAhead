@@ -11,7 +11,8 @@ import {
   Button,
 } from "@mui/material";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import { countries, UserFilterCardProps } from "../../types/interfaces";
+import { ReviewFilterCardProps } from "../../types/interfaces";
+import { getRoomName } from "../../utils/getRoomName";
 
 const styles = {
   root: {
@@ -25,9 +26,10 @@ const styles = {
   },
 };
 
-const UserFilterCard: React.FC<UserFilterCardProps> = ({
+const ReviewFilterCard: React.FC<ReviewFilterCardProps> = ({
   filters,
   setFilters,
+  rooms,
 }) => {
   /**
    * Generic handler for updating any filter field.
@@ -36,15 +38,12 @@ const UserFilterCard: React.FC<UserFilterCardProps> = ({
     setFilters({ ...filters, [field]: value });
   };
 
-  /** Reset all filters to default empty values */
+  // Reset all filters to default empty values
   const resetFilters = () => {
     setFilters({
       search: "",
-      email: "",
-      first_name: "",
-      last_name: "",
-      country: "",
-      role: "",
+      room_id: "",
+      rating: "",
       created_at: "",
     });
   };
@@ -53,7 +52,7 @@ const UserFilterCard: React.FC<UserFilterCardProps> = ({
     <Card sx={styles.root} variant="outlined">
       <CardContent>
         <Typography variant="h5" component="h1" sx={{ mb: 2 }}>
-          <FilterAltIcon fontSize="large" /> User Filters
+          <FilterAltIcon fontSize="large" /> Review Filters
         </Typography>
 
         {/* Global search across all fields */}
@@ -64,63 +63,43 @@ const UserFilterCard: React.FC<UserFilterCardProps> = ({
           onChange={(e) => handleChange("search", e.target.value)}
         />
 
-        {/* Email filter*/}
-        <TextField
-          sx={styles.formControl}
-          label="Email"
-          value={filters.email}
-          onChange={(e) => handleChange("email", e.target.value)}
-        />
-
-        {/* First Name filter*/}
-        <TextField
-          sx={styles.formControl}
-          label="First Name"
-          value={filters.first_name}
-          onChange={(e) => handleChange("first_name", e.target.value)}
-        />
-
-        {/* Last Name filter */}
-        <TextField
-          sx={styles.formControl}
-          label="Last Name"
-          value={filters.last_name}
-          onChange={(e) => handleChange("last_name", e.target.value)}
-        />
-        {/* Country filter */}
+        {/* Room filter*/}
         <FormControl sx={styles.formControl}>
-          <InputLabel>Country</InputLabel>
+          <InputLabel>Room Name</InputLabel>
           <Select
-            label="Country"
-            value={filters.country}
-            onChange={(e) => handleChange("country", e.target.value)}
+            label="Room Name"
+            value={filters.room_id}
+            onChange={(e) => handleChange("room_id", e.target.value)}
           >
-            <MenuItem value="">All Countries</MenuItem>
-            {countries.map((c) => (
-              <MenuItem key={c.code} value={c.name}>
-                {c.name}
+            <MenuItem value="">All Rooms</MenuItem>
+
+            {rooms.map((r) => (
+              <MenuItem key={r.id} value={r.id}>
+                {getRoomName(r.id, rooms)}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
 
-        {/* Role filter */}
+        {/* Rating filter*/}
         <FormControl sx={styles.formControl}>
-          <InputLabel>Role</InputLabel>
+          <InputLabel>Rating</InputLabel>
           <Select
-            label="Role"
-            value={filters.role}
-            onChange={(e) => handleChange("role", e.target.value)}
+            label="Rating"
+            value={filters.rating}
+            onChange={(e) => handleChange("rating", e.target.value)}
           >
-            <MenuItem value="">All Roles</MenuItem>
-            <MenuItem value="admin">Admin</MenuItem>
-            <MenuItem value="guest">Guest</MenuItem>
+            <MenuItem value="">All Ratings</MenuItem>
+            <MenuItem value="1">1 Star</MenuItem>
+            <MenuItem value="2">2 Stars</MenuItem>
+            <MenuItem value="3">3 Stars</MenuItem>
+            <MenuItem value="4">4 Stars</MenuItem>
+            <MenuItem value="5">5 Stars</MenuItem>
           </Select>
         </FormControl>
 
-        {/* Created At */}
+        {/* Created At filter */}
         <TextField
-          sx={styles.formControl}
           label="Created at"
           type="date"
           slotProps={{
@@ -145,4 +124,4 @@ const UserFilterCard: React.FC<UserFilterCardProps> = ({
   );
 };
 
-export default UserFilterCard;
+export default ReviewFilterCard;

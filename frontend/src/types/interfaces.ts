@@ -692,3 +692,18 @@ export interface UserFilterCardProps {
   };
   setFilters: (filters: any) => void;
 }
+
+/**
+ * Props for the review filter card.
+ * The parent component owns the filter state; this card only updates it.
+ */
+export interface ReviewFilterCardProps {
+  filters: {
+    search: string;
+    room_id: string;
+    rating: string;
+    created_at: string;
+  };
+  setFilters: (filters: any) => void;
+  rooms: { id: string; name: string }[];
+}

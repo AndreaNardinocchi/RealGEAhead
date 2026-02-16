@@ -136,7 +136,8 @@ const AdminUsersPage: React.FC = () => {
       setSnackbarOpen(true);
       setOpenUserModal(false);
     } catch (err: any) {
-      alert(err.message || "Something went wrong");
+      setSnackbarMessage(err.message || "Something went wrong");
+      setSnackbarOpen(true);
     }
   };
 
@@ -252,7 +253,14 @@ const AdminUsersPage: React.FC = () => {
           component={Paper}
           sx={{
             mb: 6,
+            // overflowX: "auto" ensures horizontal scrolling on smaller screens.
+            //  https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-x
             overflowX: "auto",
+            overflowY: "auto",
+            maxHeight: {
+              xs: "50vh",
+              sm: "150vh",
+            },
             borderRadius: 2,
             boxShadow: 3,
             "&::-webkit-scrollbar": { height: 8 },
@@ -264,7 +272,14 @@ const AdminUsersPage: React.FC = () => {
         >
           <Table sx={{ minWidth: 900 }}>
             <TableHead>
-              <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+              <TableRow
+                sx={{
+                  backgroundColor: "#f5f5f5",
+                  position: "sticky",
+                  top: 0,
+                  zIndex: 2,
+                }}
+              >
                 <TableCell sx={{ fontWeight: "bold" }}>User ID</TableCell>
                 <TableCell sx={{ fontWeight: "bold" }}>Email</TableCell>
                 <TableCell sx={{ fontWeight: "bold" }}>First Name</TableCell>

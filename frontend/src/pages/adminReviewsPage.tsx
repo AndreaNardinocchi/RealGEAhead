@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   Box,
@@ -20,6 +20,8 @@ import { getRoomName } from "../utils/getRoomName";
 import { useAdminFetchingReviews } from "../hooks/useAdminFetchingReviews";
 import { useAdminFetchingRooms } from "../hooks/useAdminFetchingRooms";
 import { Link } from "react-router-dom";
+import ReviewFilterUI from "../components/reviewFilterUI/reviewFilterUI";
+import { useFilteredReviews } from "../hooks/useFilteredReviews";
 
 /**
  * This page will show all the reviews so that the Admin can get acquainted
@@ -47,6 +49,17 @@ const AdminReviewsPage: React.FC = () => {
   useEffect(() => {
     document.title = `Reviews Admin Dashboard | GuestEase`;
   });
+
+  // We set a useState for the filters and leave the fields as empty
+  const [filters, setFilters] = useState({
+    search: "",
+    room_id: "",
+    rating: "",
+    created_at: "",
+  });
+
+  // We call the filteredReviews through the hook useFilteredReviews
+  const filteredReviews = useFilteredReviews(reviews, rooms, filters);
 
   if (isLoading) {
     return (
@@ -79,18 +92,38 @@ const AdminReviewsPage: React.FC = () => {
           <Typography variant="h4">Reviews</Typography>
         </Box>
 
+        <ReviewFilterUI
+          filters={filters}
+          setFilters={setFilters}
+          rooms={rooms ?? []}
+        />
+
         <TableContainer
           component={Paper}
           sx={{
             mb: 6,
+            // overflowX: "auto" ensures horizontal scrolling on smaller screens.
+            //  https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-x
             overflowX: "auto",
+            overflowY: "auto",
+            maxHeight: {
+              xs: "50vh",
+              sm: "150vh",
+            },
             borderRadius: 2,
             boxShadow: 3,
           }}
         >
           <Table sx={{ minWidth: 900 }}>
             <TableHead>
-              <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+              <TableRow
+                sx={{
+                  backgroundColor: "#f5f5f5",
+                  position: "sticky",
+                  top: 0,
+                  zIndex: 2,
+                }}
+              >
                 <TableCell sx={{ fontWeight: "bold" }}>Review ID</TableCell>
                 <TableCell sx={{ fontWeight: "bold" }}>Booking ID</TableCell>
                 <TableCell sx={{ fontWeight: "bold" }}>Room Name</TableCell>
@@ -115,7 +148,7 @@ const AdminReviewsPage: React.FC = () => {
             </TableHead>
 
             <TableBody>
-              {reviews.map((r) => (
+              {filteredReviews.map((r) => (
                 <TableRow key={r.id}>
                   <TableCell>{r.id}</TableCell>
                   <TableCell>{r.booking_id}</TableCell>

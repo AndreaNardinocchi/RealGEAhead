@@ -1,7 +1,7 @@
 export function useFilteredUsers(users: any[] | undefined, filters: any) {
-  const list = users ?? [];
+  const usersList = users ?? [];
 
-  return list.filter((u: any) => {
+  return usersList.filter((u: any) => {
     // Creating search variable
     const search = filters.search.toLowerCase();
 
