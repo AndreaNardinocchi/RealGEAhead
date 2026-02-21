@@ -60,11 +60,8 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
   const hasCheckedOut = today > new Date(booking.check_out);
 
   // We create this new variable to determine when the button 'Review' should display
-<<<<<<< HEAD
-  const { data: review } = useUserFetchReviews(room.id);
-=======
+
   const { data: review } = useUserFetchReviews(booking.id);
->>>>>>> 2d2bdf6 (Fix already submitted review bug on the BookedRoomCard)
 
   return (
     <Card
@@ -254,11 +251,7 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
             </>
           ) : (
             hasCheckedOut &&
-<<<<<<< HEAD
-            (review && review.length > 0 ? (
-=======
             (review ? (
->>>>>>> 2d2bdf6 (Fix already submitted review bug on the BookedRoomCard)
               // Subtle message when review already exists
               <Typography
                 sx={{
