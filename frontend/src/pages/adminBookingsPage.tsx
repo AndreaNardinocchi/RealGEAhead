@@ -251,6 +251,26 @@ const AdminBookingsPage: React.FC = () => {
     );
   }
 
+  /**
+   * The below function will check whether the check-out date is the current
+   * date or is in the past. If that is the case, the 'Update' and 'Delete'
+   * buttons will grayed out
+   */
+  function isCheckoutTodayOrPast(checkOut: string | Date): boolean {
+    const today = new Date();
+    // Resetting today to midnight
+    // https://codetofun.com/js/date-sethours/
+    today.setHours(0, 0, 0, 0);
+
+    // Setting check-out date and hours
+    const co = new Date(checkOut);
+    co.setHours(0, 0, 0, 0);
+
+    // Returning the subtraction between checkout and today's time and whether true or false
+    // 'True' if the check-out date is today or in the past, and 'False' if in the future
+    return co.getTime() <= today.getTime();
+  }
+
   return (
     <>
       <AdminDashboardHeader />
@@ -322,50 +342,59 @@ const AdminBookingsPage: React.FC = () => {
             </TableHead>
 
             <TableBody>
-              {filteredBookings?.map((b) => (
-                <TableRow key={b.id}>
-                  <TableCell>{b.id}</TableCell>
-                  <TableCell>{getRoomName(b.room_id, rooms ?? [])}</TableCell>
-                  <TableCell>{b.first_name}</TableCell>
-                  <TableCell>{b.last_name}</TableCell>
-                  <TableCell
-                    sx={{
-                      wordBreak: "break-word",
-                      maxWidth: 200,
-                    }}
-                  >
-                    {b.user_email}
-                  </TableCell>
-                  <TableCell>{b.check_in}</TableCell>
-                  <TableCell>{b.check_out}</TableCell>
-                  <TableCell>{b.guests}</TableCell>
-                  <TableCell>€{b.total_price}</TableCell>
-                  <TableCell>
-                    {new Date(b.created_at).toLocaleString()}
-                  </TableCell>
-                  <TableCell>{b.charged ? "Yes" : "No"}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="outlined"
-                      sx={{ mr: 1 }}
-                      onClick={() => handleOpenUpdateBooking(b)}
-                    >
-                      Update
-                    </Button>
+              {filteredBookings?.map((b) => {
+                const checkoutIsTodayOrPast = isCheckoutTodayOrPast(
+                  b.check_out,
+                );
 
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      onClick={() => {
-                        setBookingToDelete(b.id);
-                        setDeleteDialogOpen(true);
+                return (
+                  <TableRow key={b.id}>
+                    <TableCell>{b.id}</TableCell>
+                    <TableCell>{getRoomName(b.room_id, rooms ?? [])}</TableCell>
+                    <TableCell>{b.first_name}</TableCell>
+                    <TableCell>{b.last_name}</TableCell>
+                    <TableCell
+                      sx={{
+                        wordBreak: "break-word",
+                        maxWidth: 200,
                       }}
                     >
-                      Delete
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+                      {b.user_email}
+                    </TableCell>
+                    <TableCell>{b.check_in}</TableCell>
+                    <TableCell>{b.check_out}</TableCell>
+                    <TableCell>{b.guests}</TableCell>
+                    <TableCell>€{b.total_price}</TableCell>
+                    <TableCell>
+                      {new Date(b.created_at).toLocaleString()}
+                    </TableCell>
+                    <TableCell>{b.charged ? "Yes" : "No"}</TableCell>
+
+                    <TableCell>
+                      <Button
+                        variant="outlined"
+                        sx={{ mr: 1 }}
+                        disabled={checkoutIsTodayOrPast}
+                        onClick={() => handleOpenUpdateBooking(b)}
+                      >
+                        Update
+                      </Button>
+
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        disabled={checkoutIsTodayOrPast}
+                        onClick={() => {
+                          setBookingToDelete(b.id);
+                          setDeleteDialogOpen(true);
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>

@@ -107,11 +107,14 @@ const StripeCheckOut: React.FC<StripeCheckoutProps> = ({
   return (
     <Card
       sx={{
-        maxWidth: 420,
+        maxWidth: 600,
         mx: "auto",
         mt: 4,
 
-        p: 3,
+        p: {
+          xs: 0,
+          sm: 2,
+        },
         borderRadius: 3,
         boxShadow: 5,
         backgroundColor: "#fff",

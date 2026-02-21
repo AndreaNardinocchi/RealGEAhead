@@ -289,6 +289,106 @@ export function userCreatedTemplate({ authUser, logoUrl, tokenizedLink }) {
           <p>If you ever need help or have questions, our team is always here to support you 🤝</p>
         </td>
       </tr>
+      
+
+      <!-- Footer -->
+      <tr>
+        <td style="text-align:center; padding:18px; font-size:12px; color:#472d30;">
+          © ${new Date().getFullYear()} GuestEase. All rights reserved.
+        </td>
+      </tr>
+
+    </table>
+  </div>
+  `;
+}
+
+export function adminCancelledBookingTemplate({
+  profile,
+  booking,
+  logoUrl,
+  refundableNights,
+  amountToRefund,
+  room,
+}) {
+  const displayName = profile.first_name ?? profile.email ?? "Guest";
+  const formattedRefund = (amountToRefund / 100).toFixed(2);
+
+  const refundSection =
+    refundableNights === 0
+      ? `
+        <h3 style="margin-top:24px; font-size:17px; color:#472d30;">Refund Details</h3>
+        <p>
+          No refund was issued for this cancellation.
+          Because your stay begins today and is only one night long,
+          there are no refundable nights remaining under our policy.
+        </p>
+      `
+      : `
+        <h3 style="margin-top:24px; font-size:17px; color:#472d30;">Refund Details</h3>
+        <p>
+          As per our refund policy, refunds apply only to nights starting from the day
+          after cancellation. The night of cancellation is non‑refundable.
+        </p>
+        <p>
+          <strong>Nights refunded:</strong> ${refundableNights}<br/>
+          <strong>Refund amount:</strong> €${formattedRefund}
+        </p>
+      `;
+
+  return `
+  <div style="background:#f4f4f4; padding:20px; font-family:Arial, sans-serif;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+      style="max-width:600px; margin:auto; background:#ffffff; border-radius:10px; border:1px solid #472d3020; overflow:hidden;">
+
+      <!-- Logo -->
+      <tr>
+        <td style="padding:25px; text-align:center; background:#472d30;">
+          <img src="${logoUrl}" alt="GuestEase Logo" width="150" />
+        </td>
+      </tr>
+
+      <!-- Header -->
+      <tr>
+        <td style="padding:20px; text-align:center; background:#E26D5C;">
+          <h2 style="margin:0; font-weight:600; font-size:22px; color:#fff;">
+            Your Booking Has Been Cancelled
+          </h2>
+          <p style="margin:8px 0 0; font-size:14px; color:#fff; opacity:0.9;">
+            This cancellation was performed by an administrator
+          </p>
+        </td>
+      </tr>
+
+      <!-- Body -->
+      <tr>
+        <td style="padding:26px; color:#472d30; font-size:15px; line-height:1.6;">
+          <p>Hello <strong>${displayName}</strong>,</p>
+
+          <p>Your booking <strong>#${booking.id.slice(-8)}</strong> for 
+          <strong>${room.name}</strong> has been cancelled by an administrator.</p>
+
+          ${refundSection}
+
+          <p>
+            If you have any questions or need help with a new booking,
+            our team is always here to assist you.
+          </p>
+
+          <!-- Button -->
+          <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:28px auto;">
+            <tr>
+              <td style="background:#E26D5C; padding:12px 24px; border-radius:6px; text-align:center;">
+                <a href="http://localhost:5173/"
+                  style="color:#fff; font-size:16px; font-weight:600; text-decoration:none; display:inline-block;">
+                  Contact Us
+                </a>
+              </td>
+            </tr>
+          </table>
+
+        </td>
+      </tr>
 
       <!-- Footer -->
       <tr>

@@ -60,6 +60,9 @@ export default function AlertDialogSlide({
           ✓ Reservations cannot be updated or cancelled within 24 hours before
           check‑in.
           <br />
+          ✓ Under extenuating circumstances, an administrator may cancel a
+          booking between 24 hours before check‑in and the check‑out time.{" "}
+          <br />
           ✓ Guests are responsible for any damages caused during their stay.
           <br />
           ✓ Smoking is strictly prohibited inside all rooms and indoor areas.

@@ -115,7 +115,7 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({
       open={open}
       onClose={onClose}
       fullWidth
-      maxWidth="sm"
+      maxWidth="md"
       slots={{ transition: Transition }}
     >
       <DialogTitle>Payment</DialogTitle>
@@ -125,7 +125,10 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({
           display: "flex",
           flexDirection: "column",
           gap: 2,
-          py: 3,
+          py: {
+            xs: 0,
+            sm: 3,
+          },
         }}
       >
         {error && (
