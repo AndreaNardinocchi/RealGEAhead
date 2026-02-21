@@ -287,7 +287,7 @@ const RoomDetailsPage: React.FC = () => {
           <PaymentDialog
             open={stripeCheckOutModalOpen}
             onClose={() => setStripeCheckOutModalOpen(false)}
-            customerId={profile?.stripe_customer_id || ""}
+            // customerId={profile?.stripe_customer_id || ""}
             onSuccess={handlePaymentSuccessSoBookNow}
           />
           <RoomReviews roomId={roomId as string} />

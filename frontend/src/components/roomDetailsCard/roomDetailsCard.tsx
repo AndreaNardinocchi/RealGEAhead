@@ -91,7 +91,11 @@ const RoomDetailsCard: React.FC<RoomDetailsCardProps> = ({
       </Box>
 
       {/* Room Description */}
-      <Typography variant="body1" gutterBottom sx={{ mb: 2 }}>
+      <Typography
+        variant="body1"
+        gutterBottom
+        sx={{ mb: 2, whiteSpace: "pre-line", lineHeight: 1.6 }}
+      >
         {room.description}
       </Typography>
       <Typography
