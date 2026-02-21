@@ -94,7 +94,13 @@ const RoomDetailsCard: React.FC<RoomDetailsCardProps> = ({
       <Typography
         variant="body1"
         gutterBottom
-        sx={{ mb: 2, whiteSpace: "pre-line", lineHeight: 1.6 }}
+        sx={{
+          mb: 2,
+          // When clickig on the Shift key will create a line-break
+          // https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/white-space
+          whiteSpace: "pre-line",
+          lineHeight: 1.6,
+        }}
       >
         {room.description}
       </Typography>
@@ -112,7 +118,7 @@ const RoomDetailsCard: React.FC<RoomDetailsCardProps> = ({
       >
         Check the GuestEase stay policy →
       </Typography>
-      {/* Outer Gris: Left column + Right column */}
+      {/* Outer Grid: Left column + Right column */}
       <Box
         sx={{
           display: "grid",

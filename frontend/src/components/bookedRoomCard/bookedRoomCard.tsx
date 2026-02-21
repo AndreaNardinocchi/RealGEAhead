@@ -13,6 +13,7 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import { getPublicUrl } from "../../utils/supabaseAssetsStorage";
 import { calculateNumberOfNights } from "../../utils/calculateNumberOfNights";
+import { useUserFetchReviews } from "../../hooks/useUserFetchReviews";
 
 interface BookingCardProps {
   booking: any;
@@ -57,6 +58,9 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
 
   // We create this new variable to determine when the button 'Review' should display
   const hasCheckedOut = today > new Date(booking.check_out);
+
+  // We create this new variable to determine when the button 'Review' should display
+  const { data: review } = useUserFetchReviews(room.id);
 
   return (
     <Card
@@ -218,9 +222,7 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
             <>
               <Button
                 variant="contained"
-                // The button will be disabled when the canCancelUpdate condition is not met
                 disabled={!canCancelUpdate}
-                // We call in the handleUpdate() function
                 onClick={() => handleUpdate(booking)}
                 sx={{
                   backgroundColor: "#472d30",
@@ -231,25 +233,38 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
               >
                 Update
               </Button>
+
               <Button
                 variant="contained"
-                // The button will be disabled when the canCancelUpdate condition is not met
                 disabled={!canCancelUpdate}
                 sx={{
-                  // mb: 3,
                   ml: 2,
                   backgroundColor: "#e26d5c",
                   "&:hover": { bgcolor: "red" },
                   px: 5,
                 }}
-                // We call in the setDeleteOpen() function and passing in the booking argument
                 onClick={() => setDeleteOpen(booking)}
               >
                 Cancel
               </Button>
             </>
           ) : (
-            hasCheckedOut && (
+            hasCheckedOut &&
+            (review && review.length > 0 ? (
+              // Subtle message when review already exists
+              <Typography
+                sx={{
+                  textAlign: "center",
+                  color: "text.secondary",
+                  fontStyle: "italic",
+                  width: "100%",
+                  py: 1,
+                }}
+              >
+                You’ve already submitted a review.
+              </Typography>
+            ) : (
+              // CTA only when no review exists
               <Button
                 variant="contained"
                 sx={{
@@ -262,7 +277,7 @@ const BookedRoomCard: React.FC<BookingCardProps> = ({
               >
                 Write Review
               </Button>
-            )
+            ))
           )}
         </Stack>
       </CardContent>

@@ -132,11 +132,12 @@ const LoginPage: React.FC = () => {
      * https://www.robinwieruch.de/react-router-authentication/?
      * https://www.reddit.com/r/reactjs/comments/uwx8h0/need_help_how_to_access_user_requested_route/
      */
-    const redirectPath =
-      location.state?.intent?.pathname || location.state?.intent || "/";
+    const redirectPath = location.state?.intent || "/";
+    // console.log("LOGIN PAGE — location.state:", location.state);
+
     navigate(redirectPath, {
       replace: true,
-      state: { path: location.pathname },
+      // state: { path: location.pathname },
     });
   };
 

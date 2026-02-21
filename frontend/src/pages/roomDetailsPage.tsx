@@ -155,10 +155,21 @@ const RoomDetailsPage: React.FC = () => {
        * */
       const { data } = await supabase.auth.getUser();
       const userId = data.user?.id;
+
+      // We now redirect the user to the log in page if not loggedin
       if (!userId) {
-        setError("You must be logged in to book a room.");
+        navigate("/login", {
+          /**
+           * Pass the current URL so the LoginPage can redirect the user
+           * back here after successful login. Without this, location.state
+           * will be null and the user will be sent to "/".
+           * https://stackoverflow.com/questions/16376438/get-path-and-query-string-from-url-using-javascript#16376491
+           */
+          state: { intent: location.pathname + location.search },
+        });
         return;
       }
+
       // We store the booking data temporarily until the payment flow completes.
       setPendingBookingData({
         room_id: room.id,

@@ -76,7 +76,7 @@ const Footer: React.FC = () => {
               </Link>
 
               <Link
-                href="https://docs.google.com/document/d/1XsyqzH4_szOmbkU0udpQFD0j48aD5wmy59QdARHP7ZQ/edit?tab=t.0"
+                href="https://docs.google.com/document/d/1Yf78fZwP5O8jJNRFVzogcZ7ih7QkLp4drMq7qAgbsqE/edit?pli=1&tab=t.0#heading=h.2osj6lk7rdug"
                 target="_blank"
                 rel="noopener"
                 color="inherit"
