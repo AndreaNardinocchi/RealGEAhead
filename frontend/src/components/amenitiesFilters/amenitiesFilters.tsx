@@ -1,23 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
+import { AmenitiesFilterProps } from "../../types/interfaces";
 
-/**
- * This component will be added to the searchResults page, and displays
- * a tag for each amenitty to filter the displayed rooms based on whether
- * they feature that specific amenity or not.
- *
- */
-const AmenitiesFilter: React.FC = () => {
-  // Dummy data
-  const allAmenities = ["WiFi", "Parking", "Pool", "Gym"];
-
-  // This is the state ro change the state of the tagged amenity
-  const [selected, setSelected] = useState<string[]>([]);
-
-  // Simple toggle function
+const AmenitiesFilter: React.FC<AmenitiesFilterProps> = ({
+  allAmenities,
+  selectedAmenities,
+  setSelectedAmenities,
+}) => {
   const toggle = (amenity: string) => {
-    // Setting the state of the selected Amenity passing in the
-    // previous list array []
-    setSelected((previousList) => {
+    // Setting the state of the selected Amenity passing in the previous list array
+    setSelectedAmenities((previousList) => {
       // Boolean variable which will be false or true depending on whether
       // the amenity was already clicked
       const isSelected = previousList.includes(amenity);
@@ -37,7 +28,8 @@ const AmenitiesFilter: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: 20 }}>
+    <div>
+      {/* We map all amenities */}
       {allAmenities.map((amenity) => (
         <button
           key={amenity}
@@ -48,16 +40,18 @@ const AmenitiesFilter: React.FC = () => {
             padding: "6px 12px",
             borderRadius: 6,
             border: "1px solid #ccc",
-            background: selected.includes(amenity) ? "#e26d5c" : "white",
-            color: selected.includes(amenity) ? "white" : "#472d30;",
+            // Change the background color based on whether that amenity is selected ornot
+            background: selectedAmenities.includes(amenity)
+              ? "#e26d5c"
+              : "white",
+            // The same applies for the color
+            color: selectedAmenities.includes(amenity) ? "white" : "black",
             cursor: "pointer",
           }}
         >
           {amenity}
         </button>
       ))}
-
-      <p>{JSON.stringify(selected, null, 2)}</p>
     </div>
   );
 };

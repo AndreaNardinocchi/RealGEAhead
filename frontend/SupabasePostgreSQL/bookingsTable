@@ -130,3 +130,14 @@ EXECUTE FUNCTION prevent_user_deletion_if_active_bookings();
 -- and the cron in https://console.cron-job.org/dashboard that runs every 2 hours,
 alter table bookings
 add column charged boolean default false;
+
+-- Stores the Stripe payment details needed for refunds and cancellations.
+-- Because earlier versions of the system didn’t retain the actual charged
+-- amount or the payment method, refunds were unreliable. 
+-- Adding payment_method_id and amount ensures each booking permanently keeps the
+-- Stripe data required for refunds on cancellations.
+ALTER TABLE bookings
+ADD COLUMN payment_intent_id text;
+
+ALTER TABLE bookings
+ADD COLUMN amount numeric;

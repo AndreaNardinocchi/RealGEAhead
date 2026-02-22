@@ -707,3 +707,60 @@ export interface ReviewFilterCardProps {
   setFilters: (filters: any) => void;
   rooms: { id: string; name: string }[];
 }
+
+/**
+ * React state setter for updating the selected amenities.
+ * https://react.dev/learn/state-as-a-snapshot
+ */
+
+export interface AmenitiesFilterProps {
+  allAmenities: string[];
+  selectedAmenities: string[];
+  /**
+   * State setter used to update the list of amenities to filter.
+   * Passed down from the parent so the filter can modify the state.
+   * http://stackoverflow.com/questions/65823778/ddg#65824149
+   * https://www.xjavascript.com/blog/how-can-i-define-type-for-setstate-when-react-dispatch-react-setstateaction-string-not-accepted/
+   */
+  setSelectedAmenities: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+// Used in the AmenitiesFilter component inside the SearchResults page
+export const allAmenities = [
+  // Sleeping
+  "Single bed",
+  "King bed",
+  "Sofa bed",
+  "Two double-beds",
+
+  // Work
+  "Remote‑Work Friendly",
+  "Writer’s Corner / Work Nook",
+
+  // Kitchen / Food
+  "Mini-fridge",
+  "Microwave",
+  "Kitchenette",
+  "Tea & Coffee Tray",
+
+  // Comfort
+  "Comfort Bathing",
+  "White noise machine",
+  "Meditation playlist",
+  "Electric Fireplace",
+  "Irish wool blankets",
+
+  // Family
+  "Baby cot available",
+  "Kids’ reading nook",
+  "Board games",
+
+  // Space / Layout
+  "Sitting area",
+  "Balcony",
+  "Garden view",
+
+  // Extras
+  "Local welcome hamper",
+  "Small book collection of Irish poetry",
+];

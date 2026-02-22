@@ -32,7 +32,13 @@ VALUES
   'Charming compact single ideal for quiet stays or writing retreats. The Seanchaí Nook is purpose-built for solitude, creativity, and deep focus. With sound-insulated walls, a dedicated writing desk, and Celtic-inspired décor, it stands apart as the most intimate and distraction-free room in the house. Ideal for writers, thinkers, or guests seeking quiet over luxury.',
   1,
   40.00,
-  '["Writer’s Corner / Work Nook", "Remote‑Work Friendly", "Tea & Coffee Tray", "Homely Touches & Charm", "Single bed"]',
+  '[
+    "Writer’s Corner / Work Nook",
+    "Remote‑Work Friendly",
+    "Tea & Coffee Tray",
+    "Homely Touches & Charm",
+    "Single bed"
+  ]',
   '["brigidshaven1.png","brigidshaven2.png","brigidshaven3.png","brigidshaven4.png"]'
 ),
 (
@@ -40,7 +46,15 @@ VALUES
   'Comfortable executive-style single with tasteful Irish touches. Designed for business travellers and professionals, the Fionn Executive Chamber prioritises efficiency without sacrificing character. Smart technology, a refined workspace, and premium finishes make it the most business-oriented room at GuestEase. It’s where productivity meets understated Irish elegance.',
   1,
   50.00,
-  '["Writer’s Corner / Work Nook", "Remote‑Work Friendly", "Tea & Coffee Tray", "Comfort Bathing", "Homely Touches & Charm", "Single bed", "Balcony"]',
+  '[
+    "Writer’s Corner / Work Nook",
+    "Remote‑Work Friendly",
+    "Tea & Coffee Tray",
+    "Comfort Bathing",
+    "Homely Touches & Charm",
+    "Single bed",
+    "Balcony"
+  ]',
   '["brigidshaven1.png","brigidshaven2.png","brigidshaven3.png","brigidshaven4.png"]'
 ),
 (
@@ -48,31 +62,67 @@ VALUES
   'Boutique-style suite inspired by Irish heritage, perfect for small groups or longer stays. The High King’s Quarters offers generous space and heritage-rich design for guests who want more than just a room. With handcrafted furniture, multiple sleeping options, and a welcoming sitting area, it’s ideal for extended stays or small groups. This suite balances historical character with modern comfort.',
   3,
   150.00,
-  '["Sitting area", "Cosy Bed Setup (King + Sofa Bed)", "Comfort Bathing", "Homely Touches & Charm", "Tea & Coffee Tray", "Electric Fireplace"]',
-   '["brigidshaven1.png","brigidshaven2.png","brigidshaven3.png","brigidshaven4.png"]'
+  '[
+    "Sitting area",
+    "Cosy Bed Setup (King + Sofa Bed)",
+    "Comfort Bathing",
+    "Homely Touches & Charm",
+    "Tea & Coffee Tray",
+    "Electric Fireplace"
+  ]',
+  '["brigidshaven1.png","brigidshaven2.png","brigidshaven3.png","brigidshaven4.png"]'
 ),
 (
   'Druid’s Rest',
   'Serene single room with natural tones and a quiet retreat atmosphere. Druid’s Rest is GuestEase’s most wellness-focused room, created for guests seeking calm and restoration. Natural textures, a garden view, and meditation-friendly amenities set it apart as a true retreat space. It’s ideal for those prioritising rest, mindfulness, and mental clarity.',
   1,
   70.00,
-  '["Garden view", "Meditation playlist", "White noise machine", "Writer’s Corner / Work Nook", "Remote‑Work Friendly", "Tea & Coffee Tray‑Work Friendly", "Comfort Bathing", "Single Bed", "Homely Touches & Charm"]',
-   '["brigidshaven1.png","brigidshaven2.png","brigidshaven3.png","brigidshaven4.png"]'
+  '[
+    "Garden view",
+    "Meditation playlist",
+    "White noise machine",
+    "Writer’s Corner / Work Nook",
+    "Remote‑Work Friendly",
+    "Tea & Coffee Tray",
+    "Comfort Bathing",
+    "Single bed",
+    "Homely Touches & Charm"
+  ]',
+  '["brigidshaven1.png","brigidshaven2.png","brigidshaven3.png","brigidshaven4.png"]'
 ),
 (
   'Brigid’s Haven',
   'Warm and inviting double room with a cosy balcony, inspired by Irish cottage comfort. Brigid’s Haven is designed for couples who value warmth, intimacy, and a sense of home. Featuring Irish wool blankets, poetry books, and a private balcony, it offers a uniquely cosy atmosphere not found in other rooms. This is the most romantic and cottage-inspired stay at GuestEase.',
   2,
   80.00,
-  '["Irish wool blankets", "Small book collection of Irish poetry", "Tea & Coffee Tray", "King Bed", "Comfort Bathing", "Homely Touches & Charm", "Balcony"]',
+  '[
+    "Irish wool blankets",
+    "Small book collection of Irish poetry",
+    "Tea & Coffee Tray",
+    "King bed",
+    "Comfort Bathing",
+    "Homely Touches & Charm",
+    "Balcony"
+  ]',
   '["brigidshaven1.png","brigidshaven2.png","brigidshaven3.png","brigidshaven4.png"]'
 ),
 (
   'Clan Suite',
   'Spacious family suite styled after traditional Irish country homes. The Clan Suite is GuestEase’s most family-friendly accommodation, offering space, flexibility, and thoughtful amenities for all ages. With two double-beds, a dining area, and entertainment options, it’s designed for togetherness without compromise. No other room caters as completely to families and group living.',
-  5,
+  4,
   200.00,
-  '["Kids’ reading nook", "Mini-fridge", "Microwave", "Board games", "Baby cot available", "Two double-beds", "Tea & Coffee Tray", "Comfort bathing", "Homely Touches & Charm", "Sitting Area"]',
+  '[
+    "Kids’ reading nook",
+    "Mini-fridge",
+    "Microwave",
+    "Board games",
+    "Baby cot available",
+    "Two double-beds",
+    "Tea & Coffee Tray",
+    "Comfort Bathing",
+    "Homely Touches & Charm",
+    "Sitting area"
+  ]',
   '["brigidshaven1.png","brigidshaven2.png","brigidshaven3.png","brigidshaven4.png"]'
 ),
 (
@@ -80,14 +130,32 @@ VALUES
   'Bright single room with balcony, ideal for remote workers visiting the coast. The Skellig Study Loft is tailored specifically for remote workers and digital nomads. A standing desk, balcony workspace, and productivity-focused layout make it the most work-optimised room available. It uniquely combines professional functionality with fresh air and coastal inspiration.',
   1,
   65.00,
-  '["Writer’s Corner / Work Nook", "Tea & Coffee Tray", "Remote‑Work Friendly", "Homely Touches & Charm", "Single bed", "Balcony"]',
-   '["brigidshaven1.png","brigidshaven2.png","brigidshaven3.png","brigidshaven4.png"]'
+  '[
+    "Writer’s Corner / Work Nook",
+    "Tea & Coffee Tray",
+    "Remote‑Work Friendly",
+    "Homely Touches & Charm",
+    "Single bed",
+    "Balcony"
+  ]',
+  '["brigidshaven1.png","brigidshaven2.png","brigidshaven3.png","brigidshaven4.png"]'
 ),
 (
   'Éire Penthouse',
   'Our boutique-style top-floor retreat with elevated views and Irish artisan décor. The Éire Penthouse represents the pinnacle of the GuestEase experience, offering unmatched views, space, and craftsmanship. With artisan décor, a panoramic balcony, and luxury amenities, it stands apart as the most exclusive room available. Perfect for special occasions or guests seeking a truly elevated stay.',
   3,
   250.00,
-  '["King bed", "Sitting area", "Local welcome hamper", "Comfort Bathing", "Tea & Coffee Tray", "Homely Touches & Charm", "Sofa bed", "Kitchenette", "Balcony"]',
-   '["brigidshaven1.png","brigidshaven2.png","brigidshaven3.png","brigidshaven4.png"]'
+  '[
+    "King bed",
+    "Sitting area",
+    "Local welcome hamper",
+    "Comfort Bathing",
+    "Tea & Coffee Tray",
+    "Homely Touches & Charm",
+    "Sofa bed",
+    "Kitchenette",
+    "Balcony",
+    "Mini-fridge"
+  ]',
+  '["brigidshaven1.png","brigidshaven2.png","brigidshaven3.png","brigidshaven4.png"]'
 );

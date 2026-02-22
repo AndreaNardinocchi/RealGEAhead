@@ -99,9 +99,9 @@ const RoomHorizontalCard: React.FC<RoomHorizontalCardProps> = ({
               <Typography variant="body2" color="text.secondary">
                 ★ {avgRating} ({reviews.length}
                 {reviews.length > 1 ? (
-                  <span>reviews</span>
+                  <span> reviews</span>
                 ) : (
-                  <span>review</span>
+                  <span> review</span>
                 )}
                 )
               </Typography>

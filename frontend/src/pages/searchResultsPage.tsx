@@ -21,6 +21,7 @@ import StickyHeaderComp from "../components/stickyHeaderComp/stickyHeaderComp";
 import EditSearchRoomsForm from "../components/editSearchRoomsForm/editSearchRoomsForm";
 import ResponsiveBookingWrapper from "../components/responsiveSearchFormWrapper/responsiveSearchFormWrapper";
 import AmenitiesFilter from "../components/amenitiesFilters/amenitiesFilters";
+import { allAmenities } from "../types/interfaces";
 
 /**
  * This is the the page where all available rooms will be shown based on
@@ -55,6 +56,32 @@ const SearchResultsPage: React.FC = () => {
     isLoading,
     error,
   } = useAvailableRooms(checkIn, checkOut, guests);
+
+  // State to store selected amenities from the filter component
+  const [selectedAmenities, setSelectedAmenities] = React.useState<string[]>(
+    [],
+  );
+
+  /**
+   * Filter rooms based on selected amenities.
+   * If no amenities are selected, show all rooms.
+   */
+  const filteredRooms =
+    selectedAmenities.length === 0
+      ? (rooms ?? [])
+      : (rooms ?? []).filter((room: Room) =>
+          /**
+           * A room must contain all the amenities the user selected.
+           * We use the every() method because it returns true only if
+           * every selected amenity is found inside the room’s amenities list.
+           * If even one selected amenity is missing, every() returns false,
+           * and the room is excluded from the filtered results.
+           * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every
+           */
+          selectedAmenities.every((amenity) =>
+            room.amenities?.includes(amenity),
+          ),
+        );
 
   // Loading
   if (isLoading) {
@@ -108,16 +135,23 @@ const SearchResultsPage: React.FC = () => {
         </StickyHeaderComp>
       </ResponsiveBookingWrapper>
       {/* Main Content */}
-      <Container sx={{ pt: 6, pb: 10 }}>
-        <AmenitiesFilter />
-        <Box sx={{ display: "grid", gridTemplateColumns: "1fr", rowGap: 4 }}>
+      <Container sx={{ pt: 4, pb: 10 }}>
+        <AmenitiesFilter
+          selectedAmenities={selectedAmenities}
+          setSelectedAmenities={setSelectedAmenities}
+          allAmenities={allAmenities}
+        />
+
+        <Box
+          sx={{ display: "grid", gridTemplateColumns: "1fr", rowGap: 4, mt: 3 }}
+        >
           {/* * Here we are creating an array to show a number of room cards with dummy data. 
           We established a length of 8 cards, which we then 'map'. 
           This will be replaced byt real data from supabase. 
           If rooms is null or undefined, use [] instead is needed to prevent any crash. 
           https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from 
           */}
-          {(rooms ?? []).map((room: Room) => (
+          {(filteredRooms ?? []).map((room: Room) => (
             <RoomHorizontalCard
               /**
                * 'key' is needed to avoid the below error:
