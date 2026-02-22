@@ -20,6 +20,7 @@ import { useLocation } from "react-router-dom";
 import StickyHeaderComp from "../components/stickyHeaderComp/stickyHeaderComp";
 import EditSearchRoomsForm from "../components/editSearchRoomsForm/editSearchRoomsForm";
 import ResponsiveBookingWrapper from "../components/responsiveSearchFormWrapper/responsiveSearchFormWrapper";
+import AmenitiesFilter from "../components/amenitiesFilters/amenitiesFilters";
 
 /**
  * This is the the page where all available rooms will be shown based on
@@ -108,6 +109,7 @@ const SearchResultsPage: React.FC = () => {
       </ResponsiveBookingWrapper>
       {/* Main Content */}
       <Container sx={{ pt: 6, pb: 10 }}>
+        <AmenitiesFilter />
         <Box sx={{ display: "grid", gridTemplateColumns: "1fr", rowGap: 4 }}>
           {/* * Here we are creating an array to show a number of room cards with dummy data. 
           We established a length of 8 cards, which we then 'map'. 
