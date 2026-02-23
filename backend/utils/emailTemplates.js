@@ -314,27 +314,40 @@ export function adminCancelledBookingTemplate({
   const displayName = profile.first_name ?? profile.email ?? "Guest";
   const formattedRefund = (amountToRefund / 100).toFixed(2);
 
-  const refundSection =
-    refundableNights === 0
-      ? `
-        <h3 style="margin-top:24px; font-size:17px; color:#472d30;">Refund Details</h3>
-        <p>
-          No refund was issued for this cancellation.
-          Because your stay begins today and is only one night long,
-          there are no refundable nights remaining under our policy.
-        </p>
-      `
-      : `
-        <h3 style="margin-top:24px; font-size:17px; color:#472d30;">Refund Details</h3>
-        <p>
-          As per our refund policy, refunds apply only to nights starting from the day
-          after cancellation. The night of cancellation is non‑refundable.
-        </p>
-        <p>
-          <strong>Nights refunded:</strong> ${refundableNights}<br/>
-          <strong>Refund amount:</strong> €${formattedRefund}
-        </p>
-      `;
+  let refundSection;
+
+  if (!booking.charged) {
+    // Case 1: No charge was ever made
+    refundSection = `
+      <h3 style="margin-top:24px; font-size:17px; color:#472d30;">Payment Status</h3>
+      <p>
+        Your card was not charged for this booking, so no refund is required.
+      </p>
+    `;
+  } else if (refundableNights === 0) {
+    // Case 2: Charged, but no refundable nights
+    refundSection = `
+      <h3 style="margin-top:24px; font-size:17px; color:#472d30;">Refund Details</h3>
+      <p>
+        No refund was issued for this cancellation.
+        Because your stay begins today and is only one night long,
+        there are no refundable nights remaining under our policy.
+      </p>
+    `;
+  } else {
+    // Case 3: Charged and refund applies
+    refundSection = `
+      <h3 style="margin-top:24px; font-size:17px; color:#472d30;">Refund Details</h3>
+      <p>
+        As per our refund policy, refunds apply only to nights starting from the day
+        after cancellation. The night of cancellation is non‑refundable.
+      </p>
+      <p>
+        <strong>Nights refunded:</strong> ${refundableNights}<br/>
+        <strong>Refund amount:</strong> €${formattedRefund}
+      </p>
+    `;
+  }
 
   return `
   <div style="background:#f4f4f4; padding:20px; font-family:Arial, sans-serif;">
