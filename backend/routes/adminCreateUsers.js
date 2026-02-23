@@ -103,7 +103,9 @@ router.post("/admin/create-user", async (req, res) => {
     const { data: reset } = await supabase.auth.admin.generateLink({
       type: "recovery",
       email,
-      options: { redirectTo: "http://localhost:5173/update-password" },
+      options: {
+        redirectTo: "https://real-ge-ahead-kq85.vercel.app/update-password",
+      },
     });
 
     // Fetching the tokenizedLink

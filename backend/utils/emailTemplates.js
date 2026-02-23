@@ -59,7 +59,7 @@ export function bookingCreatedTemplate({
           <p>If you need anything before your arrival, just let us know — we're here to help every step of the way 🤝</p>
 
           <div style="text-align:center; margin:28px 0;">
-            <a href="http://localhost:5173/account/mytrips"
+            <a href="https://real-ge-ahead-kq85.vercel.app/account/mytrips"
               style="background:#E26D5C; color:#fff; padding:12px 24px;
               text-decoration:none; border-radius:6px; font-size:16px; font-weight:600;">
               View My Trips
@@ -142,7 +142,7 @@ export function bookingUpdatedTemplate({
           <p>If you have any questions or need further adjustments, we're always here to help 🤝</p>
 
           <div style="text-align:center; margin:28px 0;">
-            <a href="http://localhost:5173/account/mytrips"
+            <a href="https://real-ge-ahead-kq85.vercel.app/account/mytrips"
               style="background:#E26D5C; color:#fff; padding:12px 24px;
               text-decoration:none; border-radius:6px; font-size:16px; font-weight:600;">
               View My Updated Booking
@@ -220,7 +220,7 @@ export function bookingCancelledTemplate({
           <p>Your credit card won't be charged!<br/>
           If this cancellation was made in error or you’d like to book again, we’d be happy to welcome you back anytime.</p>
           <div style="text-align:center; margin:28px 0;">
-            <a href="http://localhost:5173/"
+            <a href="https://real-ge-ahead-kq85.vercel.app/"
               style="background:#E26D5C; color:#fff; padding:12px 24px;
               text-decoration:none; border-radius:6px; font-size:16px; font-weight:600;">
               Book Again
@@ -392,7 +392,7 @@ export function adminCancelledBookingTemplate({
           <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:28px auto;">
             <tr>
               <td style="background:#E26D5C; padding:12px 24px; border-radius:6px; text-align:center;">
-                <a href="http://localhost:5173/"
+                <a href="https://real-ge-ahead-kq85.vercel.app/"
                   style="color:#fff; font-size:16px; font-weight:600; text-decoration:none; display:inline-block;">
                   Contact Us
                 </a>
@@ -476,7 +476,7 @@ export function bookingCreatedByAdminTemplate({
 
           <!-- Button -->
           <div style="text-align:center; margin:28px 0;">
-            <a href="http://localhost:5173/account/mytrips"
+            <a href="https://real-ge-ahead-kq85.vercel.app/account/mytrips"
               style="background:#E26D5C; color:#fff; padding:12px 24px;
               text-decoration:none; border-radius:6px; font-size:16px; font-weight:600;">
               View My Trips
