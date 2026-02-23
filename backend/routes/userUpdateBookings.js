@@ -89,7 +89,7 @@ router.post("/user/update-booking", async (req, res) => {
     });
 
     // Send email vua emailUtil.js
-    await fetch("http://localhost:3000/send_email", {
+    await fetch("https://realgeahead-1.onrender.com/send_email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -9,11 +9,14 @@ export const adminCreateBookingApi = async (bookingData: {
   check_out: string;
   guests: number;
 }) => {
-  const res = await fetch("http://localhost:3000/admin/create-booking", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(bookingData),
-  });
+  const res = await fetch(
+    "https://realgeahead-1.onrender.com/admin/create-booking",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(bookingData),
+    },
+  );
 
   const data = await res.json();
 
@@ -35,11 +38,14 @@ export const adminUpdateBookingApi = async (updateData: {
   guests: number;
   payment_method_id?: string;
 }) => {
-  const res = await fetch("http://localhost:3000/admin/update-booking", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(updateData),
-  });
+  const res = await fetch(
+    "https://realgeahead-1.onrender.com/admin/update-booking",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updateData),
+    },
+  );
 
   const data = await res.json();
 
@@ -54,11 +60,14 @@ export const adminUpdateBookingApi = async (updateData: {
  * Delete / Cancel Booking (Admin)
  */
 export const adminCancelBookingApi = async (booking_id: string) => {
-  const res = await fetch("http://localhost:3000/admin/cancel-booking", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ booking_id }),
-  });
+  const res = await fetch(
+    "https://realgeahead-1.onrender.com/admin/cancel-booking",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ booking_id }),
+    },
+  );
 
   const data = await res.json();
 

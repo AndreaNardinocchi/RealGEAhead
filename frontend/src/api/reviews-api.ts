@@ -47,7 +47,7 @@ export const submitReview = async (payload: {
     adminDashboardUrl: "http://localhost:5173/admin/reviews",
   });
 
-  const res = await fetch("http://localhost:3000/send_email", {
+  const res = await fetch("https://realgeahead-1.onrender.com/send_email", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

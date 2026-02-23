@@ -121,7 +121,7 @@ router.post("/admin/create-user", async (req, res) => {
     });
 
     // Send confirmation email to the user that their account has been created
-    await fetch("http://localhost:3000/send_email", {
+    await fetch("https://realgeahead-1.onrender.com/send_email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -118,16 +118,19 @@ export const deleteUserApi = async (userId: string) => {
     .single();
 
   if (error) throw new Error(error.message);
-  const res = await fetch("http://localhost:3000/user/delete-account", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    /**
-     * Convert the booking object into JSON before sending.
-     * Express.json() on the backend will parse this automatically.
-     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
-     */
-    body: JSON.stringify({ userId }),
-  });
+  const res = await fetch(
+    "https://realgeahead-1.onrender.com/user/delete-account",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      /**
+       * Convert the booking object into JSON before sending.
+       * Express.json() on the backend will parse this automatically.
+       * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
+       */
+      body: JSON.stringify({ userId }),
+    },
+  );
 
   /**
    * Parse the JSON response from the backend.

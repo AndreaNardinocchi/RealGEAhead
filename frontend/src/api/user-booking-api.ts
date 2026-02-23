@@ -16,16 +16,19 @@ export const createBookingApi = async (bookingData: {
    * POST /user/create_booking
    * https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
    */
-  const res = await fetch("http://localhost:3000/user/create_booking", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    /**
-     * Convert the booking object into JSON before sending.
-     * Express.json() on the backend will parse this automatically.
-     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
-     */
-    body: JSON.stringify(bookingData),
-  });
+  const res = await fetch(
+    "https://realgeahead-1.onrender.com/user/create_booking",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      /**
+       * Convert the booking object into JSON before sending.
+       * Express.json() on the backend will parse this automatically.
+       * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
+       */
+      body: JSON.stringify(bookingData),
+    },
+  );
 
   /**
    * Parse the JSON response from the backend.
@@ -66,15 +69,18 @@ export const updateBookingApi = async (updateData: {
    * The backend route is defined in Express as:
    * POST /user/update-booking
    */
-  const res = await fetch("http://localhost:3000/user/update-booking", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    /**
-     * Convert the update object into JSON before sending.
-     * Express.json() on the backend will parse this automatically.
-     */
-    body: JSON.stringify(updateData),
-  });
+  const res = await fetch(
+    "https://realgeahead-1.onrender.com/user/update-booking",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      /**
+       * Convert the update object into JSON before sending.
+       * Express.json() on the backend will parse this automatically.
+       */
+      body: JSON.stringify(updateData),
+    },
+  );
 
   /**
    * Parse the JSON response from the backend.
@@ -111,15 +117,18 @@ export const cancelBookingApi = async (bookingId: string) => {
    * The backend route is defined in Express as:
    * POST /user/cancel-booking
    */
-  const res = await fetch("http://localhost:3000/user/cancel-booking", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    /**
-     * Convert the update object into JSON before sending.
-     * Express.json() on the backend will parse this automatically.
-     */
-    body: JSON.stringify({ bookingId }),
-  });
+  const res = await fetch(
+    "https://realgeahead-1.onrender.com/user/cancel-booking",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      /**
+       * Convert the update object into JSON before sending.
+       * Express.json() on the backend will parse this automatically.
+       */
+      body: JSON.stringify({ bookingId }),
+    },
+  );
 
   /**
    * Parse the JSON response from the backend.
@@ -148,15 +157,18 @@ export const cancelBookingApi = async (bookingId: string) => {
  * https://docs.stripe.com/api/setup_intents/create
  */
 export const createSetupIntentApi = async (customerId: string) => {
-  const res = await fetch("http://localhost:3000/create-setup-intent", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    /**
-     * Convert the update object into JSON before sending.
-     * Express.json() on the backend will parse this automatically.
-     */
-    body: JSON.stringify({ customerId }),
-  });
+  const res = await fetch(
+    "https://realgeahead-1.onrender.com/create-setup-intent",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      /**
+       * Convert the update object into JSON before sending.
+       * Express.json() on the backend will parse this automatically.
+       */
+      body: JSON.stringify({ customerId }),
+    },
+  );
 
   /**
    * Parse the JSON response from the backend.
@@ -183,11 +195,14 @@ export const createStripeCustomerApi = async (params: {
   email: string;
   userId: string;
 }) => {
-  const res = await fetch("http://localhost:3000/create-stripe-customer", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(params),
-  });
+  const res = await fetch(
+    "https://realgeahead-1.onrender.com/create-stripe-customer",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(params),
+    },
+  );
 
   const data = await res.json();
 
@@ -208,15 +223,18 @@ export const savePaymentMethodApi = async (params: {
   userId: string;
   paymentMethodId: string;
 }) => {
-  const res = await fetch("http://localhost:3000/save-payment-method", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    /**
-     * Convert the object into JSON before sending.
-     * Express.json() on the backend will parse this automatically.
-     */
-    body: JSON.stringify(params),
-  });
+  const res = await fetch(
+    "https://realgeahead-1.onrender.com/save-payment-method",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      /**
+       * Convert the object into JSON before sending.
+       * Express.json() on the backend will parse this automatically.
+       */
+      body: JSON.stringify(params),
+    },
+  );
 
   /**
    * Parse the JSON response from the backend.

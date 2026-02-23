@@ -98,7 +98,7 @@ router.post("/user/create_booking", async (req, res) => {
     });
 
     // Send confirmation email to the user
-    await fetch("http://localhost:3000/send_email", {
+    await fetch("https://realgeahead-1.onrender.com/send_email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

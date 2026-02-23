@@ -10,11 +10,14 @@ export const adminCreateUserApi = async (userForm: {
   country: string;
   zip_code: string;
 }) => {
-  const res = await fetch("http://localhost:3000/admin/create-user", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(userForm),
-  });
+  const res = await fetch(
+    "https://realgeahead-1.onrender.com/admin/create-user",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userForm),
+    },
+  );
 
   const data = await res.json();
   if (!res.ok) {
@@ -39,11 +42,14 @@ export const adminUpdateUserApi = async (userForm: {
   country: string;
   zip_code: string;
 }) => {
-  const res = await fetch("http://localhost:3000/admin/update-user", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(userForm),
-  });
+  const res = await fetch(
+    "https://realgeahead-1.onrender.com/admin/update-user",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userForm),
+    },
+  );
 
   const data = await res.json();
 
@@ -58,11 +64,14 @@ export const adminUpdateUserApi = async (userForm: {
  * Delete User (Admin)
  */
 export const adminDeleteUserApi = async (id: string, role: string | null) => {
-  const res = await fetch("http://localhost:3000/admin/delete-user", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId: id }),
-  });
+  const res = await fetch(
+    "https://realgeahead-1.onrender.com/admin/delete-user",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: id }),
+    },
+  );
 
   const data = await res.json();
 
