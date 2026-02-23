@@ -151,7 +151,7 @@ const AuthContextProvider: React.FC<React.PropsWithChildren> = (props) => {
 
     try {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: "http://localhost:5173/update-password", // It will be replaced by the deployed URL
+        redirectTo: "https://real-ge-ahead-kq85.vercel.app/update-password", // It will be replaced by the deployed URL
       });
 
       if (error) {

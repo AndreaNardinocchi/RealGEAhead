@@ -44,7 +44,7 @@ export const submitReview = async (payload: {
     user_name: user?.first_name ?? "Guest",
     comment,
     logoUrl,
-    adminDashboardUrl: "http://localhost:5173/admin/reviews",
+    adminDashboardUrl: "https://real-ge-ahead-kq85.vercel.app/admin/reviews",
   });
 
   const res = await fetch("https://realgeahead-1.onrender.com/send_email", {
